@@ -4077,7 +4077,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
 }</script>
 <script>
 const appData = JSON.parse(document.getElementById('initial-data').textContent);
-const STORAGE_KEY = 'batchCalculatorState:v1';
+const STORAGE_KEY = 'batchCalculatorState:v2';
 let currentRecipe = null;
 let currentTargetMl = 500;
 let prepOverrides = {};
@@ -4096,8 +4096,7 @@ function fmt(num, unit){
 }
 function fmtMainAmountNumber(num){
   const n = Number(num || 0);
-  const rounded = Math.round(n * 100) / 100;
-  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+  return String(Math.round(n));
 }
 function fmtBatchInputNumber(num){
   const n = Number(num || 0);
