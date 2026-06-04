@@ -1,0 +1,4664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#151619" />
+<link rel="icon" href="data:," />
+<title>Batch Calculator</title>
+<style>
+:root{
+  --bg:#eef2ed;--panel:rgba(255,255,255,.66);--panel2:rgba(255,255,255,.52);--panel3:rgba(250,252,248,.70);--line:rgba(42,48,43,.13);
+  --text:#1e2521;--muted:rgba(30,37,33,.62);--soft:#7d4c3f;--accent:#a76656;--accent2:#bf8171;--green:#3f8f5a;--radius:28px;--radius-inner:21px;--radius-control:18px;--radius-pill:999px;
+  --glass:rgba(255,255,255,.64);--glass-strong:rgba(255,255,255,.78);--glass-soft:rgba(255,255,255,.44);--shadow:0 18px 48px rgba(54,65,58,.16),0 2px 10px rgba(54,65,58,.08);--shadow-soft:0 12px 30px rgba(54,65,58,.12),0 1px 0 rgba(255,255,255,.70) inset;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{
+  margin:0;color:var(--text);min-height:100vh;
+  background:
+    radial-gradient(circle at 16% 0%,rgba(255,255,255,.92),rgba(255,255,255,0) 30%),
+    radial-gradient(circle at 86% 12%,rgba(188,216,196,.52),rgba(188,216,196,0) 32%),
+    linear-gradient(180deg,#f6f8f3 0%,#edf2ee 50%,#e3e9e4 100%);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  padding:12px;padding-bottom:calc(74px + env(safe-area-inset-bottom));
+}
+.app{max-width:620px;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:8px 2px 12px}
+#homeView .header{align-items:flex-start;gap:8px;padding:4px 2px 5px}
+#recipeView .header{position:sticky;top:0;z-index:40;margin:-12px -12px 10px;padding:14px 12px 12px;background:rgba(248,251,247,.74);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);border-bottom:1px solid rgba(42,48,43,.10);box-shadow:0 12px 28px rgba(54,65,58,.08)}
+h1{margin:0;font-size:28px;line-height:1.02;letter-spacing:0;font-weight:950}
+.home-title-block{flex:1;min-width:0;display:flex;flex-direction:column}
+.home-credit{align-self:flex-start;width:fit-content;max-width:min(100%,430px);margin-top:1px;margin-right:auto;color:var(--muted);font-size:8.10px;line-height:1.10;font-weight:700;letter-spacing:0;opacity:.52;text-align:left;white-space:normal;overflow-wrap:break-word}
+.card{background:linear-gradient(145deg,rgba(255,255,255,.76),rgba(255,255,255,.50));border:1px solid rgba(255,255,255,.72);border-radius:var(--radius);padding:12px;margin-bottom:10px;box-shadow:var(--shadow);backdrop-filter:blur(24px) saturate(145%);-webkit-backdrop-filter:blur(24px) saturate(145%)}
+#homeView>.card{padding-top:10px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.section-title{font-size:17px;font-weight:950;letter-spacing:0}
+.section-pill{min-width:72px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(128,80,67,.18);background:rgba(255,255,255,.50);color:rgba(101,61,51,.82);border-radius:var(--radius-pill);padding:8px 10px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;line-height:1;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.72)}
+.search-wrap{position:sticky;top:calc(58px + env(safe-area-inset-top));z-index:80;margin:-6px 0 12px;padding:6px 0;background:rgba(247,250,246,.66);border:1px solid rgba(255,255,255,.58);border-radius:var(--radius-inner);box-shadow:var(--shadow-soft);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%)}
+.search-wrap:before{content:"⌕";position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#8f594c;font-size:20px;font-weight:900;z-index:2}
+.home-search{width:100%;min-height:50px;border:1px solid rgba(42,48,43,.12);background:rgba(255,255,255,.68);color:var(--text);border-radius:var(--radius-control);padding:12px 76px 12px 44px;font-size:16px;font-weight:800;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.82)}
+.home-search::placeholder{color:rgba(30,37,33,.42)}
+.search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);z-index:3;min-width:54px;min-height:32px;padding:0 10px;border-radius:var(--radius-pill);border:1px solid rgba(128,80,67,.18);background:rgba(255,255,255,.62);color:rgba(96,57,49,.88);font-size:10px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;box-shadow:inset 0 1px 0 rgba(255,255,255,.72)}
+.recipe-sections{display:grid;gap:8px}
+.recipe-section{background:linear-gradient(145deg,rgba(255,255,255,.62),rgba(255,255,255,.38));border:1px solid rgba(255,255,255,.66);border-radius:var(--radius);padding:8px 9px 1px;box-shadow:var(--shadow-soft);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%)}
+.recipe-section-list{display:block}
+.recipe-card{width:calc(100% - 8px);min-height:56px;border:1px solid rgba(255,255,255,.70);background:linear-gradient(135deg,rgba(255,255,255,.76),rgba(255,255,255,.48) 58%,rgba(231,237,230,.46));border-radius:var(--radius-inner);padding:8px 10px;color:var(--text);display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;box-shadow:0 10px 26px rgba(54,65,58,.12),inset 0 1px 0 rgba(255,255,255,.72);margin:0 auto 7px;backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
+.recipe-btn{width:100%;min-height:38px;border:0;background:transparent;border-radius:var(--radius-control);padding:0;color:var(--text);display:flex;align-items:center;text-align:left;margin:0;min-width:0}
+.recipe-title{font-size:17px;font-weight:950;letter-spacing:0}
+.recipe-meta{color:rgba(101,61,51,.76);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
+.recipe-status-pill{width:64px;min-height:30px;border-radius:var(--radius-pill);padding:0 8px;font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;display:flex;align-items:center;justify-content:center}
+.recipe-status-pill.is-open{border:1px solid rgba(63,143,86,.28);background:linear-gradient(135deg,rgba(88,174,113,.24),rgba(224,245,231,.58));color:#285f3a}
+.recipe-status-pill.is-closed{border:1px solid rgba(42,48,43,.12);background:rgba(255,255,255,.48);color:rgba(30,37,33,.58)}
+.recipe-header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start}
+.recipe-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap;max-width:100%}
+.recipe-nav-button{height:36px;min-height:36px;padding:0 13px;border-radius:var(--radius-pill);border:1px solid rgba(255,255,255,.48);color:#f8fff8;font-size:10px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 9px 20px rgba(54,65,58,.14);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
+.recipe-home-button{background:linear-gradient(145deg,rgba(78,157,99,.76),rgba(55,116,77,.82));border-color:rgba(255,255,255,.50)}
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:900;margin-bottom:6px}
+select,input{width:100%;min-height:50px;border:1px solid rgba(42,48,43,.12);background:rgba(255,255,255,.68);color:var(--text);border-radius:var(--radius-control);padding:12px;font-size:16px;font-weight:900;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.82),0 6px 14px rgba(54,65,58,.06);direction:ltr;text-align:left;unicode-bidi:plaintext}
+select:focus,input:focus{border-color:rgba(128,80,67,.34);box-shadow:0 0 0 3px rgba(167,102,86,.14),inset 0 1px 0 rgba(255,255,255,.88)}
+.quick-batches{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.batch-chip{min-height:46px;border:1px solid rgba(255,255,255,.62);border-radius:var(--radius-control);background:rgba(255,255,255,.50);color:var(--soft);font-size:13px;font-weight:950;padding:8px 6px;box-shadow:inset 0 1px 0 rgba(255,255,255,.68)}
+.batch-chip.is-active{border-color:rgba(128,80,67,.26);background:linear-gradient(135deg,rgba(191,129,113,.44),rgba(255,255,255,.48));color:#4f2f27}
+.info-stack{display:grid;gap:8px}
+.info{background:rgba(255,255,255,.44);border:1px solid rgba(128,80,67,.14);border-radius:var(--radius-inner);padding:9px 10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.62)}
+.info-label{color:rgba(101,61,51,.82);font-size:9px;text-transform:uppercase;letter-spacing:.05em;font-weight:950;margin-bottom:4px}
+.info-text{font-size:12px;line-height:1.35;color:#364039;white-space:pre-wrap}
+.batch-list{overflow:hidden;border:1px solid rgba(128,80,67,.14);border-radius:var(--radius-inner);background:rgba(255,255,255,.36);box-shadow:inset 0 1px 0 rgba(255,255,255,.60)}
+.batch-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;border-bottom:1px solid rgba(128,80,67,.09);min-height:48px;background:rgba(255,255,255,.34)}
+.batch-row:last-child{border-bottom:0}
+.batch-row.is-prep{background:linear-gradient(90deg,rgba(76,151,96,.20),rgba(255,255,255,.30) 72%,rgba(255,255,255,.18))}
+.batch-left{display:flex;align-items:center;min-height:22px;min-width:0}
+.batch-left>div,.recipe-btn>div,.prep-top>div:first-child{min-width:0}
+.batch-name{font-size:14px;line-height:1.18;font-weight:900;white-space:normal}
+.batch-note{margin-top:3px;color:var(--muted);font-size:10px;font-weight:800;line-height:1.15}
+.amount,.needed-value{min-width:86px;min-height:34px;padding:7px 8px;font-size:13px;border-radius:var(--radius-control);display:flex;align-items:center;justify-content:flex-end;white-space:nowrap;background:linear-gradient(135deg,rgba(138,82,68,.86),rgba(172,109,94,.66));color:#fff8f2;border:1px solid rgba(255,255,255,.36);font-weight:950;box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 7px 16px rgba(101,61,51,.14)}
+.prep-card{background:linear-gradient(145deg,rgba(239,250,241,.76),rgba(255,255,255,.50));border:1px solid rgba(63,143,86,.22);border-radius:var(--radius);padding:12px;margin-bottom:10px;box-shadow:var(--shadow-soft);backdrop-filter:blur(20px) saturate(145%);-webkit-backdrop-filter:blur(20px) saturate(145%)}
+.prep-card.is-child{border-color:rgba(128,80,67,.18);background:linear-gradient(145deg,rgba(255,247,242,.76),rgba(255,255,255,.48))}
+.prep-card.is-service{border-color:rgba(77,129,165,.20);background:linear-gradient(145deg,rgba(240,248,252,.78),rgba(255,255,255,.48))}
+.prep-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
+.prep-title{font-size:15px;font-weight:950;line-height:1.18}
+.prep-depth{margin-top:4px;color:var(--muted);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+.needed-inline{display:flex;align-items:center;gap:6px}
+.needed-label{display:flex;align-items:center;justify-content:center;min-width:54px;min-height:32px;padding:7px 8px;margin:0;font-size:9px;line-height:1;border-radius:var(--radius-control);background:rgba(255,255,255,.52);border:1px solid rgba(42,48,43,.10);color:var(--muted);font-weight:900;text-transform:uppercase;box-shadow:inset 0 1px 0 rgba(255,255,255,.68)}
+.prep-note{font-size:12px;line-height:1.4;color:#4b554d;white-space:pre-wrap;margin:9px 0 10px}
+.custom-prep{display:grid;grid-template-columns:1fr 78px;gap:8px;align-items:end;margin:8px 0 10px}
+.custom-prep input{min-height:44px;padding:9px 10px;font-size:15px;border-radius:var(--radius-control)}
+.custom-prep label{margin-bottom:5px;font-size:9px}
+.custom-prep input:not([readonly]),.prep-amount-input{caret-color:#8f594c;direction:ltr!important;text-align:left!important;unicode-bidi:isolate}
+.custom-prep input::placeholder{color:rgba(30,37,33,.40)}
+.main-note{margin-top:10px;background:rgba(255,255,255,.44);border:1px solid rgba(128,80,67,.14);border-radius:var(--radius-inner);padding:9px 10px;color:#364039;font-size:12px;line-height:1.35;white-space:pre-wrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.62)}
+h1,.recipe-title,.recipe-meta,.section-title,.section-pill,.batch-name,.batch-note,.info-text,.main-note,.prep-title,.prep-note,td:first-child,th:first-child,.empty{max-width:100%;overflow-wrap:anywhere;word-break:break-word}
+.card,.prep-card,.batch-list,.batch-row,.prep-top,.custom-prep,table{max-width:100%;box-sizing:border-box}
+table{width:100%;max-width:100%;border-collapse:collapse;table-layout:fixed}
+th{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:left;padding:7px 0;border-bottom:1px solid rgba(42,48,43,.10)}
+td{font-size:12.5px;line-height:1.24;padding:8px 0;border-bottom:1px solid rgba(42,48,43,.07);vertical-align:top}
+th:first-child,td:first-child{white-space:normal;max-width:0}
+th:last-child,td:last-child{width:96px;text-align:right;font-weight:950;white-space:nowrap;padding-left:8px}
+.empty{border:1px dashed rgba(42,48,43,.16);border-radius:var(--radius-inner);padding:14px;color:var(--muted);font-size:13px;line-height:1.35}
+.recipe-close-button{background:linear-gradient(145deg,rgba(188,102,86,.78),rgba(139,67,56,.86));border-color:rgba(255,255,255,.46)}
+.clear-all-button{width:108px;height:36px;min-height:36px;padding:0;flex:0 0 auto;border-radius:var(--radius-pill);border:1px solid rgba(255,255,255,.46);background:linear-gradient(145deg,rgba(188,102,86,.78),rgba(139,67,56,.86));color:#f8fff8;font-size:10px;font-weight:950;letter-spacing:.04em;box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 9px 20px rgba(54,65,58,.14);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
+body:not(.home-active) .clear-all-button{display:none!important}
+body.home-active .clear-all-button{width:108px;height:36px;min-height:36px;font-size:10px}
+.hidden{display:none!important}
+@media(max-width:430px){
+  body{padding:10px;padding-bottom:calc(74px + env(safe-area-inset-bottom))}
+  #homeView .header{gap:6px;padding:4px 1px 4px}
+  #recipeView .header{margin:-10px -10px 10px;padding:14px 10px 12px}
+  .recipe-actions{gap:6px}
+  .recipe-nav-button{height:34px;min-height:34px;padding:0 10px;font-size:9.5px}
+  .clear-all-button,body.home-active .clear-all-button{height:34px;min-height:34px;font-size:9.5px}
+  h1{font-size:25px}
+  .home-credit{max-width:min(100%,235px);font-size:7.30px;line-height:1.08;margin-top:1px}
+  .card{padding:11px;margin-bottom:9px}
+  .setup-grid{grid-template-columns:1fr}
+  .quick-batches{grid-template-columns:repeat(2,1fr)}
+  .batch-row{padding:9px}
+  .batch-name{font-size:13.5px}
+  .amount,.needed-value{min-width:78px;font-size:12.5px}
+  .prep-top{align-items:stretch;flex-direction:column}
+  .needed-inline{justify-content:space-between}
+  .needed-value{width:auto;min-width:92px}
+  .custom-prep{grid-template-columns:1fr 72px}
+  th,td{font-size:12px}
+}
+
+:root{
+  --bg:#151619;--panel:#202126;--panel2:#27292f;--panel3:#1d1f24;--line:rgba(255,255,255,.12);
+  --text:#f6f1e8;--muted:rgba(246,241,232,.63);--soft:#ffd8c8;--accent:#7d3d2d;--accent2:#a45b47;--green:#2f8f52;--radius:28px;--radius-inner:21px;--radius-control:18px;--radius-pill:999px;
+  --glass:rgba(32,33,38,.70);--glass-strong:rgba(32,33,38,.86);--glass-soft:rgba(255,255,255,.055);--shadow:0 18px 48px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.055);--shadow-soft:0 12px 32px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.045);
+}
+body{
+  background:
+    radial-gradient(circle at 22% -12%, rgba(63,64,72,.22), transparent 34%),
+    linear-gradient(180deg,#0b0c10 0%,#111217 34%,#17181d 68%,#1d1e23 100%);
+}
+#recipeView .header{background:rgba(21,22,25,.84);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);border-bottom:1px solid rgba(255,255,255,.075);box-shadow:0 12px 30px rgba(0,0,0,.24)}
+.card{background:linear-gradient(145deg,rgba(32,33,38,.82),rgba(29,31,36,.64));border:1px solid rgba(255,255,255,.09);box-shadow:var(--shadow);backdrop-filter:blur(24px) saturate(145%);-webkit-backdrop-filter:blur(24px) saturate(145%)}
+.section-pill{border:1px solid rgba(255,216,200,.13);background:rgba(255,255,255,.045);color:rgba(255,216,200,.78);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.search-wrap{padding:4px 0;background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.055));border:1px solid rgba(255,255,255,.09);box-shadow:0 18px 42px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.14);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%)}
+.search-wrap:before{color:#ffd8c8}
+.home-search{min-height:44px;padding:9px 76px 9px 44px;border:0;background:transparent;color:var(--text);box-shadow:none;caret-color:#ffd8c8}
+.home-search::placeholder{color:rgba(246,241,232,.48)}
+.search-clear{height:28px;min-height:28px;border:0;background:rgba(255,255,255,.10);color:rgba(246,241,232,.70);box-shadow:inset 0 1px 0 rgba(255,255,255,.10);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.recipe-section{background:linear-gradient(145deg,rgba(32,33,38,.76),rgba(29,31,36,.58));border:1px solid rgba(255,255,255,.09);box-shadow:var(--shadow-soft);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%)}
+.recipe-card{border:1px solid rgba(255,255,255,.085);background:linear-gradient(135deg,rgba(125,61,45,.18),rgba(29,31,36,.82) 58%,rgba(29,31,36,.70));color:var(--text);box-shadow:0 12px 30px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.055);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
+.recipe-meta{display:inline-flex;align-items:center;justify-content:center;width:max-content;max-width:100%;min-height:23px;padding:5px 7px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.052);color:#ffd9c9;border-radius:var(--radius-control);font-size:8.5px;margin-top:3px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.recipe-card[data-group="non-alcoholic"] .recipe-meta{color:#dfffe4}
+.recipe-status-pill.is-open{border:1px solid rgba(63,191,111,.36);background:linear-gradient(135deg,rgba(63,191,111,.22),rgba(18,59,36,.34));color:#dff8e8}
+.recipe-status-pill.is-closed{border:1px solid rgba(255,216,200,.18);background:rgba(255,255,255,.04);color:rgba(246,241,232,.70)}
+.recipe-nav-button{border:1px solid rgba(255,255,255,.13);color:#f4f0e8;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 9px 22px rgba(0,0,0,.24);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
+.recipe-home-button{background:linear-gradient(145deg,rgba(63,143,86,.26),rgba(25,82,50,.54));border-color:rgba(111,194,132,.22)}
+select,input{border:1px solid rgba(255,255,255,.085);background:rgba(255,255,255,.060);color:var(--text);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 7px 16px rgba(0,0,0,.12)}
+select:focus,input:focus{border-color:rgba(255,216,200,.40);box-shadow:0 0 0 3px rgba(125,61,45,.18),inset 0 1px 0 rgba(255,255,255,.05)}
+.batch-chip{border:1px solid rgba(255,255,255,.085);background:rgba(255,255,255,.055);color:var(--soft);box-shadow:inset 0 1px 0 rgba(255,255,255,.055)}
+.batch-chip.is-active{border-color:rgba(255,216,200,.34);background:linear-gradient(135deg,rgba(125,61,45,.32),rgba(82,37,31,.44));color:#fff8f2}
+.info{background:rgba(125,61,45,.105);border:1px solid rgba(255,216,200,.13);box-shadow:inset 0 1px 0 rgba(255,255,255,.045)}
+.info-label{color:rgba(255,216,200,.84)}
+.info-text{color:#f0e3cf}
+.batch-list{border:1px solid rgba(255,216,200,.13);background:rgba(125,61,45,.10);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.batch-row{border-bottom:1px solid rgba(255,216,200,.09);background:rgba(125,61,45,.095)}
+.batch-row.is-prep{background:linear-gradient(90deg,rgba(47,143,82,.17),rgba(18,51,33,.08) 70%,transparent)}
+.amount,.needed-value{background:linear-gradient(135deg,rgba(125,61,45,.34),rgba(125,61,45,.16));color:#fff8f2;border:1px solid rgba(255,216,200,.20);box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 7px 18px rgba(0,0,0,.18)}
+.prep-card{background:linear-gradient(145deg,rgba(47,143,82,.125),rgba(18,51,33,.16),rgba(17,19,21,.82));border:1px solid rgba(47,143,82,.24);box-shadow:var(--shadow-soft);backdrop-filter:blur(20px) saturate(145%);-webkit-backdrop-filter:blur(20px) saturate(145%)}
+.prep-card.is-child{border-color:rgba(255,216,200,.14);background:linear-gradient(145deg,rgba(125,61,45,.12),rgba(18,51,33,.115),rgba(29,31,36,.82))}
+.prep-card.is-service{border-color:rgba(130,178,213,.20);background:linear-gradient(145deg,rgba(48,75,96,.16),rgba(29,31,36,.80))}
+.needed-label{background:rgba(255,255,255,.052);border:1px solid rgba(255,255,255,.07);color:var(--muted);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.prep-note{color:#cfc3b6}
+.custom-prep input:not([readonly]),.prep-amount-input{caret-color:#ffd8c8}
+.custom-prep input::placeholder{color:rgba(244,240,232,.42)}
+.main-note{background:rgba(125,61,45,.10);border:1px solid rgba(255,216,200,.13);color:#f0e3cf;box-shadow:inset 0 1px 0 rgba(255,255,255,.045)}
+th{border-bottom:1px solid rgba(255,255,255,.085)}
+td{border-bottom:1px solid rgba(255,255,255,.055)}
+.empty{border:1px dashed rgba(255,255,255,.10)}
+.recipe-close-button{background:linear-gradient(145deg,rgba(164,91,71,.64),rgba(86,41,36,.68));border-color:rgba(255,216,200,.18)}
+.clear-all-button{border:1px solid rgba(255,216,200,.18);background:linear-gradient(145deg,rgba(164,91,71,.64),rgba(86,41,36,.68));color:#f4f0e8;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 9px 22px rgba(0,0,0,.24);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
+.main-amount-control{gap:4px;padding:5px 8px}
+.main-amount-input{width:58px;min-width:0;min-height:24px!important;height:24px!important;padding:0!important;border:0!important;background:transparent!important;color:inherit!important;border-radius:0!important;box-shadow:none!important;font:inherit!important;font-size:13px!important;font-weight:950!important;text-align:right!important;outline:none!important;caret-color:#ffd8c8}
+.main-amount-input:focus{box-shadow:none!important;border:0!important}
+.main-amount-unit{flex:0 0 auto;font-size:12px;font-weight:950;color:inherit;opacity:.96}
+@media(max-width:430px){
+  .main-amount-control{min-width:78px;padding:5px 7px}
+  .main-amount-input{width:50px;font-size:12.5px!important}
+  .main-amount-unit{font-size:11.5px}
+}
+
+</style>
+</head>
+<body class="home-active">
+<main class="app">
+  <section id="homeView">
+    <header class="header">
+      <div class="home-title-block">
+        <h1>Batch Calculator</h1>
+        <div class="home-credit">Created by Lukáš Matulík · For internal Alcron Bar use</div>
+      </div>
+      <button id="clearAllButton" class="clear-all-button" onclick="clearAllData()">Close All</button>
+    </header>
+    <section class="card">
+      <div class="section-head"><div class="section-title">Cocktail Recipes</div></div>
+      <div class="search-wrap"><input id="homeSearch" class="home-search" placeholder="Search recipe" oninput="filterHome()" /><button class="search-clear" type="button" onclick="clearRecipeSearch()">Clear</button></div>
+      <div id="recipeList"></div>
+      <div id="homeEmpty" class="empty hidden">No recipe found.</div>
+    </section>
+  </section>
+
+  <section id="recipeView" class="hidden">
+    <header class="header recipe-header">
+      <div><h1 id="recipeTitle">Recipe</h1></div>
+      <div class="recipe-actions">
+        <button class="recipe-nav-button recipe-home-button" type="button" onclick="showHome({clearSearch:true})">Home</button>
+        <button class="recipe-nav-button recipe-close-button" type="button" onclick="clearCurrentRecipe()">Clear Recipe</button>
+      </div>
+    </header>
+
+    <section class="card" id="batchSetupCard">
+      <div class="section-head"><div class="section-title">Batch Setup</div></div>
+      <div class="setup-grid">
+        <div><label for="batchSelect">Present Batch</label><select id="batchSelect"></select></div>
+        <div><label id="customBatchLabel" for="customBatch">Custom Batch</label><input id="customBatch" type="number" min="1" step="50" value="500" inputmode="decimal"></div>
+      </div>
+      <div id="quickBatchGrid" class="quick-batches"></div>
+    </section>
+
+    <section class="card">
+      <div class="info-stack">
+        <div class="info"><div class="info-label">Method</div><div class="info-text" id="methodValue">—</div></div>
+        <div class="info"><div class="info-label">Storage</div><div class="info-text" id="storageValue">—</div></div>
+      </div>
+    </section>
+
+    <section class="card" id="mainBatchCard">
+      <div class="section-head"><div class="section-title">Main Batch</div><div class="section-pill">pour</div></div>
+      <div id="ingredients"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-head"><div class="section-title">Prep Components</div><div class="section-pill">prepare</div></div>
+      <div id="preps"></div>
+    </section>
+  </section>
+</main>
+
+<script id="initial-data" type="application/json">{
+  "recipes": [
+    {
+      "id": "thirsty-dog",
+      "name": "THIRSTY DOG",
+      "category": "Signature Cocktail",
+      "sourceSheet": "SIGNATURE MENU",
+      "sourceRows": [
+        1,
+        14
+      ],
+      "method": "PRE-BATCH / FORCE CARBONATION / 700 ml PER BOTTLE",
+      "storage": "FRIDGE / 700 ML BOTTLE",
+      "defaultBatchMl": 700.0,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "700 ml batch",
+      "quickOptions": [
+        {
+          "label": "700 ml = 1× bottle",
+          "value": 700.0
+        },
+        {
+          "label": "1400 ml = 2× bottles",
+          "value": 1400.0
+        },
+        {
+          "label": "2100 ml = 3× bottles",
+          "value": 2100.0
+        },
+        {
+          "label": "2800 ml = 4× bottles",
+          "value": 2800.0
+        },
+        {
+          "label": "3500 ml = 5× bottles",
+          "value": 3500.0
+        },
+        {
+          "label": "4200 ml = 6× bottles",
+          "value": 4200.0
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Mezcal Vida",
+          "ratio": 0.0714285714285714,
+          "unit": "ml",
+          "sourceCell": "E6",
+          "house": false
+        },
+        {
+          "name": "Olmeca Altos Blanco",
+          "ratio": 0.164285714285714,
+          "unit": "ml",
+          "sourceCell": "E7",
+          "house": false
+        },
+        {
+          "name": "Banana Liqueur",
+          "ratio": 0.128571428571429,
+          "unit": "ml",
+          "sourceCell": "E8",
+          "house": false
+        },
+        {
+          "name": "Lustau Amontillado Sherry",
+          "ratio": 0.0714285714285714,
+          "unit": "ml",
+          "sourceCell": "E9",
+          "house": false
+        },
+        {
+          "name": "Stavek Verjus",
+          "ratio": 0.128571428571429,
+          "unit": "ml",
+          "sourceCell": "E10",
+          "house": false
+        },
+        {
+          "name": "Cardamom Soda",
+          "ratio": 0.428571428571429,
+          "unit": "ml",
+          "sourceCell": "E11",
+          "house": true,
+          "linkedPrep": "cardamon-soda"
+        },
+        {
+          "name": "Angostura Bitters",
+          "ratio": 0.001,
+          "unit": "g",
+          "sourceCell": "F12",
+          "house": false,
+          "unitOverride": true
+        }
+      ],
+      "preps": {
+        "cardamon-soda": {
+          "id": "cardamon-soda",
+          "title": "CARDAMOM SODA",
+          "targetCell": "I5",
+          "targetUnit": "ml",
+          "linkedSourceCell": "E11",
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Crushed Black Cardamom",
+              "ratio": 0.014,
+              "unit": "g",
+              "sourceCell": "I6"
+            },
+            {
+              "name": "Filtered Water",
+              "ratio": 0.9,
+              "unit": "ml",
+              "sourceCell": "I7"
+            },
+            {
+              "name": "Agave Syrup",
+              "ratio": 0.1,
+              "unit": "ml",
+              "sourceCell": "I8"
+            },
+            {
+              "name": "Malic Acid",
+              "ratio": 0.00133333333333333,
+              "unit": "g",
+              "sourceCell": "I9"
+            },
+            {
+              "name": "Tartaric Acid",
+              "ratio": 0.002,
+              "unit": "g",
+              "sourceCell": "I10"
+            },
+            {
+              "name": "Maldon Salt",
+              "ratio": 0.000933333333333333,
+              "unit": "g",
+              "sourceCell": "I11"
+            }
+          ],
+          "note": "Sous vide 1 h, 52 °C. Filter through a coffee filter. Cool to 2 °C, then carbonate.",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        }
+      },
+      "additionalPreps": [],
+      "mainTarget": "F5",
+      "mainNote": ""
+    },
+    {
+      "id": "night-cap",
+      "name": "NIGHT CAP",
+      "category": "Signature Cocktail",
+      "sourceSheet": "SIGNATURE MENU",
+      "sourceRows": [
+        15,
+        28
+      ],
+      "method": "PRE-BATCH / 1300 ml / SOUS VIDE BAG",
+      "storage": "FRIDGE / SOUS VIDE BAG",
+      "defaultBatchMl": 1000,
+      "batchUnit": "g",
+      "batchSetupUnit": "ml",
+      "unitLabel": "1000 g batch",
+      "quickOptions": [
+        {
+          "label": "1000 ml",
+          "value": 1000
+        },
+        {
+          "label": "2000 ml",
+          "value": 2000
+        },
+        {
+          "label": "3000 ml",
+          "value": 3000
+        },
+        {
+          "label": "4000 ml",
+          "value": 4000
+        },
+        {
+          "label": "5000 ml",
+          "value": 5000
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Plymouth Gin",
+          "ratio": 0.3,
+          "unit": "g",
+          "sourceCell": "F20",
+          "house": false
+        },
+        {
+          "name": "Horse Radish Vodka",
+          "ratio": 0.04,
+          "unit": "g",
+          "sourceCell": "F21",
+          "house": true,
+          "linkedPrep": "horseradish-vodka"
+        },
+        {
+          "name": "Tomato Water Cordial",
+          "ratio": 0.3,
+          "unit": "g",
+          "sourceCell": "F22",
+          "house": true,
+          "linkedPrep": "2-tomato-cordial"
+        },
+        {
+          "name": "Dolin Dry",
+          "ratio": 0.22,
+          "unit": "g",
+          "sourceCell": "F23",
+          "house": false
+        },
+        {
+          "name": "St. Germain",
+          "ratio": 0.06,
+          "unit": "g",
+          "sourceCell": "F24",
+          "house": false
+        },
+        {
+          "name": "Saline Solution",
+          "ratio": 0.002,
+          "unit": "g",
+          "sourceCell": "F25",
+          "house": false
+        },
+        {
+          "name": "Glycerin",
+          "ratio": 0.01,
+          "unit": "g",
+          "sourceCell": "F26",
+          "house": false
+        }
+      ],
+      "preps": {
+        "horseradish-vodka": {
+          "id": "horseradish-vodka",
+          "title": "HORSERADISH VODKA",
+          "targetCell": "I19",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Absolut Blue",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "I20"
+            },
+            {
+              "name": "Horseradish",
+              "ratio": 0.1,
+              "unit": "g",
+              "sourceCell": "I21"
+            }
+          ],
+          "note": "Sous Vide 2.5 h 60 °C Filter through a coffee filter, then batch.",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "2-tomato-cordial": {
+          "id": "2-tomato-cordial",
+          "title": "#2 TOMATO CORDIAL",
+          "targetCell": "L19",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Tomato Water",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "L20",
+              "linkedPrep": "1-tomato-water"
+            },
+            {
+              "name": "Sugar",
+              "ratio": 0.22,
+              "unit": "g",
+              "sourceCell": "L21"
+            },
+            {
+              "name": "Champagne Acid",
+              "ratio": 0.04,
+              "unit": "g",
+              "sourceCell": "L22",
+              "linkedPrep": "champagne-acid"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 0 °C, Speed 1, Time 10 min / After filtering through a cheesecloth.",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "1-tomato-water": {
+          "id": "1-tomato-water",
+          "title": "#1 TOMATO WATER",
+          "targetCell": "O19",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "TOMATO",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "O20"
+            },
+            {
+              "name": "MALDON SALT",
+              "ratio": 0.0012,
+              "unit": "g",
+              "sourceCell": "O21"
+            }
+          ],
+          "note": "Blending Temperature 0 °C, Speed 10, Time 2 min, Filter through Superbag until clear.",
+          "displayOrder": 2,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Sub Prep"
+        },
+        "champagne-acid": {
+          "id": "champagne-acid",
+          "title": "CHAMPAGNE ACID",
+          "targetCell": "B16",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Filtered Water",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "B17",
+              "sourceSheet": "RECIPES ETC."
+            },
+            {
+              "name": "Lactic Acid",
+              "ratio": 0.04,
+              "unit": "g",
+              "sourceCell": "B18",
+              "sourceSheet": "RECIPES ETC."
+            },
+            {
+              "name": "Tartaric Acid",
+              "ratio": 0.04,
+              "unit": "g",
+              "sourceCell": "B19",
+              "sourceSheet": "RECIPES ETC."
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 0 °C, Speed 1, Time 10 min",
+          "displayOrder": 12.0,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Sub Prep",
+          "sourceSheet": "RECIPES ETC."
+        }
+      },
+      "additionalPreps": [
+        "1-tomato-water",
+        "champagne-acid"
+      ],
+      "mainTarget": "F19",
+      "mainNote": ""
+    },
+    {
+      "id": "king-rama",
+      "name": "KING RAMA",
+      "category": "Signature Cocktail",
+      "sourceSheet": "SIGNATURE MENU",
+      "sourceRows": [
+        29,
+        42
+      ],
+      "method": "PRE-BATCH / 1300 ml / SOUS VIDE BAG",
+      "storage": "FRIDGE / SOUS VIDE BAG 1300 ml",
+      "defaultBatchMl": 1300.0,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "1300 ml batch",
+      "quickOptions": [
+        {
+          "label": "1000 ml",
+          "value": 1000
+        },
+        {
+          "label": "2000 ml",
+          "value": 2000
+        },
+        {
+          "label": "4000 ml",
+          "value": 4000
+        },
+        {
+          "label": "6000 ml",
+          "value": 6000
+        },
+        {
+          "label": "8500 ml",
+          "value": 8500
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Cognac",
+          "ratio": 0.1944444444,
+          "unit": "ml",
+          "sourceCell": "D35",
+          "house": false
+        },
+        {
+          "name": "Pandan Coconut",
+          "ratio": 0.1111111111,
+          "unit": "ml",
+          "sourceCell": "D36",
+          "house": true,
+          "linkedPrep": "pandan-coconut"
+        },
+        {
+          "name": "Aperol",
+          "ratio": 0.1666666667,
+          "unit": "ml",
+          "sourceCell": "D37",
+          "house": false
+        },
+        {
+          "name": "Lemon Juice",
+          "ratio": 0.221111111111,
+          "unit": "ml",
+          "sourceCell": "D38",
+          "house": false
+        },
+        {
+          "name": "Sherry Cream",
+          "ratio": 0.05555555556,
+          "unit": "ml",
+          "sourceCell": "D39",
+          "house": false
+        },
+        {
+          "name": "Toasted Milk",
+          "ratio": 0.277777777777778,
+          "unit": "ml",
+          "sourceCell": "D40",
+          "house": true,
+          "linkedPrep": "toasted-milk"
+        }
+      ],
+      "preps": {
+        "toasting-milk": {
+          "id": "toasting-milk",
+          "title": "TOASTING MILK",
+          "targetCell": "I32",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 500.0,
+          "items": [
+            {
+              "name": "Milk Powder",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "I35"
+            }
+          ],
+          "note": "Spread evenly on baking paper, convection oven toasting 15 min at 145 °C.",
+          "displayOrder": 1.1,
+          "prepTypeLabel": "Sub Prep",
+          "hideCustomAmount": true
+        },
+        "toasted-milk": {
+          "id": "toasted-milk",
+          "title": "TOASTED MILK",
+          "targetCell": "L33",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Full-Fat Milk",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "L34"
+            },
+            {
+              "name": "Toasted Milk",
+              "ratio": 0.2272727273,
+              "unit": "g",
+              "sourceCell": "L35",
+              "linkedPrep": "toasting-milk"
+            },
+            {
+              "name": "Maldon Salt",
+              "ratio": 0.00136363636,
+              "unit": "g",
+              "sourceCell": "L36"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 40 °C, Speed 3, Time 10 min",
+          "displayOrder": 1
+        },
+        "pandan-coconut": {
+          "id": "pandan-coconut",
+          "title": "PANDAN COCONUT",
+          "targetCell": "O33",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Coconut Syrup",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "O34"
+            },
+            {
+              "name": "Pandan leaves",
+              "ratio": 0.03,
+              "unit": "g",
+              "sourceCell": "O35"
+            }
+          ],
+          "note": "Cut frozen pandan leaves into pieces.\nSous-vide for 1.5 hours at 52 °C.\nPlace in the freezer for 2 hours.\nStrain through a coffee filter.",
+          "displayOrder": -10.0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        }
+      },
+      "additionalPreps": [
+        "toasting-milk"
+      ],
+      "mainTarget": "D34",
+      "mainNote": "Protein clarification\nCombine all ingredients. Add toasted milk 30 °C. Rest 10 min. Filter through Superbag until clear."
+    },
+    {
+      "id": "stumblin-in",
+      "name": "STUMBLIN \"IN\"",
+      "category": "Signature Cocktail",
+      "sourceSheet": "SIGNATURE MENU",
+      "sourceRows": [
+        43,
+        56
+      ],
+      "method": "PRE-BATCH / 1300 ml / SOUS VIDE BAG",
+      "storage": "FRIDGE / SOUS VIDE BAG 1300 ml",
+      "defaultBatchMl": 1300.0,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "1300 ml batch",
+      "quickOptions": [
+        {
+          "label": "1000 ml",
+          "value": 1000
+        },
+        {
+          "label": "2000 ml",
+          "value": 2000
+        },
+        {
+          "label": "3000 ml",
+          "value": 3000
+        },
+        {
+          "label": "4000 ml",
+          "value": 4000
+        },
+        {
+          "label": "6000 ml",
+          "value": 6000
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Tequila Blanco",
+          "ratio": 0.2857142857,
+          "unit": "ml",
+          "sourceCell": "D49",
+          "house": false
+        },
+        {
+          "name": "Passion Fruit Puree",
+          "ratio": 0.1428571429,
+          "unit": "ml",
+          "sourceCell": "D50",
+          "house": false
+        },
+        {
+          "name": "Vanilla Syrup",
+          "ratio": 0.1428571429,
+          "unit": "ml",
+          "sourceCell": "D51",
+          "house": false
+        },
+        {
+          "name": "Sherry Cream",
+          "ratio": 0.1142857143,
+          "unit": "ml",
+          "sourceCell": "D52",
+          "house": false
+        },
+        {
+          "name": "Lemon Juice",
+          "ratio": 0.1428571429,
+          "unit": "ml",
+          "sourceCell": "D53",
+          "house": false
+        },
+        {
+          "name": "Greek Milk",
+          "ratio": 0.1714285714,
+          "unit": "ml",
+          "sourceCell": "D54",
+          "house": true,
+          "linkedPrep": "greek-milk"
+        }
+      ],
+      "preps": {
+        "greek-milk": {
+          "id": "greek-milk",
+          "title": "GREEK MILK",
+          "targetCell": "L47",
+          "targetUnit": "ml",
+          "linkedSourceCell": "D54",
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Full-Fat Milk",
+              "ratio": 0.5,
+              "unit": "ml",
+              "sourceCell": "L48"
+            },
+            {
+              "name": "Greek Yogurt",
+              "ratio": 0.5,
+              "unit": "g",
+              "sourceCell": "L49"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 0 °C, Speed 2, Time 2 min",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "strawberry-sorbet": {
+          "id": "strawberry-sorbet",
+          "title": "STRAWBERRY SORBET",
+          "targetCell": null,
+          "targetUnit": "",
+          "linkedSourceCell": null,
+          "defaultAmount": 0,
+          "items": [],
+          "note": "PREPARATION\nStrawberry Purée\nFiltered Water\nGranulated Sugar\nGlucose\nLemon Juice\nN/A",
+          "displayOrder": 1,
+          "prepTypeLabel": "Service Prep"
+        }
+      },
+      "additionalPreps": [
+        "strawberry-sorbet"
+      ],
+      "mainTarget": "D48",
+      "mainNote": "Protein clarification\nCombine all ingredients. Add Greek Milk. Rest 10 min. Filter through Superbag until clear."
+    },
+    {
+      "id": "unexpected",
+      "name": "UNEXPECTED",
+      "category": "Signature Cocktail",
+      "sourceSheet": "SIGNATURE MENU",
+      "sourceRows": [
+        57,
+        68
+      ],
+      "method": "PRE-BATCH",
+      "storage": "FRIDGE / 5 L CANISTER",
+      "defaultBatchMl": 700.0,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "700 ml batch",
+      "quickOptions": [
+        {
+          "label": "700 ml",
+          "value": 700.0
+        },
+        {
+          "label": "1400 ml",
+          "value": 1400.0
+        },
+        {
+          "label": "2100 ml",
+          "value": 2100.0
+        },
+        {
+          "label": "2800 ml",
+          "value": 2800.0
+        },
+        {
+          "label": "3500 ml",
+          "value": 3500.0
+        },
+        {
+          "label": "4200 ml",
+          "value": 4200.0
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Ghee Butter Havana 7y.o",
+          "ratio": 0.666666666666667,
+          "unit": "ml",
+          "sourceCell": "F62",
+          "house": true,
+          "linkedPrep": "ghee-rum"
+        },
+        {
+          "name": "Oats Falernum",
+          "ratio": 0.3,
+          "unit": "ml",
+          "sourceCell": "F63",
+          "house": true,
+          "linkedPrep": "oat-s-falernum"
+        },
+        {
+          "name": "Cynar",
+          "ratio": 0.111111111111111,
+          "unit": "ml",
+          "sourceCell": "F64",
+          "house": false
+        },
+        {
+          "name": "Saline Solution",
+          "ratio": 0.00444444444444444,
+          "unit": "g",
+          "sourceCell": "F65",
+          "house": false
+        }
+      ],
+      "preps": {
+        "oat-s-falernum": {
+          "id": "oat-s-falernum",
+          "title": "OAT'S FALERNUM",
+          "targetCell": "I61",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Oat Milk",
+              "ratio": 0.625,
+              "unit": "ml",
+              "sourceCell": "I62"
+            },
+            {
+              "name": "Velvet Falernum",
+              "ratio": 0.3125,
+              "unit": "ml",
+              "sourceCell": "I63"
+            },
+            {
+              "name": "White Sugar",
+              "ratio": 0.625,
+              "unit": "g",
+              "sourceCell": "I64"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 0 °C, Speed 3, Time 10",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "ghee-rum": {
+          "id": "ghee-rum",
+          "title": "GHEE RUM",
+          "targetCell": "L61",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Havana 7y.o",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "L62"
+            },
+            {
+              "name": "Ghee",
+              "ratio": 0.08571428571,
+              "unit": "g",
+              "sourceCell": "L63"
+            }
+          ],
+          "note": "Sous vide for 1.5 h / 52 °C.\nPlace in freezer for 2 hours. Strain through a coffee filter.",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "1-garnish-color-soil-beetroot-reduction": {
+          "id": "1-garnish-color-soil-beetroot-reduction",
+          "title": "#1 GARNISH COLOR SOIL BEETROOT REDUCTION",
+          "targetCell": "O61",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Beetroot Juice",
+              "ratio": 0.5,
+              "unit": "ml",
+              "sourceCell": "O62"
+            },
+            {
+              "name": "White Sugar",
+              "ratio": 0.1,
+              "unit": "g",
+              "sourceCell": "O63"
+            },
+            {
+              "name": "Salt",
+              "ratio": 0.002,
+              "unit": "g",
+              "sourceCell": "O64"
+            },
+            {
+              "name": "Lemon Juice",
+              "ratio": 0.005,
+              "unit": "g",
+              "sourceCell": "O65"
+            }
+          ],
+          "note": "#1\nReduce on high heat to about 1/3 volume. After reduction add lemon juice",
+          "displayOrder": 3.1,
+          "hideCustomAmount": true,
+          "asNeeded": true,
+          "prepTypeLabel": "Sub Prep"
+        },
+        "1-garnish-color-soil": {
+          "id": "1-garnish-color-soil",
+          "title": "#2 GARNISH COLOR SOIL",
+          "targetCell": "R61",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Sugar",
+              "ratio": 0.15,
+              "unit": "g",
+              "sourceCell": "R62"
+            },
+            {
+              "name": "Filtered Water",
+              "ratio": 0.05,
+              "unit": "g",
+              "sourceCell": "R63"
+            },
+            {
+              "name": "Beetroot Reduction",
+              "ratio": 0.01,
+              "unit": "g",
+              "sourceCell": "R64"
+            },
+            {
+              "name": "White Chocolate",
+              "ratio": 0.11,
+              "unit": "g",
+              "sourceCell": "R65"
+            }
+          ],
+          "note": "#2\nHeat sugar, water, 130 °C.\nRemove from heat, add white chocolate and beetroot reduction stir until crystallized.",
+          "displayOrder": 3,
+          "hideCustomAmount": true,
+          "asNeeded": true
+        }
+      },
+      "additionalPreps": [
+        "1-garnish-color-soil-beetroot-reduction",
+        "1-garnish-color-soil"
+      ],
+      "mainTarget": "F61",
+      "mainNote": ""
+    },
+    {
+      "id": "midnight-jam",
+      "name": "MIDNIGHT JAM",
+      "category": "Signature Cocktail",
+      "sourceSheet": "SIGNATURE MENU",
+      "sourceRows": [
+        69,
+        82
+      ],
+      "method": "PRE-BATCH",
+      "storage": "BACK-BAR / 5 L CANISTER",
+      "defaultBatchMl": 1000,
+      "batchUnit": "g",
+      "batchSetupUnit": "ml",
+      "unitLabel": "1000 g batch",
+      "quickOptions": [
+        {
+          "label": "1500 ml",
+          "value": 1500
+        },
+        {
+          "label": "2500 ml",
+          "value": 2500
+        },
+        {
+          "label": "3500 ml",
+          "value": 3500
+        },
+        {
+          "label": "4500 ml",
+          "value": 4500
+        },
+        {
+          "label": "6500 ml",
+          "value": 6500
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Miso Whiskey",
+          "ratio": 0.5940594059,
+          "unit": "g",
+          "sourceCell": "F74",
+          "house": true,
+          "linkedPrep": "whiskey-miso"
+        },
+        {
+          "name": "Puntemes",
+          "ratio": 0.37953795379538,
+          "unit": "g",
+          "sourceCell": "F75",
+          "house": false
+        },
+        {
+          "name": "Salted Maple",
+          "ratio": 0.0099009900990099,
+          "unit": "g",
+          "sourceCell": "F76",
+          "house": true,
+          "linkedPrep": "salted-maple"
+        },
+        {
+          "name": "Lustau PX Sherry",
+          "ratio": 0.01650165017,
+          "unit": "g",
+          "sourceCell": "F77",
+          "house": false
+        }
+      ],
+      "preps": {
+        "whiskey-miso": {
+          "id": "whiskey-miso",
+          "title": "WHISKEY MISO",
+          "targetCell": "I73",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Four Roses",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "I74"
+            },
+            {
+              "name": "Miso Caramel",
+              "ratio": 0.1142857143,
+              "unit": "g",
+              "sourceCell": "I75"
+            },
+            {
+              "name": "Butter",
+              "ratio": 0.05714285714,
+              "unit": "g",
+              "sourceCell": "I76"
+            }
+          ],
+          "note": "#1\nMelt butter and miso caramel in the Thermomix at 50 °C, speed 2. Then transfer into a sous-vide bag and add whiskey.\n\n#2\nSous vide 1.5 h at 50 °C. Freeze for 5 h. Strain through a coffee filter.",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "salted-maple": {
+          "id": "salted-maple",
+          "title": "SALTED MAPLE",
+          "targetCell": "L73",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Maple Syrup",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "L74"
+            },
+            {
+              "name": "Maldon Salt",
+              "ratio": 0.08333333333,
+              "unit": "g",
+              "sourceCell": "L75"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 40 °C, Speed 3, Time 10 min",
+          "displayOrder": 12.0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "miso-caramel": {
+          "id": "miso-caramel",
+          "title": "MISO CARAMEL",
+          "targetCell": null,
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1700.0,
+          "items": [
+            {
+              "name": "Sugar",
+              "ratio": 0.20588235294117646,
+              "unit": "g",
+              "sourceCell": "O73"
+            },
+            {
+              "name": "Cream 33%",
+              "ratio": 0.4117647058823529,
+              "unit": "g",
+              "sourceCell": "O74"
+            },
+            {
+              "name": "Glucose",
+              "ratio": 0.029411764705882353,
+              "unit": "g",
+              "sourceCell": "O75"
+            },
+            {
+              "name": "White Chocolate",
+              "ratio": 0.29411764705882354,
+              "unit": "g",
+              "sourceCell": "O76"
+            },
+            {
+              "name": "Miso Paste",
+              "ratio": 0.058823529411764705,
+              "unit": "g",
+              "sourceCell": "O77"
+            }
+          ],
+          "note": "1. Heat cream with glucose.\n2. Cook sugar to a dark caramel.\n3. Slowly add hot cream in small amounts while stirring.\n4. Simmer gently for approx. 20 min to reduce.\n5. Pour over white chocolate, stir until melted.\n6. Add miso paste and blend until smooth in Thermomix.\nVacuum seal per 320 g, and store in the freezer.",
+          "displayOrder": 2,
+          "prepTypeLabel": "Sub Prep"
+        }
+      },
+      "additionalPreps": [
+        "miso-caramel"
+      ],
+      "mainTarget": "F73",
+      "mainNote": ""
+    },
+    {
+      "id": "alcron",
+      "name": "ALCRON",
+      "category": "Signature Cocktail",
+      "sourceSheet": "SIGNATURE MENU",
+      "sourceRows": [
+        83,
+        93
+      ],
+      "method": "PRE-BATCH",
+      "storage": "BACK-BAR / 5 L CANISTER",
+      "defaultBatchMl": 1000,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "1000 ml batch",
+      "quickOptions": [
+        {
+          "label": "1000 ml",
+          "value": 1000
+        },
+        {
+          "label": "2000 ml",
+          "value": 2000
+        },
+        {
+          "label": "3000 ml",
+          "value": 3000
+        },
+        {
+          "label": "4000 ml",
+          "value": 4000
+        },
+        {
+          "label": "5000 ml",
+          "value": 5000
+        },
+        {
+          "label": "6000 ml",
+          "value": 6000
+        }
+      ],
+      "ingredients": [],
+      "preps": {
+        "cucumber-cordial": {
+          "id": "cucumber-cordial",
+          "title": "CUCUMBER CORDIAL",
+          "targetCell": "I87",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000.0,
+          "items": [
+            {
+              "name": "Cucumber Juice",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "I88"
+            },
+            {
+              "name": "Pfanner Green Apple",
+              "ratio": 0.2380952381,
+              "unit": "ml",
+              "sourceCell": "I89"
+            },
+            {
+              "name": "Simple Syrup",
+              "ratio": 0.2857142857,
+              "unit": "ml",
+              "sourceCell": "I90"
+            },
+            {
+              "name": "Citric Acid",
+              "ratio": 0.01428571429,
+              "unit": "g",
+              "sourceCell": "I91"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 0 °C, Speed 3, Time 10",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "lovage-gin": {
+          "id": "lovage-gin",
+          "title": "LOVAGE GIN",
+          "targetCell": "L87",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 4800.0,
+          "items": [
+            {
+              "name": "Beefeater London Dry",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "L88"
+            },
+            {
+              "name": "Lovage",
+              "ratio": 0.002,
+              "unit": "g",
+              "sourceCell": "L89"
+            }
+          ],
+          "note": "Sous Vide 2 h / 32 °C Filter through Superbag",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "garnish-cucumber-dust": {
+          "id": "garnish-cucumber-dust",
+          "title": "GARNISH CUCUMBER DUST",
+          "targetCell": null,
+          "targetUnit": "",
+          "linkedSourceCell": null,
+          "defaultAmount": 0,
+          "items": [],
+          "note": "Spread cucumber pulp (juicer leftovers) on a tray with baking paper.\nDry at 50 °C / no steam for 12 h or until completely dry.\nGrate into fine dust with Thermomix.",
+          "displayOrder": 2
+        }
+      },
+      "additionalPreps": [
+        "cucumber-cordial",
+        "lovage-gin",
+        "garnish-cucumber-dust"
+      ],
+      "mainTarget": null,
+      "mainNote": ""
+    },
+    {
+      "id": "tang-olga",
+      "name": "TANG OLGA",
+      "category": "Signature Cocktail",
+      "sourceSheet": "SIGNATURE MENU",
+      "sourceRows": [
+        94,
+        105
+      ],
+      "method": "PRE-BATCH",
+      "storage": "BACK-BAR / 5 L CANISTER",
+      "defaultBatchMl": 1000.0,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "1000 ml batch",
+      "quickOptions": [
+        {
+          "label": "1000 ml",
+          "value": 1000.0
+        },
+        {
+          "label": "2000 ml",
+          "value": 2000.0
+        },
+        {
+          "label": "3000 ml",
+          "value": 3000.0
+        },
+        {
+          "label": "4000 ml",
+          "value": 4000.0
+        },
+        {
+          "label": "5000 ml",
+          "value": 5000.0
+        },
+        {
+          "label": "6000 ml",
+          "value": 6000.0
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Beefeater London Dry",
+          "ratio": 0.4285714286,
+          "unit": "ml",
+          "sourceCell": "F99",
+          "house": false
+        },
+        {
+          "name": "Raspberry Vermouth",
+          "ratio": 0.4285714286,
+          "unit": "ml",
+          "sourceCell": "F100",
+          "house": true,
+          "linkedPrep": "raspberry-vermout"
+        },
+        {
+          "name": "Sugar Syrup",
+          "ratio": 0.2142857143,
+          "unit": "ml",
+          "sourceCell": "F101",
+          "house": false
+        }
+      ],
+      "preps": {
+        "raspberry-vermout": {
+          "id": "raspberry-vermout",
+          "title": "RASPBERRY VERMOUTH",
+          "targetCell": "I98",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Sedmero Rose",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "I99"
+            },
+            {
+              "name": "Frozen Raspberry",
+              "ratio": 0.7142857143,
+              "unit": "g",
+              "sourceCell": "I100"
+            }
+          ],
+          "note": "Sous Vide 2.5 h / 52 °C Filter through Superbag, Store in Fridge",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "garnish-tapioca-chips": {
+          "id": "garnish-tapioca-chips",
+          "title": "GARNISH TAPIOCA CHIPS",
+          "targetCell": null,
+          "targetUnit": "",
+          "linkedSourceCell": null,
+          "defaultAmount": 0,
+          "items": [],
+          "note": "Cook 100 g tapioca pearls in 700 ml water until transparent.\nIn Thermomix combine:\n• 200 g raspberries\n• 400 ml cranberry juice\n• 100 g white cane sugar\n• cooked tapioca pearls\nBlend until smooth.\nSpread thinly between 2 silicone mats and dehydrate 15 h / 60 °C.\nCut into 3 × 1.5 cm squares and store dry.",
+          "displayOrder": 1,
+          "prepTypeLabel": "Service Prep"
+        }
+      },
+      "additionalPreps": [
+        "garnish-tapioca-chips"
+      ],
+      "mainTarget": "F98",
+      "mainNote": ""
+    },
+    {
+      "id": "prima-balerina",
+      "name": "PRIMA BALERINA",
+      "category": "Signature Cocktail",
+      "sourceSheet": "SIGNATURE MENU",
+      "sourceRows": [
+        106,
+        119
+      ],
+      "method": "PRE-BATCH / FORCE CARBONATION / 700 ml PER BOTTLE",
+      "storage": "FRIDGE / 700 ml BOTTLE",
+      "defaultBatchMl": 700,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "700 ml batch",
+      "quickOptions": [
+        {
+          "label": "700 ml = 1× bottle",
+          "value": 700
+        },
+        {
+          "label": "1400 ml = 2× bottles",
+          "value": 1400
+        },
+        {
+          "label": "2100 ml = 3× bottles",
+          "value": 2100
+        },
+        {
+          "label": "2800 ml = 4× bottles",
+          "value": 2800
+        },
+        {
+          "label": "3500 ml = 5× bottles",
+          "value": 3500
+        },
+        {
+          "label": "4200 ml = 6× bottles",
+          "value": 4200
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Absolut Vodka Lemon",
+          "ratio": 0.2714285714,
+          "unit": "ml",
+          "sourceCell": "F111",
+          "house": false
+        },
+        {
+          "name": "Tangerine Cordial",
+          "ratio": 0.2714285714,
+          "unit": "ml",
+          "sourceCell": "F112",
+          "house": true,
+          "linkedPrep": "tangerine-cordial"
+        },
+        {
+          "name": "Martini Ambrato",
+          "ratio": 0.1,
+          "unit": "ml",
+          "sourceCell": "F113",
+          "house": false
+        },
+        {
+          "name": "Filtered Water",
+          "ratio": 0.3571428571,
+          "unit": "ml",
+          "sourceCell": "F114",
+          "house": false
+        }
+      ],
+      "preps": {
+        "tangerine-cordial": {
+          "id": "tangerine-cordial",
+          "title": "TANGERINE CORDIAL",
+          "targetCell": "I110",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Filtered Water",
+              "ratio": 0.8823529412,
+              "unit": "ml",
+              "sourceCell": "I111"
+            },
+            {
+              "name": "White Sugar",
+              "ratio": 0.2941176471,
+              "unit": "g",
+              "sourceCell": "I112"
+            },
+            {
+              "name": "Tangerine Essence",
+              "ratio": 0.02647058824,
+              "unit": "dps",
+              "sourceCell": "I113"
+            },
+            {
+              "name": "Citric Acid",
+              "ratio": 0.01764705882,
+              "unit": "g",
+              "sourceCell": "I114"
+            },
+            {
+              "name": "Malic Acid",
+              "ratio": 0.00882352941,
+              "unit": "g",
+              "sourceCell": "I115"
+            }
+          ],
+          "note": "Sous Vide 1.5 h / 52 °C, Then Batch 1000 ml Per Vacuum Vide Bag\nMinimum one batch 3000 ml",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "grepefruit-pepper-vodka": {
+          "id": "grepefruit-pepper-vodka",
+          "title": "GRAPEFRUIT PEPPER VODKA",
+          "targetCell": "L110",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Absolut Blue",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "L111"
+            },
+            {
+              "name": "Crushed Grapefruit Pepper",
+              "ratio": 0.01,
+              "unit": "g",
+              "sourceCell": "L112"
+            },
+            {
+              "name": "Lemon Peel",
+              "ratio": 0.001,
+              "unit": "g",
+              "sourceCell": "L113"
+            },
+            {
+              "name": "Lime Peel",
+              "ratio": 0.001,
+              "unit": "g",
+              "sourceCell": "L114"
+            }
+          ],
+          "note": "All ingredients into a vacuum bag.\nUltrasonic bath.\nRun Full Wave – 5 min / 0 °C. Then strain through a coffee filter",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        }
+      },
+      "additionalPreps": [
+        "grepefruit-pepper-vodka"
+      ],
+      "mainTarget": "F110",
+      "mainNote": ""
+    },
+    {
+      "id": "negroni-tropico",
+      "name": "NEGRONI TROPICO",
+      "category": "Signature Cocktail",
+      "sourceSheet": "SIGNATURE MENU",
+      "sourceRows": [
+        120,
+        135
+      ],
+      "method": "PRE-BATCH",
+      "storage": "BACK-BAR / 5L CANISTER",
+      "defaultBatchMl": 1000,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "1000 ml batch",
+      "quickOptions": [
+        {
+          "label": "1000 ml",
+          "value": 1000
+        },
+        {
+          "label": "2000 ml",
+          "value": 2000
+        },
+        {
+          "label": "3000 ml",
+          "value": 3000
+        },
+        {
+          "label": "4000 ml",
+          "value": 4000
+        },
+        {
+          "label": "5000 ml",
+          "value": 5000
+        },
+        {
+          "label": "6000 ml",
+          "value": 6000
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Havana 7yo",
+          "ratio": 0.4402515723,
+          "unit": "ml",
+          "sourceCell": "F125",
+          "house": false
+        },
+        {
+          "name": "Puntemes",
+          "ratio": 0.1886792453,
+          "unit": "ml",
+          "sourceCell": "F126",
+          "house": false
+        },
+        {
+          "name": "Cinzano Rosso",
+          "ratio": 0.09433962264,
+          "unit": "ml",
+          "sourceCell": "F127",
+          "house": false
+        },
+        {
+          "name": "Campari",
+          "ratio": 0.1886792453,
+          "unit": "ml",
+          "sourceCell": "F128",
+          "house": false
+        },
+        {
+          "name": "Coconut Oil",
+          "ratio": 0.05660377358,
+          "unit": "g",
+          "sourceCell": "F129",
+          "house": true
+        },
+        {
+          "name": "Fermented Strawberries",
+          "ratio": 0.133333333333333,
+          "unit": "ml",
+          "sourceCell": "F133",
+          "note": "After filtering",
+          "house": true,
+          "linkedPrep": "2-lacto-sirup"
+        }
+      ],
+      "preps": {
+        "2-lacto-sirup": {
+          "id": "2-lacto-sirup",
+          "title": "2#LACTO SIRUP",
+          "targetCell": "I124",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Lacto Strawberry",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "I125"
+            },
+            {
+              "name": "Sugar",
+              "ratio": 0.1666666667,
+              "unit": "g",
+              "sourceCell": "I126"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 60 °C, speed 1, Time 8 min.",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "1-lacto-fermentation": {
+          "id": "1-lacto-fermentation",
+          "title": "1#LACTO FERMENTATION",
+          "targetCell": "L124",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "STRAWBERRY",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "L125"
+            },
+            {
+              "name": "SALT",
+              "ratio": 0.025,
+              "unit": "g",
+              "sourceCell": "L126"
+            }
+          ],
+          "note": "Place all ingredients into a sous-vide bag and seal.\nLeave at room temperature for 72 hours.",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Sub Prep"
+        },
+        "garnish-matcha-chocolate": {
+          "id": "garnish-matcha-chocolate",
+          "title": "GARNISH MATCHA CHOCOLATE",
+          "targetCell": "O123",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "WHITE CHOCOLATE",
+              "ratio": 0.1,
+              "unit": "g",
+              "sourceCell": "O125"
+            },
+            {
+              "name": "MATCHA",
+              "ratio": 0.005,
+              "unit": "g",
+              "sourceCell": "O126"
+            }
+          ],
+          "note": "TECHNIQUE\nDissolve the chocolate under steam, gradually adding matcha powder while stirring continuously.\nAfter melting, pour into the mold.\nFreeze for 1.5 hours, then vacuum seal.",
+          "displayOrder": 2,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        }
+      },
+      "additionalPreps": [
+        "1-lacto-fermentation",
+        "garnish-matcha-chocolate"
+      ],
+      "mainTarget": "F123",
+      "mainNote": "Combine all ingredients. Sous vide for 1.5 h at 52 °C.\nPlace in freezer / shocker for 2 h.\nStrain through a coffee filter.\nAfter filtering, add Fermented Strawberries."
+    },
+    {
+      "id": "caffe-banana",
+      "name": "CAFFÈ BANANA",
+      "category": "Signature Cocktail",
+      "sourceSheet": "SIGNATURE MENU",
+      "sourceRows": [
+        136,
+        147
+      ],
+      "method": "PRE-BATCH",
+      "storage": "BACK-BAR / 5L CANISTER",
+      "defaultBatchMl": 700.0,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "700 ml batch",
+      "quickOptions": [
+        {
+          "label": "700 ml",
+          "value": 700.0
+        },
+        {
+          "label": "1400 ml",
+          "value": 1400.0
+        },
+        {
+          "label": "2100 ml",
+          "value": 2100.0
+        },
+        {
+          "label": "2800 ml",
+          "value": 2800.0
+        },
+        {
+          "label": "3500 ml",
+          "value": 3500.0
+        },
+        {
+          "label": "4200 ml",
+          "value": 4200.0
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Jameson Black Barrel",
+          "ratio": 0.5263157895,
+          "unit": "ml",
+          "sourceCell": "F141",
+          "house": false
+        },
+        {
+          "name": "Amaro Tonka",
+          "ratio": 0.175438596491228,
+          "unit": "ml",
+          "sourceCell": "F142",
+          "house": true,
+          "linkedPrep": "tonka-amaro"
+        },
+        {
+          "name": "Sherry Cream",
+          "ratio": 0.175438596491228,
+          "unit": "ml",
+          "sourceCell": "F143",
+          "house": false
+        },
+        {
+          "name": "Salted Caramel",
+          "ratio": 0.1228070175,
+          "unit": "ml",
+          "sourceCell": "F144",
+          "house": true,
+          "linkedPrep": "salted-caramel"
+        },
+        {
+          "name": "Peychaud's Bitters",
+          "ratio": 0.01,
+          "unit": "g",
+          "sourceCell": "F145",
+          "house": false
+        }
+      ],
+      "preps": {
+        "tonka-amaro": {
+          "id": "tonka-amaro",
+          "title": "TONKA AMARO",
+          "targetCell": "I140",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Amaro Montenegro",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "I141"
+            },
+            {
+              "name": "Grated Tonka Bean",
+              "ratio": 0.00428571429,
+              "unit": "g",
+              "sourceCell": "I142"
+            }
+          ],
+          "note": "70",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "banana-cream": {
+          "id": "banana-cream",
+          "title": "BANANA CREAM",
+          "targetCell": "L140",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 250,
+          "items": [
+            {
+              "name": "Cream",
+              "ratio": 0.8,
+              "unit": "ml",
+              "sourceCell": "L141"
+            },
+            {
+              "name": "Banana Liqueur",
+              "ratio": 0.2,
+              "unit": "ml",
+              "sourceCell": "L142"
+            }
+          ],
+          "note": "",
+          "displayOrder": 12.0,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Service Prep"
+        },
+        "salted-caramel": {
+          "id": "salted-caramel",
+          "title": "SALTED CARAMEL",
+          "targetCell": "O140",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Monin Caramel",
+              "ratio": 0.9166666667,
+              "unit": "ml",
+              "sourceCell": "O141"
+            },
+            {
+              "name": "Maldon Salt",
+              "ratio": 0.03333333333,
+              "unit": "g",
+              "sourceCell": "O142"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 0 °C, speed 2, Time 5 min.",
+          "displayOrder": 2,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        }
+      },
+      "additionalPreps": [
+        "banana-cream"
+      ],
+      "mainTarget": "F140",
+      "mainNote": ""
+    },
+    {
+      "id": "canta-la-vita",
+      "name": "CANTA LA VITA",
+      "category": "Signature Cocktail",
+      "sourceSheet": "SIGNATURE MENU",
+      "sourceRows": [
+        148,
+        159
+      ],
+      "method": "PRE-BATCH",
+      "storage": "BACK-BAR / 5 L CANISTER",
+      "defaultBatchMl": 700.0,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "700 ml batch",
+      "quickOptions": [
+        {
+          "label": "700 ml",
+          "value": 700.0
+        },
+        {
+          "label": "1400 ml",
+          "value": 1400.0
+        },
+        {
+          "label": "2100 ml",
+          "value": 2100.0
+        },
+        {
+          "label": "2800 ml",
+          "value": 2800.0
+        },
+        {
+          "label": "3500 ml",
+          "value": 3500.0
+        },
+        {
+          "label": "4200 ml",
+          "value": 4200.0
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Kaffir Lime Gin",
+          "ratio": 0.75,
+          "unit": "ml",
+          "sourceCell": "F153",
+          "house": true,
+          "linkedPrep": "kaffir-lime-gin"
+        },
+        {
+          "name": "Italicus",
+          "ratio": 0.125,
+          "unit": "ml",
+          "sourceCell": "F154",
+          "house": false
+        },
+        {
+          "name": "Amaro Montenegro",
+          "ratio": 0.05,
+          "unit": "ml",
+          "sourceCell": "F155",
+          "house": false
+        },
+        {
+          "name": "Peach Liqueur",
+          "ratio": 0.125,
+          "unit": "ml",
+          "sourceCell": "F156",
+          "house": false
+        },
+        {
+          "name": "Saline Solution",
+          "ratio": 0.002,
+          "unit": "g",
+          "sourceCell": "F157",
+          "house": false
+        }
+      ],
+      "preps": {
+        "cantaloupe-pure": {
+          "id": "cantaloupe-pure",
+          "title": "CANTALOUPE PUREE",
+          "targetCell": "I152",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Sugar",
+              "ratio": 0.5,
+              "unit": "g",
+              "sourceCell": "I153"
+            },
+            {
+              "name": "Xanthan Gum",
+              "ratio": 0.0006,
+              "unit": "g",
+              "sourceCell": "I154"
+            },
+            {
+              "name": "Malic Acid",
+              "ratio": 0.005,
+              "unit": "g",
+              "sourceCell": "I155"
+            }
+          ],
+          "note": "Combine cantaloupe with sugar (half the weight of cantaloupe). Thermomix / Mixing Temperature 0 °C, speed 6, Time 8 min.",
+          "displayOrder": 11.0,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Service Prep"
+        },
+        "kaffir-lime-gin": {
+          "id": "kaffir-lime-gin",
+          "title": "KAFFIR LIME GIN",
+          "targetCell": "L152",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Malfy Gin",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "L153"
+            },
+            {
+              "name": "Kaffir Lime",
+              "ratio": 0.01,
+              "unit": "g",
+              "sourceCell": "L154"
+            }
+          ],
+          "note": "Sous Vide 1 h / 52 °C\nFilter through coffee filter",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        }
+      },
+      "additionalPreps": [
+        "cantaloupe-pure"
+      ],
+      "mainTarget": "F152",
+      "mainNote": ""
+    },
+    {
+      "id": "house-negroni",
+      "name": "HOUSE-NEGRONI",
+      "category": "Signature Cocktail",
+      "sourceSheet": "SIGNATURE MENU",
+      "sourceRows": [
+        160,
+        170
+      ],
+      "method": "PRE-BATCH",
+      "storage": "BACK-BAR / 5 L CANISTER",
+      "defaultBatchMl": 1000.0,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "1000 ml batch",
+      "quickOptions": [
+        {
+          "label": "1000 ml",
+          "value": 1000.0
+        },
+        {
+          "label": "2000 ml",
+          "value": 2000.0
+        },
+        {
+          "label": "3000 ml",
+          "value": 3000.0
+        },
+        {
+          "label": "4000 ml",
+          "value": 4000.0
+        },
+        {
+          "label": "5000 ml",
+          "value": 5000.0
+        },
+        {
+          "label": "6000 ml",
+          "value": 6000.0
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Beefeater",
+          "ratio": 0.2857142857,
+          "unit": "ml",
+          "sourceCell": "F165",
+          "house": false
+        },
+        {
+          "name": "Campari",
+          "ratio": 0.2857142857,
+          "unit": "ml",
+          "sourceCell": "F166",
+          "house": false
+        },
+        {
+          "name": "Puntemes",
+          "ratio": 0.1428571429,
+          "unit": "ml",
+          "sourceCell": "F167",
+          "house": false
+        },
+        {
+          "name": "Cinzano Rosso",
+          "ratio": 0.1428571429,
+          "unit": "ml",
+          "sourceCell": "F168",
+          "house": false
+        }
+      ],
+      "preps": {},
+      "additionalPreps": [],
+      "mainTarget": "F164",
+      "mainNote": ""
+    },
+    {
+      "id": "alcron-martini",
+      "name": "ALCRON MARTINI",
+      "category": "Signature Cocktail",
+      "sourceSheet": "INFLUENCERS & INSERT MENU",
+      "sourceRows": [
+        1,
+        14
+      ],
+      "method": "PRE-BATCH / 1000 ml / SOUS VIDE BAG",
+      "storage": "FRIDGE / SOUS VIDE BAG",
+      "defaultBatchMl": 1000.0,
+      "batchUnit": "g",
+      "batchSetupUnit": "ml",
+      "unitLabel": "1000 g batch",
+      "quickOptions": [
+        {
+          "label": "1000 ml",
+          "value": 1000.0
+        },
+        {
+          "label": "2000 ml",
+          "value": 2000.0
+        },
+        {
+          "label": "3000 ml",
+          "value": 3000.0
+        },
+        {
+          "label": "4000 ml",
+          "value": 4000.0
+        },
+        {
+          "label": "5000 ml",
+          "value": 5000.0
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Beluga Noble",
+          "ratio": 0.542168674698795,
+          "unit": "ml",
+          "sourceCell": "F6",
+          "house": false,
+          "unitOverride": true
+        },
+        {
+          "name": "Dolin Dry",
+          "ratio": 0.240963855421687,
+          "unit": "ml",
+          "sourceCell": "F7",
+          "house": false,
+          "unitOverride": true
+        },
+        {
+          "name": "Tio Pepe Fino",
+          "ratio": 0.144578313253012,
+          "unit": "ml",
+          "sourceCell": "F8",
+          "house": false,
+          "unitOverride": true
+        },
+        {
+          "name": "Smoked Olive Brine",
+          "ratio": 0.0481927710843374,
+          "unit": "g",
+          "sourceCell": "F9",
+          "house": false
+        },
+        {
+          "name": "Filtered Water",
+          "ratio": 0.0240963855421687,
+          "unit": "g",
+          "sourceCell": "F10",
+          "house": false
+        },
+        {
+          "name": "Martini Tincture",
+          "ratio": 0.0300963855421687,
+          "unit": "g",
+          "sourceCell": "F11",
+          "house": true,
+          "linkedPrep": "martini-tincture"
+        },
+        {
+          "name": "Glycerin",
+          "ratio": 0.006,
+          "unit": "g",
+          "sourceCell": "F12",
+          "house": false
+        }
+      ],
+      "preps": {
+        "martini-tincture": {
+          "id": "martini-tincture",
+          "title": "MARTINI TINCTURE",
+          "targetCell": "I5",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Parmigiano Vodka",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "I6"
+            },
+            {
+              "name": "Fresh Rosemary",
+              "ratio": 0.015,
+              "unit": "g",
+              "sourceCell": "I7"
+            }
+          ],
+          "note": "Vacuum-seal all ingredients, leave them in the fridge for 24 hours, then strain through a coffee filter.",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "parmegiano-vodka": {
+          "id": "parmegiano-vodka",
+          "title": "PARMIGIANO VODKA",
+          "targetCell": "L5",
+          "targetUnit": "g",
+          "linkedSourceCell": "I5",
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Absolut Vodka",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "L6"
+            },
+            {
+              "name": "Parmigiano",
+              "ratio": 0.09,
+              "unit": "g",
+              "sourceCell": "L7"
+            }
+          ],
+          "note": "Sous vide 90 min, 48 °C. Freeze for 5 hours. Filter through a coffee filter, then batch.",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Sub Prep"
+        }
+      },
+      "additionalPreps": [
+        "parmegiano-vodka"
+      ],
+      "mainTarget": "F5",
+      "mainNote": ""
+    },
+    {
+      "id": "black-dot",
+      "name": "BLACK MARK",
+      "category": "Signature Cocktail",
+      "sourceSheet": "INFLUENCERS & INSERT MENU",
+      "sourceRows": [
+        15,
+        30
+      ],
+      "method": "PRE-BATCH / 1000 ml / SOUS VIDE BAG",
+      "storage": "FRIDGE / SOUS VIDE BAG",
+      "defaultBatchMl": 1000.0,
+      "batchUnit": "g",
+      "batchSetupUnit": "g",
+      "unitLabel": "1000 g batch",
+      "quickOptions": [
+        {
+          "label": "1000 g",
+          "value": 1000.0
+        },
+        {
+          "label": "2000 g",
+          "value": 2000.0
+        },
+        {
+          "label": "3000 g",
+          "value": 3000.0
+        },
+        {
+          "label": "4000 g",
+          "value": 4000.0
+        },
+        {
+          "label": "5000 g",
+          "value": 5000.0
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Mango Cordial",
+          "ratio": 0.454545454545455,
+          "unit": "g",
+          "sourceCell": "F20",
+          "house": true,
+          "linkedPrep": "mango-cordial"
+        },
+        {
+          "name": "Tequila Tarragon",
+          "ratio": 0.227272727272727,
+          "unit": "g",
+          "sourceCell": "F21",
+          "house": true,
+          "linkedPrep": "tequila-tarragon"
+        },
+        {
+          "name": "Mezcal Vida",
+          "ratio": 0.113636363636364,
+          "unit": "g",
+          "sourceCell": "F22",
+          "house": false
+        },
+        {
+          "name": "Falernum",
+          "ratio": 0.0568181818181818,
+          "unit": "g",
+          "sourceCell": "F23",
+          "house": false
+        },
+        {
+          "name": "Amontillado Sherry",
+          "ratio": 0.0795454545454545,
+          "unit": "g",
+          "sourceCell": "F24",
+          "house": false
+        },
+        {
+          "name": "Filtered Water",
+          "ratio": 0.02,
+          "unit": "g",
+          "sourceCell": "F25",
+          "house": false
+        },
+        {
+          "name": "Lemon Brine",
+          "ratio": 0.002,
+          "unit": "g",
+          "sourceCell": "F26",
+          "house": true,
+          "linkedPrep": "lemon-brine"
+        },
+        {
+          "name": "Kaffir Chilli",
+          "ratio": 0.003,
+          "unit": "g",
+          "sourceCell": "F27",
+          "house": false
+        },
+        {
+          "name": "Glycerin",
+          "ratio": 0.008,
+          "unit": "g",
+          "sourceCell": "F28",
+          "house": false
+        }
+      ],
+      "preps": {
+        "mango-cordial": {
+          "id": "mango-cordial",
+          "title": "MANGO CORDIAL",
+          "targetCell": "I19",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "CLARIFIED MANGO",
+              "ratio": 1.0,
+              "unit": "g",
+              "manualRule": "amount-equals-needed",
+              "linkedPrep": "clarified-mango"
+            },
+            {
+              "name": "White Sugar",
+              "ratio": 0.15,
+              "unit": "g",
+              "sourceCell": "I20"
+            },
+            {
+              "name": "Tartaric Acid",
+              "ratio": 0.01,
+              "unit": "g",
+              "sourceCell": "I21"
+            },
+            {
+              "name": "Malic Acid",
+              "ratio": 0.01,
+              "unit": "g",
+              "sourceCell": "I22"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 0 °C, Speed 3, Time 15 min",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "clarified-mango": {
+          "id": "clarified-mango",
+          "title": "CLARIFIED MANGO",
+          "targetCell": "L19",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Mango Puree",
+              "ratio": 1.0,
+              "unit": "g",
+              "manualRule": "amount-equals-needed"
+            },
+            {
+              "name": "Filtered Water",
+              "ratio": 0.257142857142857,
+              "unit": "g",
+              "sourceCell": "L20"
+            },
+            {
+              "name": "Pectinex SP-I",
+              "ratio": 0.00245714286,
+              "unit": "g",
+              "sourceCell": "L21"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 40 °C, Speed 3, Time 7 min.\nFilter through a coffee filter until clear.\nTime: 24 h",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Sub Prep"
+        },
+        "tequila-tarragon": {
+          "id": "tequila-tarragon",
+          "title": "TEQUILA TARRAGON",
+          "targetCell": "O19",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Olmeca Altos Blanco",
+              "ratio": 1.0,
+              "unit": "ml",
+              "manualRule": "amount-equals-needed"
+            },
+            {
+              "name": "Fresh Tarragon",
+              "ratio": 0.015,
+              "unit": "g",
+              "sourceCell": "O20"
+            }
+          ],
+          "note": "Sous Vide 1 h 52 °C Filter through a coffee filter, then batch.",
+          "displayOrder": 2,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "lemon-brine": {
+          "id": "lemon-brine",
+          "title": "LEMON BRINE",
+          "targetCell": "R19",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Filtered Water",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "R20"
+            },
+            {
+              "name": "Lemon Peel",
+              "ratio": 0.0666666666666667,
+              "unit": "g",
+              "sourceCell": "R21"
+            },
+            {
+              "name": "Maldon Salt",
+              "ratio": 0.0333333333333333,
+              "unit": "g",
+              "sourceCell": "R22"
+            }
+          ],
+          "note": "All ingredients into a vacuum bag.\nUltrasonic bath.\nRun Full Wave – 30 min / 0 °C. Then strain through a coffee filter",
+          "displayOrder": 3,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        }
+      },
+      "additionalPreps": [
+        "clarified-mango"
+      ],
+      "mainTarget": "F19",
+      "mainNote": ""
+    },
+    {
+      "id": "strawberry-leaf",
+      "name": "STRAWBERRY LEAF",
+      "category": "Insert Menu",
+      "sourceSheet": "INFLUENCERS & INSERT MENU",
+      "sourceRows": [
+        31,
+        44
+      ],
+      "method": "PRE-BATCH / 1300 ml / SOUS VIDE BAG",
+      "storage": "FRIDGE / SOUS VIDE BAG",
+      "defaultBatchMl": 700,
+      "batchUnit": "g",
+      "batchSetupUnit": "ml",
+      "unitLabel": "700 g batch",
+      "quickOptions": [
+        {
+          "label": "700 ml",
+          "value": 700
+        },
+        {
+          "label": "1400 ml",
+          "value": 1400
+        },
+        {
+          "label": "2100 ml",
+          "value": 2100
+        },
+        {
+          "label": "2800 ml",
+          "value": 2800
+        },
+        {
+          "label": "3500 ml",
+          "value": 3500
+        },
+        {
+          "label": "4200 ml",
+          "value": 4200
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Kaffir Leaf Gin",
+          "ratio": 0.304878048780488,
+          "unit": "ml",
+          "sourceCell": "F36",
+          "house": true,
+          "linkedPrep": "kaffir-lime-gin",
+          "unitOverride": true
+        },
+        {
+          "name": "Rhubarb liqueur",
+          "ratio": 0.24390243902439,
+          "unit": "ml",
+          "sourceCell": "F37",
+          "house": false,
+          "unitOverride": true
+        },
+        {
+          "name": "Strawberry Cordial",
+          "ratio": 0.365853658536585,
+          "unit": "ml",
+          "sourceCell": "F38",
+          "house": true,
+          "linkedPrep": "strawberry-cordial",
+          "unitOverride": true
+        },
+        {
+          "name": "White Chocolate",
+          "ratio": 0.0609756097560976,
+          "unit": "ml",
+          "sourceCell": "F39",
+          "house": false,
+          "unitOverride": true
+        },
+        {
+          "name": "Verjus",
+          "ratio": 0.024390243902439,
+          "unit": "ml",
+          "sourceCell": "F40",
+          "house": false,
+          "unitOverride": true
+        },
+        {
+          "name": "Lemon Brine",
+          "ratio": 0.002,
+          "unit": "g",
+          "sourceCell": "F41",
+          "house": false
+        },
+        {
+          "name": "Kaffir Chilli",
+          "ratio": 0.001,
+          "unit": "g",
+          "sourceCell": "F42",
+          "house": false
+        }
+      ],
+      "preps": {
+        "strawberry-cordial": {
+          "id": "strawberry-cordial",
+          "title": "STRAWBERRY CORDIAL",
+          "targetCell": "I35",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Clarified Strawberry",
+              "ratio": 1.0,
+              "unit": "g",
+              "manualRule": "amount-equals-needed",
+              "linkedPrep": "clarified-strawberry"
+            },
+            {
+              "name": "White Sugar",
+              "ratio": 0.057142857,
+              "unit": "g",
+              "sourceCell": "I36"
+            },
+            {
+              "name": "Tartaric Acid",
+              "ratio": 0.00714285714285714,
+              "unit": "g",
+              "sourceCell": "I37"
+            },
+            {
+              "name": "Malic Acid",
+              "ratio": 0.00714285714285714,
+              "unit": "g",
+              "sourceCell": "I38"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 0 °C, Speed 3, Time 10 min",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "clarified-strawberry": {
+          "id": "clarified-strawberry",
+          "title": "CLARIFIED STRAWBERRY",
+          "targetCell": "L35",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Strawberry Puree",
+              "ratio": 1.0,
+              "unit": "g",
+              "manualRule": "amount-equals-needed"
+            },
+            {
+              "name": "Filtered Water",
+              "ratio": 0.15,
+              "unit": "g",
+              "sourceCell": "L36"
+            },
+            {
+              "name": "Pectinex SP-I",
+              "ratio": 0.00245714286,
+              "unit": "g",
+              "sourceCell": "L37"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 40 °C, Speed 3, Time 7 min Filter through a coffee filter until clear.\tTime: 24 h",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "kaffir-lime-gin": {
+          "id": "kaffir-lime-gin",
+          "title": "KAFFIR LIME GIN",
+          "targetCell": "O35",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Beefeater",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "O36"
+            },
+            {
+              "name": "Kaffir Lime",
+              "ratio": 0.01,
+              "unit": "g",
+              "sourceCell": "O37"
+            }
+          ],
+          "note": "Sous Vide 1 h / 52 °C\nFilter through coffee filter",
+          "displayOrder": 2,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        }
+      },
+      "additionalPreps": [
+        "clarified-strawberry"
+      ],
+      "mainTarget": "F35",
+      "mainNote": "Excel note: Main batch unit is marked as ML/GRAMS; row-specific units are not fully specified in the table.",
+      "searchAliases": [
+        "STRAWBERRY LEAVES"
+      ]
+    },
+    {
+      "id": "oaxaca-colada",
+      "name": "OAXACA COLADA",
+      "category": "Insert Menu",
+      "sourceSheet": "INFLUENCERS & INSERT MENU",
+      "sourceRows": [
+        45,
+        58
+      ],
+      "method": "PRE-BATCH / FORCE CARBONATION / 700 ml PER BOTTLE",
+      "storage": "FRIDGE / 700 ml BOTTLE",
+      "defaultBatchMl": 700.0,
+      "batchUnit": "g",
+      "batchSetupUnit": "ml",
+      "unitLabel": "700 g batch",
+      "quickOptions": [
+        {
+          "label": "700 ml = 1× bottle",
+          "value": 700.0
+        },
+        {
+          "label": "1400 ml = 2× bottles",
+          "value": 1400.0
+        },
+        {
+          "label": "2100 ml = 3× bottles",
+          "value": 2100.0
+        },
+        {
+          "label": "2800 ml = 4× bottles",
+          "value": 2800.0
+        },
+        {
+          "label": "3500 ml = 5× bottles",
+          "value": 3500.0
+        },
+        {
+          "label": "4200 ml = 6× bottles",
+          "value": 4200.0
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Milk Clarification",
+          "ratio": 0.598802395209581,
+          "unit": "ml",
+          "sourceCell": "F50",
+          "house": true,
+          "linkedPrep": "milk-clarification",
+          "unitOverride": true
+        },
+        {
+          "name": "Filtered Water",
+          "ratio": 0.359281437125749,
+          "unit": "ml",
+          "sourceCell": "F51",
+          "house": false,
+          "unitOverride": true
+        },
+        {
+          "name": "Paranubes Rum",
+          "ratio": 0.0419161676646707,
+          "unit": "ml",
+          "sourceCell": "F52",
+          "house": false,
+          "unitOverride": true
+        },
+        {
+          "name": "Glycerin",
+          "ratio": 0.006,
+          "unit": "g",
+          "sourceCell": "F53",
+          "house": false
+        }
+      ],
+      "preps": {
+        "milk-clarification": {
+          "id": "milk-clarification",
+          "title": "MILK CLARIFICATION",
+          "targetCell": "I49",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Rum",
+              "ratio": 0.2678571429,
+              "unit": "ml",
+              "sourceCell": "I50"
+            },
+            {
+              "name": "Spice Pineapple",
+              "ratio": 0.238095238095238,
+              "unit": "g",
+              "sourceCell": "I51",
+              "linkedPrep": "spice-pineapple"
+            },
+            {
+              "name": "Coconut Syrup",
+              "ratio": 0.158730158730159,
+              "unit": "ml",
+              "sourceCell": "I52"
+            },
+            {
+              "name": "Lemon Juice",
+              "ratio": 0.19047619047619,
+              "unit": "ml",
+              "sourceCell": "I53"
+            },
+            {
+              "name": "Sherry Cream",
+              "ratio": 0.0317460317460317,
+              "unit": "ml",
+              "sourceCell": "I54"
+            },
+            {
+              "name": "Full Fat Milk",
+              "ratio": 0.158730158730159,
+              "unit": "ml",
+              "sourceCell": "I55"
+            }
+          ],
+          "note": "Combine all ingredients. Add Milk. Rest 10 min. Filter through Superbag until clear.",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "spice-pineapple": {
+          "id": "spice-pineapple",
+          "title": "SPICE PINEAPPLE",
+          "targetCell": "L49",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Pineapple Puree",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "L50"
+            },
+            {
+              "name": "Madras Spice Mix",
+              "ratio": 0.0290322580645161,
+              "unit": "g",
+              "sourceCell": "L51",
+              "linkedPrep": "madras-spice-mix"
+            },
+            {
+              "name": "Maldon Salt",
+              "ratio": 0.00516129032258065,
+              "unit": "g",
+              "sourceCell": "L52"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 0 °C, Speed 3, Time 2 min",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "madras-spice-mix": {
+          "id": "madras-spice-mix",
+          "title": "MADRAS SPICE MIX",
+          "targetCell": "O49",
+          "targetUnit": "g",
+          "linkedSourceCell": "L51",
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Madras Powder",
+              "ratio": 0.6,
+              "unit": "g",
+              "sourceCell": "O50"
+            },
+            {
+              "name": "Ginger Powder",
+              "ratio": 0.3,
+              "unit": "g",
+              "sourceCell": "O51"
+            }
+          ],
+          "note": "Combine all ingredients",
+          "displayOrder": 2,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        }
+      },
+      "additionalPreps": [
+        "spice-pineapple",
+        "madras-spice-mix"
+      ],
+      "mainTarget": "F49",
+      "mainNote": ""
+    },
+    {
+      "id": "grate-apricot",
+      "name": "GRATE APRICOT",
+      "category": "Restaurant Menu",
+      "sourceSheet": "RESTAURANT MENU",
+      "sourceRows": [
+        1,
+        15
+      ],
+      "method": "PRE-BATCH / 700 ml / SOUS VIDE BAG",
+      "storage": "FRIDGE / SOUS VIDE BAG",
+      "defaultBatchMl": 1000,
+      "batchUnit": "g",
+      "batchSetupUnit": "ml",
+      "unitLabel": "1000 g batch",
+      "quickOptions": [
+        {
+          "label": "1000 ml",
+          "value": 1000
+        },
+        {
+          "label": "2000 ml",
+          "value": 2000
+        },
+        {
+          "label": "3000 ml",
+          "value": 3000
+        },
+        {
+          "label": "4000 ml",
+          "value": 4000
+        },
+        {
+          "label": "5000 ml",
+          "value": 5000
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Parmigiano Gin",
+          "ratio": 0.227790432801822,
+          "unit": "g",
+          "sourceCell": "F6",
+          "unitOverride": true,
+          "house": true,
+          "linkedPrep": "parmegiano-gin"
+        },
+        {
+          "name": "Tomato Cordial",
+          "ratio": 0.455580865603645,
+          "unit": "g",
+          "sourceCell": "F7",
+          "unitOverride": true,
+          "house": true,
+          "linkedPrep": "2-tomato-cordial"
+        },
+        {
+          "name": "Olive Oil Vermouth",
+          "ratio": 0.227790432801822,
+          "unit": "g",
+          "sourceCell": "F8",
+          "unitOverride": true,
+          "house": true,
+          "linkedPrep": "olive-oil-vermouth"
+        },
+        {
+          "name": "Apricot Brandy",
+          "ratio": 0.0455580865603645,
+          "unit": "g",
+          "sourceCell": "F9",
+          "unitOverride": true,
+          "house": false
+        },
+        {
+          "name": "Muyu Vetiver",
+          "ratio": 0.0113895216400911,
+          "unit": "g",
+          "sourceCell": "F10",
+          "unitOverride": true,
+          "house": false
+        },
+        {
+          "name": "Lemon Brine",
+          "ratio": 0.00227790432801822,
+          "unit": "g",
+          "sourceCell": "F11",
+          "unitOverride": true,
+          "house": true,
+          "linkedPrep": "lemon-brine"
+        },
+        {
+          "name": "Glycerin",
+          "ratio": 0.00911161731207289,
+          "unit": "g",
+          "sourceCell": "F12",
+          "unitOverride": true,
+          "house": false
+        }
+      ],
+      "preps": {
+        "parmegiano-gin": {
+          "id": "parmegiano-gin",
+          "title": "Parmigiano Gin",
+          "targetCell": "I5",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Gin",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "I6"
+            },
+            {
+              "name": "Parmigiano",
+              "ratio": 0.08,
+              "unit": "g",
+              "sourceCell": "I7"
+            }
+          ],
+          "note": "Sous vide 90 min, 48 °C. Freeze for 5 hours. Filter through a coffee filter, then batch.",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "olive-oil-vermouth": {
+          "id": "olive-oil-vermouth",
+          "title": "Olive Oil Vermouth",
+          "targetCell": "L5",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Dolin Dry",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "L6"
+            },
+            {
+              "name": "Olive Oil",
+              "ratio": 0.1,
+              "unit": "g",
+              "sourceCell": "L7"
+            }
+          ],
+          "note": "Sous vide 120 min, 48 °C. Freeze for 1 hour. Filter through a coffee filter, then batch.",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "2-tomato-cordial": {
+          "id": "2-tomato-cordial",
+          "title": "#2 TOMATO CORDIAL",
+          "targetCell": "O5",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Tomato Water",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "O6",
+              "linkedPrep": "1-tomato-water"
+            },
+            {
+              "name": "Sugar",
+              "ratio": 0.143333333333333,
+              "unit": "g",
+              "sourceCell": "O7"
+            },
+            {
+              "name": "Champagne Acid",
+              "ratio": 0.05333333333,
+              "unit": "g",
+              "sourceCell": "O8",
+              "linkedPrep": "champagne-acid"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 0 °C, Speed 1, Time 10 min / After filtering through a cheesecloth.",
+          "displayOrder": 2,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "lemon-brine": {
+          "id": "lemon-brine",
+          "title": "LEMON BRINE",
+          "targetCell": "R5",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Filtered Water",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "R6"
+            },
+            {
+              "name": "Lemon Peel",
+              "ratio": 0.0666666666666667,
+              "unit": "g",
+              "sourceCell": "R7"
+            },
+            {
+              "name": "Maldon Salt",
+              "ratio": 0.0333333333333333,
+              "unit": "g",
+              "sourceCell": "R8"
+            }
+          ],
+          "note": "All ingredients into a vacuum bag.\nUltrasonic bath.\nRun Full Wave 30 min / 0 °C. Then strain through a coffee filter",
+          "displayOrder": 3,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "1-tomato-water": {
+          "id": "1-tomato-water",
+          "title": "#1 TOMATO WATER",
+          "targetCell": "O19",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "TOMATO",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "O20",
+              "sourceSheet": "SIGNATURE MENU"
+            },
+            {
+              "name": "MALDON SALT",
+              "ratio": 0.0012,
+              "unit": "g",
+              "sourceCell": "O21",
+              "sourceSheet": "SIGNATURE MENU"
+            }
+          ],
+          "note": "Blending Temperature 0 °C, Speed 10, Time 2 min, Filter through Superbag until clear.",
+          "displayOrder": 2.1,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Sub Prep",
+          "sourceSheet": "SIGNATURE MENU"
+        },
+        "champagne-acid": {
+          "id": "champagne-acid",
+          "title": "CHAMPAGNE ACID",
+          "targetCell": "B16",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Filtered Water",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "B17",
+              "sourceSheet": "RECIPES ETC."
+            },
+            {
+              "name": "Lactic Acid",
+              "ratio": 0.04,
+              "unit": "g",
+              "sourceCell": "B18",
+              "sourceSheet": "RECIPES ETC."
+            },
+            {
+              "name": "Tartaric Acid",
+              "ratio": 0.04,
+              "unit": "g",
+              "sourceCell": "B19",
+              "sourceSheet": "RECIPES ETC."
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 0 °C, Speed 1, Time 10 min",
+          "displayOrder": 2.1,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Sub Prep",
+          "sourceSheet": "RECIPES ETC."
+        }
+      },
+      "additionalPreps": [
+        "1-tomato-water",
+        "champagne-acid"
+      ],
+      "mainTarget": "F5",
+      "mainNote": ""
+    },
+    {
+      "id": "hay",
+      "name": "HAY !",
+      "category": "Restaurant Menu",
+      "sourceSheet": "RESTAURANT MENU",
+      "sourceRows": [
+        16,
+        55
+      ],
+      "method": "PRE-BATCH",
+      "storage": "FRIDGE / 700 ML BOTTLE",
+      "defaultBatchMl": 700.0,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "700 ml batch",
+      "quickOptions": [
+        {
+          "label": "700 ml = 1× bottle",
+          "value": 700.0
+        },
+        {
+          "label": "1400 ml = 2× bottles",
+          "value": 1400.0
+        },
+        {
+          "label": "2100 ml = 3× bottles",
+          "value": 2100.0
+        },
+        {
+          "label": "2800 ml = 4× bottles",
+          "value": 2800.0
+        },
+        {
+          "label": "3500 ml = 5× bottles",
+          "value": 3500.0
+        },
+        {
+          "label": "4200 ml = 6× bottles",
+          "value": 4200.0
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Hennessy V.S",
+          "ratio": 0.0847457627118644,
+          "unit": "ml",
+          "sourceCell": "F21",
+          "unitOverride": true,
+          "house": false
+        },
+        {
+          "name": "Hay Whiskey",
+          "ratio": 0.169491525423729,
+          "unit": "ml",
+          "sourceCell": "F22",
+          "unitOverride": true,
+          "house": true,
+          "linkedPrep": "roasted-hay-whiskey"
+        },
+        {
+          "name": "Monin Vanilla",
+          "ratio": 0.0847457627118644,
+          "unit": "ml",
+          "sourceCell": "F23",
+          "unitOverride": true,
+          "house": false
+        },
+        {
+          "name": "Lustau Sherry Cream",
+          "ratio": 0.0847457627118644,
+          "unit": "ml",
+          "sourceCell": "F24",
+          "unitOverride": true,
+          "house": false
+        },
+        {
+          "name": "Orange Verjus",
+          "ratio": 0.0677966101694915,
+          "unit": "ml",
+          "sourceCell": "F25",
+          "unitOverride": true,
+          "house": true,
+          "linkedPrep": "orange-verjus"
+        },
+        {
+          "name": "Glycerin",
+          "ratio": 0.00227790432801822,
+          "unit": "g",
+          "sourceCell": "F26",
+          "unitOverride": true,
+          "house": false
+        },
+        {
+          "name": "Lemon Brine",
+          "ratio": 0.00911161731207289,
+          "unit": "g",
+          "sourceCell": "F27",
+          "unitOverride": true,
+          "house": true,
+          "linkedPrep": "lemon-brine"
+        },
+        {
+          "name": "Filtered Water",
+          "ratio": 0.508474576271186,
+          "unit": "ml",
+          "sourceCell": "F28",
+          "unitOverride": true,
+          "house": false
+        }
+      ],
+      "preps": {
+        "roasted-hay-whiskey": {
+          "id": "roasted-hay-whiskey",
+          "title": "Roasted Hay Whiskey",
+          "targetCell": "I20",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Glenmorangie 12",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "I21"
+            },
+            {
+              "name": "Hay",
+              "ratio": 0.01,
+              "unit": "g",
+              "sourceCell": "I22"
+            }
+          ],
+          "note": "Roast the hay at 180 °C, 0% humidity, lowest fan setting, for 10 minutes.\nAfter roasting, place the hay and whisky into a vacuum bag.\nCold infuse for 2 hours, then strain through a coffee filter.",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "orange-verjus": {
+          "id": "orange-verjus",
+          "title": "Orange Verjus",
+          "targetCell": "L20",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Verjus",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "L21"
+            },
+            {
+              "name": "Orange Peel",
+              "ratio": 0.075,
+              "unit": "g",
+              "sourceCell": "L22"
+            }
+          ],
+          "note": "Vacuum-seal all ingredients, leave them in the fridge for 24 hours, then strain through a coffee filter.",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "lemon-brine": {
+          "id": "lemon-brine",
+          "title": "LEMON BRINE",
+          "targetCell": "O20",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Filtered Water",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "O21"
+            },
+            {
+              "name": "Lemon Peel",
+              "ratio": 0.0666666666666667,
+              "unit": "g",
+              "sourceCell": "O22"
+            },
+            {
+              "name": "Maldon Salt",
+              "ratio": 0.0333333333333333,
+              "unit": "g",
+              "sourceCell": "O23"
+            }
+          ],
+          "note": "All ingredients into a vacuum bag.\nUltrasonic bath.\nRun Full Wave 30 min / 0 °C. Then strain through a coffee filter",
+          "displayOrder": 2,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        }
+      },
+      "additionalPreps": [],
+      "mainTarget": "F20",
+      "mainNote": ""
+    },
+    {
+      "id": "bohyna",
+      "name": "BOHYNA",
+      "category": "Non Alcoholic",
+      "sourceSheet": "NON-ALCOHOLIC ",
+      "sourceRows": [
+        1,
+        16
+      ],
+      "method": "PRE-BATCH / FORCE CARBONATION / 700 ml PER BOTTLE",
+      "storage": "FRIDGE / 700 ML BOTTLE",
+      "defaultBatchMl": 700,
+      "batchUnit": "g",
+      "batchSetupUnit": "ml",
+      "unitLabel": "700 g batch",
+      "quickOptions": [
+        {
+          "label": "700 ml = 1× bottle",
+          "value": 700
+        },
+        {
+          "label": "1400 ml = 2× bottles",
+          "value": 1400
+        },
+        {
+          "label": "2100 ml = 3× bottles",
+          "value": 2100
+        },
+        {
+          "label": "2800 ml = 4× bottles",
+          "value": 2800
+        },
+        {
+          "label": "3500 ml = 5× bottles",
+          "value": 3500
+        },
+        {
+          "label": "4200 ml = 6× bottles",
+          "value": 4200
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Sober Whisky",
+          "ratio": 0.212765957446809,
+          "unit": "ml",
+          "sourceCell": "F6",
+          "house": false,
+          "unitOverride": true
+        },
+        {
+          "name": "Martini Vibrante",
+          "ratio": 0.425531914893617,
+          "unit": "ml",
+          "sourceCell": "F7",
+          "house": false,
+          "unitOverride": true
+        },
+        {
+          "name": "Nocino Ruby",
+          "ratio": 0.212765957446809,
+          "unit": "ml",
+          "sourceCell": "F8",
+          "house": false,
+          "unitOverride": true
+        },
+        {
+          "name": "Stavek Verjus",
+          "ratio": 0.142857142857143,
+          "unit": "g",
+          "sourceCell": "F9",
+          "house": false
+        },
+        {
+          "name": "Salted Strawberry",
+          "ratio": 0.0425531914893617,
+          "unit": "g",
+          "sourceCell": "F10",
+          "house": true,
+          "linkedPrep": "2-lacto-sirup"
+        },
+        {
+          "name": "Kaffir Chilli",
+          "ratio": 0.006926210955183356,
+          "unit": "g",
+          "sourceCell": "F11",
+          "house": false
+        }
+      ],
+      "preps": {
+        "2-lacto-sirup": {
+          "id": "2-lacto-sirup",
+          "title": "Salted Strawberry",
+          "targetCell": "I5",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Lacto Strawberry",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "I6"
+            },
+            {
+              "name": "Glycerin",
+              "ratio": 0.006,
+              "unit": "g",
+              "sourceCell": "I7"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 60 °C, speed 1, Time 8 min.",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "1-lacto-fermentation": {
+          "id": "1-lacto-fermentation",
+          "title": "1#LACTO FERMENTATION",
+          "targetCell": "L5",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Strawberry",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "L6"
+            },
+            {
+              "name": "Salt",
+              "ratio": 0.025,
+              "unit": "g",
+              "sourceCell": "L7"
+            }
+          ],
+          "note": "Place all ingredients into a sous-vide bag and seal.\nLeave at room temperature for 72 hours.",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Sub Prep"
+        }
+      },
+      "additionalPreps": [
+        "2-lacto-sirup",
+        "1-lacto-fermentation"
+      ],
+      "mainTarget": "F5",
+      "mainNote": ""
+    },
+    {
+      "id": "almost-negroni",
+      "name": "ALMOST NEGRONI",
+      "category": "Non Alcoholic",
+      "sourceSheet": "NON-ALCOHOLIC ",
+      "sourceRows": [
+        17,
+        27
+      ],
+      "method": "PRE-BATCH / 700 ml / SOUS VIDE BAG",
+      "storage": "FRIDGE / SOUS VIDE BAG 700 ml",
+      "defaultBatchMl": 700.0,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "700 ml batch",
+      "quickOptions": [
+        {
+          "label": "700 ml",
+          "value": 700.0
+        },
+        {
+          "label": "1400 ml",
+          "value": 1400.0
+        },
+        {
+          "label": "2100 ml",
+          "value": 2100.0
+        },
+        {
+          "label": "2800 ml",
+          "value": 2800.0
+        },
+        {
+          "label": "3500 ml",
+          "value": 3500.0
+        },
+        {
+          "label": "4200 ml",
+          "value": 4200.0
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Martini Vibrante",
+          "ratio": 0.382608695652174,
+          "unit": "ml",
+          "sourceCell": "F22",
+          "house": false
+        },
+        {
+          "name": "Nocino Ruby",
+          "ratio": 0.217391304347826,
+          "unit": "ml",
+          "sourceCell": "F23",
+          "house": false
+        },
+        {
+          "name": "Beefeater 0,0%",
+          "ratio": 0.269565217391304,
+          "unit": "ml",
+          "sourceCell": "F24",
+          "house": false
+        },
+        {
+          "name": "Sober Bitter",
+          "ratio": 0.130434782608696,
+          "unit": "ml",
+          "sourceCell": "F25",
+          "house": false
+        }
+      ],
+      "preps": {},
+      "additionalPreps": [],
+      "mainTarget": "F21",
+      "mainNote": ""
+    },
+    {
+      "id": "n-a-bloom-berry",
+      "name": "BLOOM BERRY",
+      "category": "Non Alcoholic",
+      "sourceSheet": "NON-ALCOHOLIC ",
+      "sourceRows": [
+        28,
+        38
+      ],
+      "method": "PRE-BATCH / 1300 ml",
+      "storage": "FRIDGE / SOUS VIDE BAG",
+      "defaultBatchMl": 1300.0,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "1300 ml batch",
+      "quickOptions": [
+        {
+          "label": "1300 ml",
+          "value": 1300.0
+        },
+        {
+          "label": "2600 ml",
+          "value": 2600.0
+        },
+        {
+          "label": "3900 ml",
+          "value": 3900.0
+        },
+        {
+          "label": "5200 ml",
+          "value": 5200.0
+        },
+        {
+          "label": "6500 ml",
+          "value": 6500.0
+        },
+        {
+          "label": "7800 ml",
+          "value": 7800.0
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Beefeater 0,0%",
+          "ratio": 0.3636363636,
+          "unit": "ml",
+          "sourceCell": "F33",
+          "house": false
+        },
+        {
+          "name": "Chamomile Cordial",
+          "ratio": 0.3636363636,
+          "unit": "ml",
+          "sourceCell": "F34",
+          "house": true,
+          "linkedPrep": "2-chamomile-cordial"
+        },
+        {
+          "name": "Sober Bitter",
+          "ratio": 0.2727272727,
+          "unit": "ml",
+          "sourceCell": "F35",
+          "house": false
+        },
+        {
+          "name": "Saline Solution",
+          "ratio": 0.002,
+          "unit": "g",
+          "sourceCell": "F36",
+          "house": false
+        }
+      ],
+      "preps": {
+        "2-chamomile-cordial": {
+          "id": "2-chamomile-cordial",
+          "title": "2# CHAMOMILE CORDIAL",
+          "targetCell": "I32",
+          "targetUnit": "ml",
+          "linkedSourceCell": "F34",
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Chamomile Tea",
+              "ratio": 0.8333333333,
+              "unit": "ml",
+              "sourceCell": "I33",
+              "linkedPrep": "1-chamomile-tea"
+            },
+            {
+              "name": "White Sugar",
+              "ratio": 0.3333333333,
+              "unit": "ml",
+              "sourceCell": "I34"
+            },
+            {
+              "name": "Champagne Acid",
+              "ratio": 0.08333333333,
+              "unit": "g",
+              "sourceCell": "I35",
+              "linkedPrep": "champagne-acid"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 0 °C, speed 2, Time 5 min.",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "1-chamomile-tea": {
+          "id": "1-chamomile-tea",
+          "title": "1# CHAMOMILE TEA",
+          "targetCell": "L32",
+          "targetUnit": "ml",
+          "linkedSourceCell": "I33",
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Filtered Water",
+              "ratio": 1.0,
+              "unit": "ml",
+              "sourceCell": "L33"
+            },
+            {
+              "name": "Chamomile Tea",
+              "ratio": 0.03333333333,
+              "unit": "g",
+              "sourceCell": "L34"
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 80 °C, speed 1, Time 8 min.",
+          "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        },
+        "champagne-acid": {
+          "id": "champagne-acid",
+          "title": "CHAMPAGNE ACID",
+          "targetCell": "B16",
+          "targetUnit": "ml",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Filtered Water",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "B17",
+              "sourceSheet": "RECIPES ETC."
+            },
+            {
+              "name": "Lactic Acid",
+              "ratio": 0.04,
+              "unit": "g",
+              "sourceCell": "B18",
+              "sourceSheet": "RECIPES ETC."
+            },
+            {
+              "name": "Tartaric Acid",
+              "ratio": 0.04,
+              "unit": "g",
+              "sourceCell": "B19",
+              "sourceSheet": "RECIPES ETC."
+            }
+          ],
+          "note": "Thermomix / Mixing Temperature 0 °C, Speed 1, Time 10 min",
+          "displayOrder": 1.1,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Sub Prep",
+          "sourceSheet": "RECIPES ETC."
+        }
+      },
+      "additionalPreps": [
+        "1-chamomile-tea",
+        "champagne-acid"
+      ],
+      "mainTarget": "F32",
+      "mainNote": "",
+      "searchAliases": [
+        "N/A Bloom Berry"
+      ]
+    },
+    {
+      "id": "passion-grove",
+      "name": "PASSION GROVE",
+      "category": "Non Alcoholic",
+      "sourceSheet": "NON-ALCOHOLIC ",
+      "sourceRows": [
+        39,
+        72
+      ],
+      "method": "PRE-BATCH / 1300 ml",
+      "storage": "FRIDGE / SOUS VIDE BAG",
+      "defaultBatchMl": 1300.0,
+      "batchUnit": "ml",
+      "batchSetupUnit": "ml",
+      "unitLabel": "1300 ml batch",
+      "quickOptions": [
+        {
+          "label": "1300 ml",
+          "value": 1300.0
+        },
+        {
+          "label": "2600 ml",
+          "value": 2600.0
+        },
+        {
+          "label": "3900 ml",
+          "value": 3900.0
+        },
+        {
+          "label": "5200 ml",
+          "value": 5200.0
+        },
+        {
+          "label": "6500 ml",
+          "value": 6500.0
+        },
+        {
+          "label": "7800 ml",
+          "value": 7800.0
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Beefeater 0,0%",
+          "ratio": 0.428571428571429,
+          "unit": "ml",
+          "sourceCell": "F44",
+          "house": false
+        },
+        {
+          "name": "Clarified Passion Fruit",
+          "ratio": 0.571428571428571,
+          "unit": "ml",
+          "sourceCell": "F45",
+          "house": true,
+          "linkedPrep": "clarified-passionfruit"
+        },
+        {
+          "name": "Glycerin",
+          "ratio": 0.00911161731207289,
+          "unit": "ml",
+          "sourceCell": "F46",
+          "house": false
+        }
+      ],
+      "preps": {
+        "clarified-passionfruit": {
+          "id": "clarified-passionfruit",
+          "title": "CLARIFIED PASSIONFRUIT",
+          "targetCell": "I43",
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 1000,
+          "items": [
+            {
+              "name": "Passion Fruit Puree",
+              "ratio": 1.0,
+              "unit": "g",
+              "sourceCell": "I44"
+            },
+            {
+              "name": "Filtered Water",
+              "ratio": 0.09,
+              "unit": "g",
+              "sourceCell": "I45"
+            },
+            {
+              "name": "Pectinex SP-I",
+              "ratio": 0.00245714286,
+              "unit": "g",
+              "sourceCell": "I46"
+            }
+          ],
+          "note": "",
+          "displayOrder": 0,
+          "hideCustomAmount": false,
+          "asNeeded": false
+        }
+      },
+      "additionalPreps": [],
+      "mainTarget": "F43",
+      "mainNote": ""
+    }
+  ]
+}</script>
+<script>
+const appData = JSON.parse(document.getElementById('initial-data').textContent);
+const STORAGE_KEY = 'batchCalculatorState:v1';
+let currentRecipe = null;
+let currentTargetMl = 500;
+let prepOverrides = {};
+let savedState = loadSavedState();
+const sortedRecipeList = [...appData.recipes].sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), undefined, {sensitivity: 'base'}));
+
+const batchSelect = document.getElementById('batchSelect');
+const customBatch = document.getElementById('customBatch');
+const quickBatchGrid = document.getElementById('quickBatchGrid');
+
+function fmt(num, unit){
+  const n = Number(num || 0);
+  const rounded = Math.abs(n) < 10 ? Math.round(n * 10) / 10 : Math.round(n);
+  const value = Number.isInteger(rounded) ? rounded : rounded.toFixed(1);
+  return `${value} ${unit || ''}`.trim();
+}
+function fmtMainAmountNumber(num){
+  const n = Number(num || 0);
+  const rounded = Math.round(n * 100) / 100;
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+}
+function fmtBatchInputNumber(num){
+  const n = Number(num || 0);
+  const rounded = Math.round(n * 100) / 100;
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+}
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[ch]));
+}
+function loadSavedState(){
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {recipes:{}};
+  } catch (err) {
+    return {recipes:{}};
+  }
+}
+function saveState(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(savedState));
+}
+function recipeKey(recipe){
+  return recipe.id || safeId(recipe.name || 'recipe').toLowerCase();
+}
+function getRecipeState(recipe){
+  return savedState.recipes[recipeKey(recipe)] || {};
+}
+function updateRecipeState(recipe, patch){
+  const key = recipeKey(recipe);
+  savedState.recipes[key] = {...(savedState.recipes[key] || {}), ...patch};
+  saveState();
+}
+function saveCurrentRecipeState(){
+  if (!currentRecipe) return;
+  updateRecipeState(currentRecipe, {
+    targetMl: getTarget(),
+    prepOverrides: {...prepOverrides}
+  });
+}
+function getRecipeStatus(recipe){
+  return getRecipeState(recipe).status || 'closed';
+}
+function setRecipeStatus(recipe, status){
+  updateRecipeState(recipe, {status});
+  renderHome();
+}
+function getTarget(){ return Math.max(1, Number(currentTargetMl) || (currentRecipe?.defaultBatchMl || 500)); }
+function amount(item, baseAmount=null){ const base = baseAmount === null ? getTarget() : baseAmount; return base * Number(item.ratio || 0); }
+function isPrepOnly(recipe=currentRecipe){
+  return !recipe?.mainTarget && !(recipe?.ingredients || []).length;
+}
+function getBatchSetupUnit(recipe=currentRecipe){
+  return recipe?.batchSetupUnit || recipe?.batchUnit || 'ml';
+}
+function getRecipeProcess(recipe){
+  if (recipe.process) return recipe.process;
+  const method = String(recipe.method || '').toLowerCase();
+  if (method.includes('sous')) return 'Sous Vide';
+  if (method.includes('carbon')) return 'Carbonated';
+  return 'Prep';
+}
+function parseAmountInput(value){
+  const normalized = String(value ?? '').trim().replace(',', '.');
+  if (!normalized) return null;
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+function getOverrideAmount(prepId){
+  const raw = prepOverrides[prepId];
+  if (raw === undefined || raw === '') return null;
+  const parsed = parseAmountInput(raw);
+  return Number.isFinite(parsed) ? Math.max(0, parsed) : 0;
+}
+function getActiveNeeded(prepId, calculatedNeeded){
+  const override = getOverrideAmount(prepId);
+  return override === null ? calculatedNeeded : override;
+}
+function sortedRecipes(){
+  return sortedRecipeList;
+}
+function updateCloseButtonLabel(label){
+  const button = document.getElementById('clearAllButton');
+  if (button) button.textContent = label;
+}
+function recipeCategoryGroup(recipe){
+  if (recipe.category === 'Insert Menu') return 'insert';
+  if (recipe.category === 'Restaurant Menu') return 'restaurant';
+  if (recipe.category === 'Non Alcoholic') return 'non-alcoholic';
+  return 'signature';
+}
+function recipeDisplayCategory(recipe){
+  if (recipe.category === 'Insert Menu') return 'Insert Cocktail';
+  if (recipe.category === 'Restaurant Menu') return 'Restaurant Cocktail';
+  if (recipe.category === 'Non Alcoholic') return 'Non Alcoholic';
+  return 'Signature Cocktail';
+}
+function recipeOpenedAt(recipe){
+  return Number(getRecipeState(recipe).openedAt || 0);
+}
+function sortedOpenRecipes(recipes){
+  return [...recipes].sort((a, b) => {
+    const openedDiff = recipeOpenedAt(b) - recipeOpenedAt(a);
+    if (openedDiff) return openedDiff;
+    return String(a.name || '').localeCompare(String(b.name || ''), undefined, {sensitivity: 'base'});
+  });
+}
+function createRecipeCard(r){
+  const status = getRecipeStatus(r);
+  const card = document.createElement('article');
+  card.className = 'recipe-card';
+  card.dataset.search = `${r.name || ''} ${(r.searchAliases || []).join(' ')} ${r.category || ''} ${recipeDisplayCategory(r)} ${r.method || ''} ${status}`.toLowerCase();
+  card.dataset.group = status === 'open' ? 'open' : recipeCategoryGroup(r);
+  card.innerHTML = `
+    <button class="recipe-btn" type="button">
+      <div>
+        <div class="recipe-title">${escapeHtml(r.name)}</div>
+        <div class="recipe-meta">${escapeHtml(recipeDisplayCategory(r))}</div>
+      </div>
+    </button>
+    <span class="recipe-status-pill is-${status}" aria-label="${escapeHtml(r.name)} status">${status}</span>`;
+  card.querySelector('.recipe-btn').onclick = () => openRecipe(r);
+  return card;
+}
+
+function renderHome(){
+  const root = document.getElementById('recipeList');
+  root.innerHTML = '';
+  root.className = 'recipe-sections';
+  const recipes = sortedRecipes();
+  const openRecipes = sortedOpenRecipes(recipes.filter(r => getRecipeStatus(r) === 'open'));
+  const signatureRecipes = recipes.filter(r => getRecipeStatus(r) !== 'open' && recipeCategoryGroup(r) === 'signature');
+  const insertRecipes = recipes.filter(r => getRecipeStatus(r) !== 'open' && recipeCategoryGroup(r) === 'insert');
+  const restaurantRecipes = recipes.filter(r => getRecipeStatus(r) !== 'open' && recipeCategoryGroup(r) === 'restaurant');
+  const nonAlcoholicRecipes = recipes.filter(r => getRecipeStatus(r) !== 'open' && recipeCategoryGroup(r) === 'non-alcoholic');
+  [
+    {key: 'open', recipes: openRecipes},
+    {key: 'signature', recipes: signatureRecipes},
+    {key: 'insert', recipes: insertRecipes},
+    {key: 'restaurant', recipes: restaurantRecipes},
+    {key: 'non-alcoholic', recipes: nonAlcoholicRecipes}
+  ].forEach(section => {
+    if (!section.recipes.length) return;
+    const sectionEl = document.createElement('section');
+    sectionEl.className = 'recipe-section';
+    sectionEl.dataset.group = section.key;
+    sectionEl.innerHTML = '<div class="recipe-section-list"></div>';
+    const list = sectionEl.querySelector('.recipe-section-list');
+    section.recipes.forEach(r => list.appendChild(createRecipeCard(r)));
+    root.appendChild(sectionEl);
+  });
+  filterHome();
+}
+function filterHome(){
+  const q = (document.getElementById('homeSearch').value || '').toLowerCase().trim();
+  let shown = 0;
+  const visibleGroups = new Set();
+  document.querySelectorAll('.recipe-card').forEach(card => {
+    const visible = !q || card.dataset.search.includes(q);
+    card.style.display = visible ? 'grid' : 'none';
+    if (visible) shown += 1;
+    if (visible) visibleGroups.add(card.dataset.group);
+  });
+  document.querySelectorAll('.recipe-section').forEach(section => {
+    section.classList.toggle('hidden', !visibleGroups.has(section.dataset.group));
+  });
+  document.getElementById('homeEmpty').classList.toggle('hidden', shown !== 0);
+}
+function clearRecipeSearch(){
+  const search = document.getElementById('homeSearch');
+  if (!search) return;
+  search.value = '';
+  filterHome();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function clearCurrentRecipe(){
+  if (!currentRecipe) {
+    showHome();
+    return;
+  }
+  currentTargetMl = currentRecipe.defaultBatchMl || 500;
+  prepOverrides = {};
+  updateRecipeState(currentRecipe, {
+    targetMl: currentTargetMl,
+    prepOverrides: {},
+    status: 'closed',
+    openedAt: 0
+  });
+  showHome({clearSearch:true});
+}
+function showHome(options={}){
+  if (options.clearSearch) {
+    const search = document.getElementById('homeSearch');
+    if (search) search.value = '';
+  }
+  renderHome();
+  updateCloseButtonLabel('Close All');
+  document.body.classList.add('home-active');
+  document.getElementById('homeView').classList.remove('hidden');
+  document.getElementById('recipeView').classList.add('hidden');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function openRecipe(recipe){
+  currentRecipe = recipe;
+  const state = getRecipeState(currentRecipe);
+  prepOverrides = {...(state.prepOverrides || {})};
+  currentTargetMl = state.targetMl || currentRecipe.defaultBatchMl || 500;
+  updateRecipeState(currentRecipe, {status: 'open', openedAt: Date.now()});
+  document.body.classList.remove('home-active');
+  document.getElementById('homeView').classList.add('hidden');
+  document.getElementById('recipeView').classList.remove('hidden');
+  renderRecipe();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function renderBatchOptions(){
+  batchSelect.innerHTML = '';
+  quickBatchGrid.innerHTML = '';
+  const setupUnit = getBatchSetupUnit();
+  (currentRecipe.quickOptions || [{label:`500 ${setupUnit}`, value:500}]).forEach(opt => {
+    const el = document.createElement('option');
+    el.value = opt.value;
+    el.textContent = opt.label;
+    batchSelect.appendChild(el);
+
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'batch-chip';
+    chip.dataset.value = opt.value;
+    chip.textContent = opt.label;
+    chip.onclick = () => setBatchAmount(Number(opt.value), true);
+    quickBatchGrid.appendChild(chip);
+  });
+  syncBatchControls(true);
+}
+function syncBatchControls(updateCustom=false){
+  const target = getTarget();
+  const hasPreset = [...batchSelect.options].some(opt => Number(opt.value) === target);
+  batchSelect.value = hasPreset ? String(target) : '';
+  if (updateCustom) customBatch.value = fmtBatchInputNumber(target);
+  document.querySelectorAll('.batch-chip').forEach(chip => {
+    chip.classList.toggle('is-active', Number(chip.dataset.value) === target);
+  });
+  const customLabel = document.getElementById('customBatchLabel');
+  if (customLabel) customLabel.textContent = 'Custom Batch';
+}
+function setBatchAmount(value, updateCustom){
+  currentTargetMl = Math.max(1, Number(value) || (currentRecipe?.defaultBatchMl || 500));
+  prepOverrides = {};
+  syncBatchControls(updateCustom);
+  renderIngredients();
+  renderPreps();
+  saveCurrentRecipeState();
+}
+function renderRecipe(){
+  document.getElementById('recipeTitle').textContent = currentRecipe.name;
+  const prepOnly = isPrepOnly(currentRecipe);
+  document.getElementById('batchSetupCard').classList.toggle('hidden', prepOnly);
+  document.getElementById('mainBatchCard').classList.toggle('hidden', prepOnly);
+  if (!prepOnly) renderBatchOptions();
+  document.getElementById('methodValue').textContent = currentRecipe.method || '—';
+  document.getElementById('storageValue').textContent = currentRecipe.storage || '—';
+  renderIngredients();
+  renderPreps();
+}
+function renderIngredients(){
+  const root = document.getElementById('ingredients');
+  root.innerHTML = '';
+  const list = document.createElement('div');
+  list.className = 'batch-list';
+  (currentRecipe.ingredients || []).forEach((item, idx) => {
+    const row = document.createElement('div');
+    row.className = 'batch-row ' + (item.house ? 'is-prep' : 'is-direct');
+    row.innerHTML = `<div class="batch-left"><div><div class="batch-name">${escapeHtml(item.name)}</div>${item.note ? `<div class="batch-note">${escapeHtml(item.note)}</div>` : ''}</div></div><div class="amount main-amount-control"><input class="main-amount-input" type="text" inputmode="decimal" pattern="[0-9]*[,.]?[0-9]*" autocomplete="off" autocorrect="off" spellcheck="false" dir="ltr" value="${escapeHtml(fmtMainAmountNumber(amount(item)))}" aria-label="${escapeHtml(item.name)} amount" data-index="${idx}" oninput="updateMainBatchAmount(this)" onblur="restoreMainBatchAmount(this)"><span class="main-amount-unit">${escapeHtml(item.unit || '')}</span></div>`;
+    list.appendChild(row);
+  });
+  root.appendChild(list);
+  if (currentRecipe.mainNote) {
+    const note = document.createElement('div');
+    note.className = 'main-note';
+    note.textContent = currentRecipe.mainNote;
+    root.appendChild(note);
+  }
+}
+function syncMainBatchInputs(activeInput=null){
+  (currentRecipe?.ingredients || []).forEach((item, idx) => {
+    const input = document.querySelector(`.main-amount-input[data-index="${idx}"]`);
+    if (!input || input === activeInput) return;
+    input.value = fmtMainAmountNumber(amount(item));
+  });
+}
+function updateMainBatchAmount(input){
+  if (!currentRecipe) return;
+  const idx = Number(input.dataset.index);
+  const item = (currentRecipe.ingredients || [])[idx];
+  const parsed = parseAmountInput(input.value);
+  const ratio = Number(item?.ratio || 0);
+  if (!item || !Number.isFinite(ratio) || ratio <= 0 || parsed === null || parsed <= 0) return;
+  currentTargetMl = Math.max(1, parsed / ratio);
+  prepOverrides = {};
+  customBatch.value = fmtBatchInputNumber(currentTargetMl);
+  syncBatchControls(false);
+  syncMainBatchInputs(input);
+  renderPreps();
+  saveCurrentRecipeState();
+}
+function restoreMainBatchAmount(input){
+  if (!currentRecipe) return;
+  const idx = Number(input.dataset.index);
+  const item = (currentRecipe.ingredients || [])[idx];
+  const parsed = parseAmountInput(input.value);
+  if (!item || parsed === null || parsed <= 0) {
+    input.value = item ? fmtMainAmountNumber(amount(item)) : '';
+  } else {
+    input.value = fmtMainAmountNumber(parsed);
+  }
+}
+function safeId(value){
+  return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '_');
+}
+function collectPrepRecords(){
+  const preps = currentRecipe?.preps || {};
+  const records = new Map();
+  const topNeeds = new Map();
+  let orderCounter = 0;
+
+  function ensureRecord(prepId, sourceItem, depth){
+    const prep = preps[prepId];
+    if (!prep) return null;
+    let record = records.get(prepId);
+    if (!record) {
+      record = {
+        prepId,
+        prep,
+        sourceItem: {
+          name: sourceItem.name || prep.title || prepId,
+          unit: sourceItem.unit || 'ml',
+          linkedPrep: prepId
+        },
+        calculatedNeeded: 0,
+        depth,
+        order: orderCounter++
+      };
+      records.set(prepId, record);
+    }
+    record.depth = Math.max(record.depth, depth);
+    if (!record.sourceItem.unit && sourceItem.unit) record.sourceItem.unit = sourceItem.unit;
+    return record;
+  }
+
+  function discover(prepId, sourceItem, depth, trail){
+    if (!prepId || !preps[prepId] || trail.includes(prepId)) return;
+    const record = ensureRecord(prepId, sourceItem, depth);
+    if (!record) return;
+    (record.prep.items || []).forEach(child => {
+      if (child.linkedPrep) discover(child.linkedPrep, child, depth + 1, [...trail, prepId]);
+    });
+  }
+
+  (currentRecipe?.ingredients || []).forEach(item => {
+    if (!item.linkedPrep || !preps[item.linkedPrep]) return;
+    discover(item.linkedPrep, item, 0, []);
+    topNeeds.set(item.linkedPrep, (topNeeds.get(item.linkedPrep) || 0) + amount(item));
+  });
+
+  (currentRecipe?.additionalPreps || []).forEach(prepId => {
+    if (!preps[prepId]) return;
+    discover(prepId, {name: preps[prepId].title, unit: preps[prepId].targetUnit || '', linkedPrep: prepId}, 0, []);
+  });
+
+  const nestedLinked = new Set();
+  Object.values(preps).forEach(prep => {
+    (prep.items || []).forEach(item => {
+      if (item.linkedPrep) nestedLinked.add(item.linkedPrep);
+    });
+  });
+  (currentRecipe?.additionalPreps || []).forEach(prepId => {
+    const batchRatio = Number(preps[prepId]?.batchRatio);
+    if (Number.isFinite(batchRatio) && batchRatio > 0) {
+      topNeeds.set(prepId, getTarget() * batchRatio);
+      return;
+    }
+    if (nestedLinked.has(prepId) || topNeeds.has(prepId)) return;
+    const defaultAmount = Number(preps[prepId]?.defaultAmount || 0);
+    if (defaultAmount > 0) topNeeds.set(prepId, defaultAmount);
+  });
+
+  records.forEach(record => {
+    record.calculatedNeeded = topNeeds.get(record.prepId) || 0;
+  });
+
+  const propagationOrder = [...records.values()].sort((a, b) => a.depth - b.depth || a.order - b.order);
+  propagationOrder.forEach(record => {
+    const activeNeeded = getActiveNeeded(record.prepId, record.calculatedNeeded);
+    (record.prep.items || []).forEach(child => {
+      if (!child.linkedPrep || !records.has(child.linkedPrep)) return;
+      const childRecord = records.get(child.linkedPrep);
+      childRecord.calculatedNeeded += amount(child, activeNeeded);
+      if (child.unit) childRecord.sourceItem.unit = child.unit;
+    });
+  });
+
+  return [...records.values()].sort((a, b) => {
+    const orderA = Number.isFinite(Number(a.prep.displayOrder)) ? Number(a.prep.displayOrder) : 9999;
+    const orderB = Number.isFinite(Number(b.prep.displayOrder)) ? Number(b.prep.displayOrder) : 9999;
+    return orderA - orderB || a.depth - b.depth || a.order - b.order;
+  });
+}
+function renderPrepCard(item, prep, needed, isAdditional=false, depth=0){
+  const prepId = item.linkedPrep || prep.title;
+  const domId = safeId(prepId);
+  const override = prepOverrides[prepId];
+  const forcePrepStyle = prep.forcePrepStyle === true;
+  const isChild = depth > 0 && !forcePrepStyle;
+  const prepTypeLabel = prep.prepTypeLabel || (isChild ? 'Sub Prep' : '');
+  const useSubPrepStyle = isChild || prepTypeLabel === 'Sub Prep';
+  const useServicePrepStyle = prepTypeLabel === 'Service Prep';
+  const hasItems = (prep.items || []).length > 0;
+  const showCustomAmount = hasItems && !prep.hideCustomAmount;
+  const activeNeeded = prep.asNeeded ? (Number(prep.defaultAmount) || needed || 0) : getActiveNeeded(prepId, needed);
+  const neededText = !hasItems || isAdditional || prep.asNeeded ? 'as needed' : fmt(activeNeeded, item.unit);
+
+  let rows = '';
+  (prep.items || []).forEach((r, idx) => {
+    const itemAmount = amount(r, activeNeeded);
+    rows += `
+      <tr>
+        <td>${escapeHtml(r.name)}</td>
+        <td 
+          id="prepAmount_${domId}_${idx}"
+          data-ratio="${Number(r.ratio || 0)}"
+          data-unit="${r.unit || ''}"
+        >${fmt(itemAmount, r.unit)}</td>
+      </tr>
+    `;
+  });
+
+  return `
+    <div class="prep-card ${useSubPrepStyle ? 'is-child' : ''} ${useServicePrepStyle ? 'is-service' : ''}" id="prepCard_${domId}">
+      <div class="prep-top">
+        <div>
+          <div class="prep-title">${escapeHtml(prep.title)}</div>
+          ${prepTypeLabel ? `<div class="prep-depth">${escapeHtml(prepTypeLabel)}</div>` : ''}
+        </div>
+        <div class="needed-inline">
+          <span class="needed-label">Needed</span>
+          <span class="needed-value" id="neededValue_${domId}">${neededText}</span>
+        </div>
+      </div>
+
+      ${showCustomAmount ? `<div class="custom-prep">
+        <div>
+          <label>Custom Amount</label>
+          <input 
+            class="prep-amount-input"
+            type="text"
+            inputmode="decimal"
+            pattern="[0-9]*[,.]?[0-9]*"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+            dir="ltr"
+            value="${override !== undefined ? escapeHtml(override) : ''}" 
+            placeholder="${fmt(needed, item.unit)}" 
+            data-prep-id="${prepId}"
+            data-dom-id="${domId}"
+            data-unit="${item.unit || 'ml'}"
+            onfocus="this.setSelectionRange(this.value.length, this.value.length)"
+            oninput="updatePrepOverride(this)"
+          >
+        </div>
+        <div>
+          <label>Unit</label>
+          <input value="${item.unit || 'ml'}" readonly>
+        </div>
+      </div>` : ''}
+
+      <div class="prep-note">${escapeHtml(prep.note || 'Prepare according to the standard method.')}</div>
+      ${hasItems ? `<table>
+        <thead><tr><th>Ingredient</th><th>Amount</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>` : ''}
+    </div>`;
+}
+function updatePrepOverride(input){
+  const prepId = input.dataset.prepId;
+  const domId = input.dataset.domId;
+  const raw = input.value;
+
+  if (raw === '') {
+    delete prepOverrides[prepId];
+  } else {
+    prepOverrides[prepId] = raw;
+  }
+  saveCurrentRecipeState();
+  renderPreps();
+  const next = document.querySelector(`.prep-amount-input[data-dom-id="${domId}"]`);
+  if (next) {
+    next.focus();
+    try {
+      const pos = next.value.length;
+      next.setSelectionRange(pos, pos);
+    } catch (err) {}
+  }
+}
+
+function setPrepOverride(prepId, value){
+  prepOverrides[prepId] = value;
+  saveCurrentRecipeState();
+}
+function clearAllData(){
+  const recipeViewOpen = currentRecipe && !document.getElementById('recipeView').classList.contains('hidden');
+
+  if (recipeViewOpen) {
+    clearCurrentRecipe();
+    return;
+  }
+
+  savedState = {recipes:{}};
+  localStorage.removeItem(STORAGE_KEY);
+  prepOverrides = {};
+  if (currentRecipe) {
+    currentTargetMl = currentRecipe.defaultBatchMl || 500;
+    renderRecipe();
+  }
+  renderHome();
+  showHome();
+}
+function renderPreps(){
+  const root = document.getElementById('preps');
+
+  const records = collectPrepRecords();
+  const html = records.map(record => {
+    const isAdditional = (currentRecipe.additionalPreps || []).includes(record.prepId) && record.calculatedNeeded === 0;
+    return renderPrepCard(
+      record.sourceItem,
+      record.prep,
+      record.calculatedNeeded,
+      isAdditional,
+      record.depth
+    );
+  }).join('');
+
+  root.innerHTML = html || '<div class="empty">No separate prep calculation is needed.</div>';
+  syncBatchControls(false);
+}
+batchSelect.addEventListener('change', () => {
+  if (!batchSelect.value) return;
+  setBatchAmount(Number(batchSelect.value), true);
+});
+customBatch.addEventListener('input', () => {
+  currentTargetMl = customBatch.value === '' ? (currentRecipe?.defaultBatchMl || 500) : Math.max(1, Number(customBatch.value) || 1);
+  prepOverrides = {};
+  syncBatchControls(false);
+  renderIngredients();
+  renderPreps();
+  saveCurrentRecipeState();
+});
+renderHome();
+</script>
+</body>
+</html>
