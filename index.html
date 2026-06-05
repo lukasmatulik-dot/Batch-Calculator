@@ -27,7 +27,7 @@ body{
 .app{max-width:620px;margin:0 auto}
 .header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:8px 2px 12px}
 #homeView .header{align-items:flex-start;gap:8px;padding:4px 2px 5px}
-#recipeView .header{position:sticky;top:0;z-index:40;margin:-12px -12px 10px;padding:14px 12px 12px;background:rgba(248,251,247,.74);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);border-bottom:1px solid rgba(42,48,43,.10);box-shadow:0 12px 28px rgba(54,65,58,.08)}
+#recipeView .header,#sousVideView .header{position:sticky;top:0;z-index:40;margin:-12px -12px 10px;padding:14px 12px 12px;background:rgba(248,251,247,.74);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);border-bottom:1px solid rgba(42,48,43,.10);box-shadow:0 12px 28px rgba(54,65,58,.08)}
 h1{margin:0;font-size:28px;line-height:1.02;letter-spacing:0;font-weight:950}
 .home-title-block{flex:1;min-width:0;display:flex;flex-direction:column}
 .home-credit{align-self:flex-start;width:fit-content;max-width:min(100%,430px);margin-top:1px;margin-right:auto;color:var(--muted);font-size:8.10px;line-height:1.10;font-weight:700;letter-spacing:0;opacity:.52;text-align:left;white-space:normal;overflow-wrap:break-word}
@@ -56,6 +56,16 @@ h1{margin:0;font-size:28px;line-height:1.02;letter-spacing:0;font-weight:950}
 .recipe-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap;max-width:100%}
 .recipe-nav-button{height:36px;min-height:36px;padding:0 13px;border-radius:var(--radius-pill);border:1px solid rgba(255,255,255,.48);color:#f8fff8;font-size:10px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 9px 20px rgba(54,65,58,.14);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
 .recipe-home-button{background:linear-gradient(145deg,rgba(78,157,99,.76),rgba(55,116,77,.82));border-color:rgba(255,255,255,.50)}
+.home-tool-row{display:flex;justify-content:flex-start;margin:-3px 0 12px}
+.sous-vide-button{width:100%;height:32px;min-height:32px;border:1px solid rgba(128,80,67,.18);background:rgba(255,255,255,.62);color:rgba(96,57,49,.88);box-shadow:inset 0 1px 0 rgba(255,255,255,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.sous-vide-search-wrap{position:relative;top:auto;z-index:1;margin:0 0 12px}
+.sous-vide-list{display:grid;gap:10px}
+.sous-vide-card{margin-bottom:0}
+.sous-vide-source{margin-bottom:8px;color:var(--muted);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+.sous-vide-table th,.sous-vide-table td{white-space:normal;text-align:left;overflow-wrap:anywhere;word-break:break-word}
+.sous-vide-table td{font-weight:950}
+.sous-vide-table th:first-child,.sous-vide-table td:first-child{max-width:none}
+.sous-vide-table th:last-child,.sous-vide-table td:last-child{width:auto;text-align:left;white-space:normal;padding-left:0}
 .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 label{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:900;margin-bottom:6px}
 select,input{width:100%;min-height:50px;border:1px solid rgba(42,48,43,.12);background:rgba(255,255,255,.68);color:var(--text);border-radius:var(--radius-control);padding:12px;font-size:16px;font-weight:900;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.82),0 6px 14px rgba(54,65,58,.06);direction:ltr;text-align:left;unicode-bidi:plaintext}
@@ -107,9 +117,10 @@ body.home-active .clear-all-button{width:108px;height:36px;min-height:36px;font-
 @media(max-width:430px){
   body{padding:10px;padding-bottom:calc(74px + env(safe-area-inset-bottom))}
   #homeView .header{gap:6px;padding:4px 1px 4px}
-  #recipeView .header{margin:-10px -10px 10px;padding:14px 10px 12px}
+  #recipeView .header,#sousVideView .header{margin:-10px -10px 10px;padding:14px 10px 12px}
   .recipe-actions{gap:6px}
   .recipe-nav-button{height:34px;min-height:34px;padding:0 10px;font-size:9.5px}
+  .sous-vide-button{height:31px;min-height:31px}
   .clear-all-button,body.home-active .clear-all-button{height:34px;min-height:34px;font-size:9.5px}
   h1{font-size:25px}
   .home-credit,.recipe-prep-time{max-width:min(100%,235px);font-size:7.30px;line-height:1.08;margin-top:1px}
@@ -136,7 +147,7 @@ body{
     radial-gradient(circle at 22% -12%, rgba(63,64,72,.22), transparent 34%),
     linear-gradient(180deg,#0b0c10 0%,#111217 34%,#17181d 68%,#1d1e23 100%);
 }
-#recipeView .header{background:rgba(21,22,25,.84);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);border-bottom:1px solid rgba(255,255,255,.075);box-shadow:0 12px 30px rgba(0,0,0,.24)}
+#recipeView .header,#sousVideView .header{background:rgba(21,22,25,.84);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);border-bottom:1px solid rgba(255,255,255,.075);box-shadow:0 12px 30px rgba(0,0,0,.24)}
 .card{background:linear-gradient(145deg,rgba(32,33,38,.82),rgba(29,31,36,.64));border:1px solid rgba(255,255,255,.09);box-shadow:var(--shadow);backdrop-filter:blur(24px) saturate(145%);-webkit-backdrop-filter:blur(24px) saturate(145%)}
 .section-pill{border:1px solid rgba(255,216,200,.13);background:rgba(255,255,255,.045);color:rgba(255,216,200,.78);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
 .search-wrap{padding:4px 0;background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.055));border:1px solid rgba(255,255,255,.09);box-shadow:0 18px 42px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.14);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%)}
@@ -153,6 +164,7 @@ body{
 .recipe-status-pill.is-closed{border:1px solid rgba(255,216,200,.18);background:rgba(255,255,255,.04);color:rgba(246,241,232,.70)}
 .recipe-nav-button{border:1px solid rgba(255,255,255,.13);color:#f4f0e8;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 9px 22px rgba(0,0,0,.24);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
 .recipe-home-button{background:linear-gradient(145deg,rgba(63,143,86,.26),rgba(25,82,50,.54));border-color:rgba(111,194,132,.22)}
+.sous-vide-button{border:0;background:rgba(255,255,255,.10);color:rgba(246,241,232,.70);box-shadow:inset 0 1px 0 rgba(255,255,255,.10);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 select,input{border:1px solid rgba(255,255,255,.085);background:rgba(255,255,255,.060);color:var(--text);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 7px 16px rgba(0,0,0,.12)}
 select:focus,input:focus{border-color:rgba(255,216,200,.40);box-shadow:0 0 0 3px rgba(125,61,45,.18),inset 0 1px 0 rgba(255,255,255,.05)}
 .batch-chip{border:1px solid rgba(255,255,255,.085);background:rgba(255,255,255,.055);color:var(--soft);box-shadow:inset 0 1px 0 rgba(255,255,255,.055)}
@@ -202,8 +214,25 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
     <section class="card">
       <div class="section-head"><div class="section-title">Cocktail Recipes</div></div>
       <div class="search-wrap"><input id="homeSearch" class="home-search" placeholder="Search recipe" oninput="filterHome()" /><button class="search-clear" type="button" onclick="clearRecipeSearch()">Clear</button></div>
+      <div class="home-tool-row"><button class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showSousVide()">Sous Vide Guide</button></div>
       <div id="recipeList"></div>
-      <div id="homeEmpty" class="empty hidden">No recipe found.</div>
+      <div id="homeEmpty" class="empty hidden">No recipes found.</div>
+    </section>
+  </section>
+
+  <section id="sousVideView" class="hidden">
+    <header class="header recipe-header">
+      <div><h1>Sous Vide Guide</h1></div>
+      <div class="recipe-actions">
+        <button class="recipe-nav-button recipe-home-button" type="button" onclick="showHome({clearSearch:true})">Home</button>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="section-head"><div class="section-title">Sous Vide Guide</div></div>
+      <div class="search-wrap sous-vide-search-wrap"><input id="sousVideSearch" class="home-search" placeholder="Sous Vide Guide" oninput="renderSousVide()" /><button class="search-clear" type="button" onclick="clearSousVideSearch()">Clear</button></div>
+      <div id="sousVideList" class="sous-vide-list"></div>
+      <div id="sousVideEmpty" class="empty hidden">No Sous Vide Guide records found.</div>
     </section>
   </section>
 
@@ -4230,6 +4259,144 @@ function recipeOpenedAt(recipe){
 function recipePrepTime(recipe){
   return recipePrepTimes[recipe.name] || 'Prep Time';
 }
+function hasSousVideText(value){
+  return /sous[\s-]*vide/i.test(String(value || ''));
+}
+function sousVideSearchText(text){
+  const value = String(text || '');
+  const match = value.match(/sous[\s-]*vide/i);
+  return match ? value.slice(match.index) : value;
+}
+function cleanSousVideNumber(value){
+  const number = String(value || '').replace(',', '.');
+  return number.endsWith('.0') ? number.slice(0, -2) : number;
+}
+function formatSousVideTime(value, unit){
+  const amount = cleanSousVideNumber(value);
+  const normalizedUnit = String(unit || '').toLowerCase();
+  if (normalizedUnit.startsWith('min')) return `${amount} ${Number(amount) === 1 ? 'minute' : 'minutes'}`;
+  if (normalizedUnit.startsWith('day')) return `${amount} ${Number(amount) === 1 ? 'day' : 'days'}`;
+  return `${amount} ${Number(amount) === 1 ? 'hour' : 'hours'}`;
+}
+function extractSousVideTime(text){
+  const value = sousVideSearchText(text);
+  const match = value.match(/(\d+(?:[.,]\d+)?)\s*(hours?|hrs?|h|minutes?|mins?|min|days?|d)\b/i);
+  return match ? formatSousVideTime(match[1], match[2]) : 'Not specified';
+}
+function extractSousVideTemperature(text){
+  const value = sousVideSearchText(text);
+  const match = value.match(/(-?\d+(?:[.,]\d+)?)\s*°\s*C\b/i);
+  return match ? `${cleanSousVideNumber(match[1])} °C` : 'Not specified';
+}
+function collectSousVideRecords(){
+  const records = [];
+  const addSousVideRecord = record => {
+    if (record.time === 'Not specified') return;
+    if (record.temperature === 'Not specified') return;
+    records.push(record);
+  };
+  appData.recipes.forEach(recipe => {
+    if (hasSousVideText(recipe.method)) {
+      addSousVideRecord({
+        ingredient: recipe.name,
+        source: recipe.name,
+        method: 'Sous Vide',
+        time: extractSousVideTime(recipe.method),
+        temperature: extractSousVideTemperature(recipe.method)
+      });
+    }
+    if (hasSousVideText(recipe.mainNote)) {
+      addSousVideRecord({
+        ingredient: recipe.name,
+        source: recipe.name,
+        method: 'Sous Vide',
+        time: extractSousVideTime(recipe.mainNote),
+        temperature: extractSousVideTemperature(recipe.mainNote)
+      });
+    }
+    Object.entries(recipe.preps || {}).forEach(([prepId, prep]) => {
+      const prepText = [prep.note, prep.title, prep.method, prep.preparation].filter(Boolean).join('\n');
+      if (!hasSousVideText(prepText)) return;
+      addSousVideRecord({
+        ingredient: prep.title || prepId,
+        source: recipe.name,
+        method: 'Sous Vide',
+        time: extractSousVideTime(prepText),
+        temperature: extractSousVideTemperature(prepText)
+      });
+    });
+    (recipe.ingredients || []).forEach(item => {
+      if (!hasSousVideText(item.note)) return;
+      addSousVideRecord({
+        ingredient: item.name,
+        source: recipe.name,
+        method: 'Sous Vide',
+        time: extractSousVideTime(item.note),
+        temperature: extractSousVideTemperature(item.note)
+      });
+    });
+  });
+  return records;
+}
+function parseSousVideTemperature(temperature){
+  const match = String(temperature || '').replace(',', '.').match(/-?\d+(?:\.\d+)?/);
+  return match ? Number(match[0]) : Number.NEGATIVE_INFINITY;
+}
+function parseSousVideTimeMinutes(time){
+  const text = String(time || '').toLowerCase().replace(',', '.');
+  const match = text.match(/(\d+(?:\.\d+)?)\s*(minutes?|mins?|min|hours?|hrs?|h|days?|d)\b/);
+  if (!match) return Number.NEGATIVE_INFINITY;
+  const amount = Number(match[1]);
+  const unit = match[2];
+  if (!Number.isFinite(amount)) return Number.NEGATIVE_INFINITY;
+  if (unit.startsWith('day') || unit === 'd') return amount * 1440;
+  if (unit.startsWith('hour') || unit.startsWith('hr') || unit === 'h') return amount * 60;
+  return amount;
+}
+function sortSousVideRecords(records, query){
+  const collatorOptions = {sensitivity: 'base', numeric: true};
+  return [...records].sort((a, b) => {
+    if (query) {
+      return String(a.ingredient || '').localeCompare(String(b.ingredient || ''), undefined, collatorOptions);
+    }
+    const temperatureDiff = parseSousVideTemperature(b.temperature) - parseSousVideTemperature(a.temperature);
+    if (temperatureDiff) return temperatureDiff;
+    const timeDiff = parseSousVideTimeMinutes(b.time) - parseSousVideTimeMinutes(a.time);
+    if (timeDiff) return timeDiff;
+    return String(a.ingredient || '').localeCompare(String(b.ingredient || ''), undefined, collatorOptions);
+  });
+}
+function renderSousVide(){
+  const search = document.getElementById('sousVideSearch');
+  const query = (search?.value || '').toLowerCase().trim();
+  const activeQuery = query.length >= 3 ? query : '';
+  const records = sortSousVideRecords(
+    collectSousVideRecords().filter(record => {
+      if (!activeQuery) return true;
+      return [record.ingredient, record.source].some(value => String(value || '').toLowerCase().includes(activeQuery));
+    }),
+    activeQuery
+  );
+  const root = document.getElementById('sousVideList');
+  const empty = document.getElementById('sousVideEmpty');
+  if (empty) empty.classList.toggle('hidden', records.length !== 0);
+  root.innerHTML = records.map(record => `
+    <article class="prep-card sous-vide-card">
+      <div class="sous-vide-source">${escapeHtml(record.source)}</div>
+      <table class="sous-vide-table">
+        <colgroup><col style="width:48%"><col style="width:26%"><col style="width:26%"></colgroup>
+        <thead><tr><th>Ingredient</th><th>Time</th><th>Temperature</th></tr></thead>
+        <tbody><tr><td>${escapeHtml(record.ingredient)}</td><td>${escapeHtml(record.time)}</td><td>${escapeHtml(record.temperature)}</td></tr></tbody>
+      </table>
+    </article>
+  `).join('');
+}
+function clearSousVideSearch(){
+  const search = document.getElementById('sousVideSearch');
+  if (!search) return;
+  search.value = '';
+  renderSousVide();
+}
 function sortedOpenRecipes(recipes){
   return [...recipes].sort((a, b) => {
     const openedDiff = recipeOpenedAt(b) - recipeOpenedAt(a);
@@ -4306,6 +4473,15 @@ function clearRecipeSearch(){
   filterHome();
   window.scrollTo({top:0, behavior:'smooth'});
 }
+function showSousVide(){
+  renderSousVide();
+  updateCloseButtonLabel('Close All');
+  document.body.classList.remove('home-active');
+  document.getElementById('homeView').classList.add('hidden');
+  document.getElementById('recipeView').classList.add('hidden');
+  document.getElementById('sousVideView').classList.remove('hidden');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
 function clearCurrentRecipe(){
   if (!currentRecipe) {
     showHome();
@@ -4331,6 +4507,7 @@ function showHome(options={}){
   document.body.classList.add('home-active');
   document.getElementById('homeView').classList.remove('hidden');
   document.getElementById('recipeView').classList.add('hidden');
+  document.getElementById('sousVideView').classList.add('hidden');
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function openRecipe(recipe){
@@ -4341,6 +4518,7 @@ function openRecipe(recipe){
   updateRecipeState(currentRecipe, {status: 'open', openedAt: Date.now()});
   document.body.classList.remove('home-active');
   document.getElementById('homeView').classList.add('hidden');
+  document.getElementById('sousVideView').classList.add('hidden');
   document.getElementById('recipeView').classList.remove('hidden');
   renderRecipe();
   window.scrollTo({top:0, behavior:'smooth'});
