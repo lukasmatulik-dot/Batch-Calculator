@@ -69,6 +69,16 @@ h1{margin:0;font-size:28px;line-height:1.02;letter-spacing:0;font-weight:950}
 .sous-vide-table th:first-child,.sous-vide-table td:first-child{max-width:none}
 .sous-vide-table th:last-child,.sous-vide-table td:last-child{width:auto;text-align:left;white-space:normal;padding-left:0}
 .sous-vide-table th:last-child{color:var(--text);white-space:nowrap;overflow-wrap:normal;word-break:normal}
+.sous-vide-alarm-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px;padding:7px 9px;border:1px solid rgba(255,216,200,.16);border-radius:var(--radius-control);background:rgba(125,61,45,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.sous-vide-alarm-text{min-width:0;color:var(--soft);font-size:10px;font-weight:900;line-height:1.2}
+.sous-vide-stop-alarm{flex:0 0 auto;min-height:28px;padding:0 10px;border:1px solid rgba(255,216,200,.18);border-radius:var(--radius-pill);background:linear-gradient(145deg,rgba(164,91,71,.64),rgba(86,41,36,.68));color:#f4f0e8;font-size:8.5px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 7px 16px rgba(0,0,0,.18)}
+.sous-vide-timer-controls{display:grid;grid-template-columns:minmax(0,1fr);gap:3px;width:100%;max-width:112px}
+.sous-vide-timer-button,.sous-vide-timer-reset{width:100%;border-radius:var(--radius-pill);font-weight:950;white-space:nowrap}
+.sous-vide-timer-button{min-height:29px;padding:3px 7px;border:1px solid rgba(111,194,132,.22);background:linear-gradient(145deg,rgba(63,143,86,.24),rgba(25,82,50,.48));color:#f4f0e8;font-size:9.5px;line-height:1;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 6px 14px rgba(0,0,0,.16)}
+.sous-vide-timer-button.is-running{border-color:rgba(111,194,132,.38);background:linear-gradient(145deg,rgba(63,143,86,.42),rgba(25,82,50,.64))}
+.sous-vide-timer-button.is-paused{border-color:rgba(255,216,200,.20);background:linear-gradient(145deg,rgba(125,61,45,.28),rgba(72,43,38,.50))}
+.sous-vide-timer-button.is-done{border-color:rgba(255,216,200,.24);background:linear-gradient(145deg,rgba(164,91,71,.58),rgba(86,41,36,.68))}
+.sous-vide-timer-reset{min-height:21px;padding:2px 6px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.055);color:var(--muted);font-size:7.5px;line-height:1;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
 .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 label{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:900;margin-bottom:6px}
 select,input{width:100%;min-height:50px;border:1px solid rgba(42,48,43,.12);background:rgba(255,255,255,.68);color:var(--text);border-radius:var(--radius-control);padding:12px;font-size:16px;font-weight:900;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.82),0 6px 14px rgba(54,65,58,.06);direction:ltr;text-align:left;unicode-bidi:plaintext}
@@ -114,6 +124,7 @@ th:last-child,td:last-child{width:96px;text-align:right;font-weight:950;white-sp
 .empty{border:1px dashed rgba(42,48,43,.16);border-radius:var(--radius-inner);padding:14px;color:var(--muted);font-size:13px;line-height:1.35}
 .recipe-close-button{background:linear-gradient(145deg,rgba(188,102,86,.78),rgba(139,67,56,.86));border-color:rgba(255,255,255,.46)}
 .clear-all-button{width:108px;height:36px;min-height:36px;padding:0;flex:0 0 auto;border-radius:var(--radius-pill);border:1px solid rgba(255,255,255,.46);background:linear-gradient(145deg,rgba(188,102,86,.78),rgba(139,67,56,.86));color:#f8fff8;font-size:10px;font-weight:950;letter-spacing:.04em;box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 9px 20px rgba(54,65,58,.14);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
+.sous-vide-reset-all{height:36px;min-height:36px;padding:0 13px;border-radius:var(--radius-pill);border:1px solid rgba(255,255,255,.46);background:linear-gradient(145deg,rgba(188,102,86,.78),rgba(139,67,56,.86));color:#f8fff8;font-size:10px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 9px 20px rgba(54,65,58,.14);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
 body:not(.home-active) .clear-all-button{display:none!important}
 body.home-active .clear-all-button{width:108px;height:36px;min-height:36px;font-size:10px}
 .hidden{display:none!important}
@@ -127,9 +138,23 @@ body.home-active .clear-all-button{width:108px;height:36px;min-height:36px;font-
   .sous-vide-list{gap:7px}
   .sous-vide-card{padding:8px 9px}
   .sous-vide-source{margin-bottom:4px}
-  .sous-vide-table th,.sous-vide-table td{padding:2px 0;line-height:1.13}
-  .sous-vide-table th{font-size:8px;letter-spacing:.02em}
-  .clear-all-button,body.home-active .clear-all-button{height:34px;min-height:34px;font-size:9.5px}
+  #sousVideView .header{grid-template-columns:minmax(0,1fr);gap:8px;padding-bottom:10px}
+  #sousVideView .recipe-actions{width:100%;justify-content:space-between;flex-wrap:nowrap}
+  #sousVideView .recipe-actions>button{flex:1;min-width:0}
+  #sousVideView>.card{padding:9px}
+  #sousVideView .section-head{margin-bottom:8px}
+  .sous-vide-search-wrap{margin-bottom:9px}
+  .sous-vide-table col:nth-child(1){width:39%!important}
+  .sous-vide-table col:nth-child(2){width:29%!important}
+  .sous-vide-table col:nth-child(3){width:32%!important}
+  .sous-vide-table th,.sous-vide-table td{padding:3px 2px;line-height:1.16}
+  .sous-vide-table th{font-size:8.5px;letter-spacing:.01em}
+  .sous-vide-table td{font-size:12px}
+  .sous-vide-timer-controls{max-width:100%;gap:3px}
+  .sous-vide-timer-button{min-height:32px;padding:4px 5px;font-size:9px}
+  .sous-vide-timer-reset{min-height:25px;font-size:7.5px}
+  .sous-vide-alarm-bar{padding:6px 8px}
+  .clear-all-button,body.home-active .clear-all-button,.sous-vide-reset-all{height:34px;min-height:34px;font-size:9.5px}
   h1{font-size:25px}
   .home-credit{max-width:100%;font-size:5.2px;line-height:1;margin-top:1px;white-space:nowrap}
   .recipe-prep-time{max-width:min(100%,235px);font-size:7.30px;line-height:1.08;margin-top:1px}
@@ -197,7 +222,7 @@ th{border-bottom:1px solid rgba(255,255,255,.085)}
 td{border-bottom:1px solid rgba(255,255,255,.055)}
 .empty{border:1px dashed rgba(255,255,255,.10)}
 .recipe-close-button{background:linear-gradient(145deg,rgba(164,91,71,.64),rgba(86,41,36,.68));border-color:rgba(255,216,200,.18)}
-.clear-all-button{border:1px solid rgba(255,216,200,.18);background:linear-gradient(145deg,rgba(164,91,71,.64),rgba(86,41,36,.68));color:#f4f0e8;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 9px 22px rgba(0,0,0,.24);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
+.clear-all-button,.sous-vide-reset-all{border:1px solid rgba(255,216,200,.18);background:linear-gradient(145deg,rgba(164,91,71,.64),rgba(86,41,36,.68));color:#f4f0e8;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 9px 22px rgba(0,0,0,.24);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
 .main-amount-control{gap:4px;padding:5px 8px}
 .main-amount-input{width:58px;min-width:0;min-height:24px!important;height:24px!important;padding:0!important;border:0!important;background:transparent!important;color:inherit!important;border-radius:0!important;box-shadow:none!important;font:inherit!important;font-size:13px!important;font-weight:950!important;text-align:right!important;outline:none!important;caret-color:#ffd8c8}
 .main-amount-input:focus{box-shadow:none!important;border:0!important}
@@ -234,12 +259,17 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
       <div><h1>Sous Vide Guide</h1></div>
       <div class="recipe-actions">
         <button class="recipe-nav-button recipe-home-button" type="button" onclick="showHome({clearSearch:true})">Home</button>
+        <button class="sous-vide-reset-all" type="button" onclick="resetAllSousVideTimers()">Reset Timers</button>
       </div>
     </header>
 
     <section class="card">
       <div class="section-head"><div class="section-title">Sous Vide Guide</div></div>
       <div class="search-wrap sous-vide-search-wrap"><input id="sousVideSearch" class="home-search" placeholder="Sous Vide Guide" oninput="renderSousVide()" /><button class="search-clear" type="button" onclick="clearSousVideSearch()">Clear</button></div>
+      <div id="sousVideAlarmBar" class="sous-vide-alarm-bar hidden" role="status" aria-live="assertive">
+        <div id="sousVideAlarmText" class="sous-vide-alarm-text">Timer finished</div>
+        <button class="sous-vide-stop-alarm" type="button" onclick="stopSousVideAlarm()">Stop Alarm</button>
+      </div>
       <div id="sousVideList" class="sous-vide-list"></div>
       <div id="sousVideEmpty" class="empty hidden">No Sous Vide Guide records found.</div>
     </section>
@@ -4118,11 +4148,18 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
 <script>
 const appData = JSON.parse(document.getElementById('initial-data').textContent);
 const STORAGE_KEY = 'batchCalculatorState:v2';
+const SOUS_VIDE_TIMER_STORAGE_KEY = 'batchCalculatorSousVideTimers:v1';
 let currentRecipe = null;
 let currentTargetMl = 500;
 let prepOverrides = {};
 let savedState = loadSavedState();
 const sortedRecipeList = [...appData.recipes].sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), undefined, {sensitivity: 'base'}));
+const sousVideTimers = new Map();
+let savedSousVideTimerStates = loadSousVideTimerStates();
+const sousVideAlarmNames = new Set();
+let sousVideTimerTicker = null;
+let sousVideAudioContext = null;
+let sousVideAlarmInterval = null;
 const recipePrepTimes = {
   'THIRSTY DOG': 'Prep time 2 hours',
   'NIGHT CAP': 'Prep time 8 hours',
@@ -4300,6 +4337,9 @@ function extractSousVideTemperature(text){
 function collectSousVideRecords(){
   const records = [];
   const addSousVideRecord = record => {
+    if (record.source === 'ALCRON' && String(record.ingredient || '').toUpperCase() === 'LOVAGE GIN') {
+      record.time = '5 minutes';
+    }
     if (record.time === 'Not specified') return;
     if (record.temperature === 'Not specified') return;
     records.push(record);
@@ -4378,6 +4418,281 @@ function sortSousVideRecords(records, query){
 function formatSousVideIngredientName(name){
   return String(name || '').toLowerCase().replace(/\b([a-zà-ž])/g, char => char.toUpperCase());
 }
+function loadSousVideTimerStates(){
+  try {
+    const stored = JSON.parse(localStorage.getItem(SOUS_VIDE_TIMER_STORAGE_KEY));
+    return stored && typeof stored === 'object' ? stored : {};
+  } catch (err) {
+    return {};
+  }
+}
+function saveSousVideTimerStates(){
+  const stored = {};
+  sousVideTimers.forEach(state => {
+    if (!state || state.status === 'idle') return;
+    stored[state.key] = {
+      totalMs: state.totalMs,
+      remainingMs: state.status === 'running' ? Math.max(0, state.endAt - Date.now()) : state.remainingMs,
+      endAt: state.status === 'running' ? state.endAt : 0,
+      status: state.status,
+      alarmTriggered: state.alarmTriggered === true
+    };
+  });
+  savedSousVideTimerStates = stored;
+  if (Object.keys(stored).length) {
+    localStorage.setItem(SOUS_VIDE_TIMER_STORAGE_KEY, JSON.stringify(stored));
+  } else {
+    localStorage.removeItem(SOUS_VIDE_TIMER_STORAGE_KEY);
+  }
+}
+function sousVideTimerKey(record){
+  return [record.source, record.ingredient, record.time, record.temperature].join(' | ');
+}
+function getSousVideTimerState(record){
+  const key = sousVideTimerKey(record);
+  const durationMinutes = parseSousVideTimeMinutes(record.time);
+  const totalMs = Math.max(1000, Math.round(durationMinutes * 60 * 1000));
+  let state = sousVideTimers.get(key);
+  if (!state || state.totalMs !== totalMs) {
+    const saved = savedSousVideTimerStates[key];
+    const savedStatus = ['running', 'paused', 'done'].includes(saved?.status) ? saved.status : 'idle';
+    const savedRemainingMs = Number(saved?.remainingMs);
+    const savedEndAt = Number(saved?.endAt);
+    state = {
+      key,
+      source: record.source,
+      ingredient: record.ingredient,
+      originalTime: record.time,
+      totalMs,
+      remainingMs: Number(saved?.totalMs) === totalMs && Number.isFinite(savedRemainingMs) ? Math.max(0, Math.min(totalMs, savedRemainingMs)) : totalMs,
+      endAt: savedStatus === 'running' && Number.isFinite(savedEndAt) ? savedEndAt : 0,
+      status: Number(saved?.totalMs) === totalMs ? savedStatus : 'idle',
+      alarmTriggered: Number(saved?.totalMs) === totalMs && saved?.alarmTriggered === true
+    };
+    if (state.status === 'running' && state.endAt <= 0) state.status = 'paused';
+    sousVideTimers.set(key, state);
+  }
+  updateSousVideTimerState(state);
+  return state;
+}
+function updateSousVideTimerState(state){
+  if (!state || state.status !== 'running') return;
+  state.remainingMs = Math.max(0, state.endAt - Date.now());
+  if (state.remainingMs > 0) return;
+  state.remainingMs = 0;
+  state.endAt = 0;
+  state.status = 'done';
+  if (!state.alarmTriggered) {
+    state.alarmTriggered = true;
+    startSousVideAlarm(state);
+  }
+  saveSousVideTimerStates();
+}
+function formatSousVideCountdown(milliseconds){
+  const totalSeconds = Math.max(0, Math.ceil(Number(milliseconds || 0) / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+function sousVideTimerLabel(state){
+  if (state.status === 'idle') return state.originalTime;
+  if (state.status === 'done') return 'Done';
+  return formatSousVideCountdown(state.remainingMs);
+}
+function sousVideTimerActionLabel(state){
+  if (state.status === 'running') return 'Pause';
+  if (state.status === 'paused') return 'Resume';
+  if (state.status === 'done') return 'Restart';
+  return 'Start';
+}
+function renderSousVideTimerControls(record){
+  const state = getSousVideTimerState(record);
+  const action = sousVideTimerActionLabel(state);
+  return `
+    <div class="sous-vide-timer-controls">
+      <button
+        class="sous-vide-timer-button is-${state.status}"
+        type="button"
+        data-timer-action="toggle"
+        data-timer-key="${escapeHtml(state.key)}"
+        aria-label="${escapeHtml(`${action} ${formatSousVideIngredientName(record.ingredient)} timer, ${sousVideTimerLabel(state)}`)}"
+        title="${escapeHtml(`${action} timer`)}"
+      >${escapeHtml(sousVideTimerLabel(state))}</button>
+      <button
+        class="sous-vide-timer-reset ${state.status === 'idle' ? 'hidden' : ''}"
+        type="button"
+        data-timer-action="reset"
+        data-timer-key="${escapeHtml(state.key)}"
+        aria-label="${escapeHtml(`Reset ${formatSousVideIngredientName(record.ingredient)} timer`)}"
+      >Reset</button>
+    </div>
+  `;
+}
+function findSousVideTimerButton(key, action){
+  return [...document.querySelectorAll(`[data-timer-action="${action}"]`)].find(button => button.dataset.timerKey === key);
+}
+function refreshSousVideTimerDisplay(){
+  sousVideTimers.forEach(state => {
+    updateSousVideTimerState(state);
+    const toggle = findSousVideTimerButton(state.key, 'toggle');
+    const reset = findSousVideTimerButton(state.key, 'reset');
+    if (!toggle) return;
+    const action = sousVideTimerActionLabel(state);
+    toggle.textContent = sousVideTimerLabel(state);
+    toggle.className = `sous-vide-timer-button is-${state.status}`;
+    toggle.title = `${action} timer`;
+    toggle.setAttribute('aria-label', `${action} ${formatSousVideIngredientName(state.ingredient)} timer, ${sousVideTimerLabel(state)}`);
+    if (reset) reset.classList.toggle('hidden', state.status === 'idle');
+  });
+  updateSousVideAlarmBar();
+}
+function ensureSousVideTimerTicker(){
+  if (sousVideTimerTicker) return;
+  sousVideTimerTicker = window.setInterval(() => {
+    let hasRunningTimer = false;
+    sousVideTimers.forEach(state => {
+      updateSousVideTimerState(state);
+      if (state.status === 'running') hasRunningTimer = true;
+    });
+    refreshSousVideTimerDisplay();
+    if (!hasRunningTimer && sousVideTimerTicker) {
+      window.clearInterval(sousVideTimerTicker);
+      sousVideTimerTicker = null;
+    }
+  }, 250);
+}
+function getSousVideAudioContext(){
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return null;
+  if (!sousVideAudioContext) sousVideAudioContext = new AudioContextClass();
+  return sousVideAudioContext;
+}
+function primeSousVideAudio(){
+  const context = getSousVideAudioContext();
+  if (!context) return;
+  const prime = () => {
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    gain.gain.setValueAtTime(0.00001, context.currentTime);
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+    oscillator.start();
+    oscillator.stop(context.currentTime + 0.01);
+  };
+  if (context.state === 'suspended') {
+    context.resume().then(prime).catch(() => {});
+  } else {
+    prime();
+  }
+}
+function playSousVideAlarmTone(){
+  const context = getSousVideAudioContext();
+  if (!context) return;
+  const play = () => {
+    [0, 0.24].forEach((delay, index) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      const start = context.currentTime + delay;
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(index === 0 ? 880 : 660, start);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.22, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.20);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start(start);
+      oscillator.stop(start + 0.22);
+    });
+  };
+  if (context.state === 'suspended') {
+    context.resume().then(play).catch(() => {});
+  } else {
+    play();
+  }
+}
+function startSousVideAlarm(state){
+  sousVideAlarmNames.add(formatSousVideIngredientName(state.ingredient));
+  updateSousVideAlarmBar();
+  playSousVideAlarmTone();
+  if (navigator.vibrate) navigator.vibrate([250, 120, 250]);
+  if (!sousVideAlarmInterval) {
+    sousVideAlarmInterval = window.setInterval(playSousVideAlarmTone, 1300);
+  }
+}
+function stopSousVideAlarm(){
+  if (sousVideAlarmInterval) {
+    window.clearInterval(sousVideAlarmInterval);
+    sousVideAlarmInterval = null;
+  }
+  sousVideAlarmNames.clear();
+  if (navigator.vibrate) navigator.vibrate(0);
+  updateSousVideAlarmBar();
+}
+function updateSousVideAlarmBar(){
+  const bar = document.getElementById('sousVideAlarmBar');
+  const text = document.getElementById('sousVideAlarmText');
+  if (!bar || !text) return;
+  const names = [...sousVideAlarmNames];
+  bar.classList.toggle('hidden', names.length === 0);
+  text.textContent = names.length ? `Timer finished: ${names.join(', ')}` : 'Timer finished';
+}
+function toggleSousVideTimer(key){
+  const state = sousVideTimers.get(key);
+  if (!state) return;
+  primeSousVideAudio();
+  updateSousVideTimerState(state);
+  if (state.status === 'running') {
+    state.remainingMs = Math.max(0, state.endAt - Date.now());
+    state.endAt = 0;
+    state.status = 'paused';
+  } else {
+    if (state.status === 'done' || state.remainingMs <= 0) {
+      state.remainingMs = state.totalMs;
+      state.alarmTriggered = false;
+      stopSousVideAlarm();
+    }
+    state.status = 'running';
+    state.endAt = Date.now() + state.remainingMs;
+    ensureSousVideTimerTicker();
+  }
+  saveSousVideTimerStates();
+  refreshSousVideTimerDisplay();
+}
+function resetSousVideTimer(key){
+  const state = sousVideTimers.get(key);
+  if (!state) return;
+  state.remainingMs = state.totalMs;
+  state.endAt = 0;
+  state.status = 'idle';
+  state.alarmTriggered = false;
+  stopSousVideAlarm();
+  saveSousVideTimerStates();
+  refreshSousVideTimerDisplay();
+}
+function resetAllSousVideTimers(){
+  if (sousVideTimerTicker) {
+    window.clearInterval(sousVideTimerTicker);
+    sousVideTimerTicker = null;
+  }
+  stopSousVideAlarm();
+  sousVideTimers.clear();
+  savedSousVideTimerStates = {};
+  localStorage.removeItem(SOUS_VIDE_TIMER_STORAGE_KEY);
+  renderSousVide();
+}
+function bindSousVideTimerControls(root){
+  root.querySelectorAll('[data-timer-action]').forEach(button => {
+    button.addEventListener('click', () => {
+      const key = button.dataset.timerKey;
+      if (button.dataset.timerAction === 'reset') {
+        resetSousVideTimer(key);
+      } else {
+        toggleSousVideTimer(key);
+      }
+    });
+  });
+}
 function renderSousVide(){
   const search = document.getElementById('sousVideSearch');
   const query = (search?.value || '').toLowerCase().trim();
@@ -4398,10 +4713,13 @@ function renderSousVide(){
       <table class="sous-vide-table">
         <colgroup><col style="width:42%"><col style="width:25%"><col style="width:33%"></colgroup>
         <thead><tr><th>Ingredient</th><th>Time</th><th>Temperature</th></tr></thead>
-        <tbody><tr><td>${escapeHtml(formatSousVideIngredientName(record.ingredient))}</td><td>${escapeHtml(record.time)}</td><td>${escapeHtml(record.temperature)}</td></tr></tbody>
+        <tbody><tr><td>${escapeHtml(formatSousVideIngredientName(record.ingredient))}</td><td>${renderSousVideTimerControls(record)}</td><td>${escapeHtml(record.temperature)}</td></tr></tbody>
       </table>
     </article>
   `).join('');
+  bindSousVideTimerControls(root);
+  refreshSousVideTimerDisplay();
+  if ([...sousVideTimers.values()].some(state => state.status === 'running')) ensureSousVideTimerTicker();
 }
 function clearSousVideSearch(){
   const search = document.getElementById('sousVideSearch');
