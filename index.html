@@ -289,9 +289,100 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
   #recipeView .header,#sousVideView .header{top:env(safe-area-inset-top)}
 }
 
+.auth-locked{overflow:hidden}
+.auth-locked .app{
+  pointer-events:none;
+  user-select:none;
+  filter:blur(13px) saturate(.78);
+  transform:scale(.985);
+  transform-origin:center top;
+}
+.login-overlay{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:grid;
+  place-items:center;
+  padding:
+    calc(20px + env(safe-area-inset-top))
+    calc(16px + env(safe-area-inset-right))
+    calc(20px + env(safe-area-inset-bottom))
+    calc(16px + env(safe-area-inset-left));
+  background:rgba(7,8,11,.38);
+  backdrop-filter:blur(12px) saturate(115%);
+  -webkit-backdrop-filter:blur(12px) saturate(115%);
+}
+.login-panel{
+  width:min(100%,340px);
+  padding:22px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--radius);
+  background:linear-gradient(145deg,rgba(37,38,44,.90),rgba(20,21,25,.84));
+  box-shadow:0 24px 70px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.10);
+  backdrop-filter:blur(26px) saturate(145%);
+  -webkit-backdrop-filter:blur(26px) saturate(145%);
+}
+.login-title{margin:0 0 5px;font-size:22px;line-height:1.08;font-weight:950}
+.login-copy{margin:0 0 18px;color:var(--muted);font-size:11px;line-height:1.35;font-weight:750}
+.login-form label{margin-bottom:7px}
+.login-input{
+  min-height:48px;
+  margin:0;
+  padding:11px 13px;
+  border-color:rgba(255,255,255,.11);
+  background:rgba(255,255,255,.065);
+}
+.login-submit{
+  width:100%;
+  min-height:44px;
+  margin-top:10px;
+  border:1px solid rgba(111,194,132,.24);
+  border-radius:var(--radius-control);
+  background:linear-gradient(145deg,rgba(63,143,86,.42),rgba(25,82,50,.68));
+  color:#f4f0e8;
+  font-size:11px;
+  font-weight:950;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 9px 22px rgba(0,0,0,.24);
+}
+.login-error{
+  min-height:16px;
+  margin:8px 1px 0;
+  color:#ffb9a8;
+  font-size:10px;
+  line-height:1.2;
+  font-weight:850;
+}
+@media(max-width:430px){
+  .login-overlay{
+    align-items:center;
+    padding:
+      calc(14px + env(safe-area-inset-top))
+      calc(12px + env(safe-area-inset-right))
+      calc(14px + env(safe-area-inset-bottom))
+      calc(12px + env(safe-area-inset-left));
+  }
+  .login-panel{width:min(100%,320px);padding:19px}
+  .login-title{font-size:21px}
+  .login-input{font-size:16px}
+}
+
 </style>
 </head>
-<body class="home-active">
+<body class="home-active auth-locked">
+<section id="loginOverlay" class="login-overlay" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <div class="login-panel">
+    <h1 id="loginTitle" class="login-title">Batch Calculator</h1>
+    <p class="login-copy">Enter the password to continue.</p>
+    <form class="login-form" onsubmit="unlockApplication(event)">
+      <label for="loginPassword">Password</label>
+      <input id="loginPassword" class="login-input" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" />
+      <button class="login-submit" type="submit">Unlock</button>
+      <div id="loginError" class="login-error" role="alert" aria-live="polite"></div>
+    </form>
+  </div>
+</section>
 <main class="app">
   <section id="homeView">
     <header class="header">
@@ -4202,6 +4293,8 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
 }</script>
 <script>
 const appData = JSON.parse(document.getElementById('initial-data').textContent);
+const APP_PASSWORD = 'heslojeheslo';
+const AUTH_STORAGE_KEY = 'batchCalculatorAuth:v2';
 const STORAGE_KEY = 'batchCalculatorState:v2';
 const SOUS_VIDE_TIMER_STORAGE_KEY = 'batchCalculatorSousVideTimers:v2';
 let currentRecipe = null;
@@ -4240,6 +4333,60 @@ const recipePrepTimes = {
   'BLOOM BERRY': 'Prep time 2 hours',
   'PASSION GROVE': 'Prep time 12 hours'
 };
+
+function createAuthToken(value){
+  let hash = 2166136261;
+  for (const character of String(value || '')) {
+    hash ^= character.charCodeAt(0);
+    hash = Math.imul(hash, 16777619);
+  }
+  return `auth-${(hash >>> 0).toString(16)}`;
+}
+function hasValidApplicationLogin(){
+  try {
+    return localStorage.getItem(AUTH_STORAGE_KEY) === createAuthToken(APP_PASSWORD);
+  } catch (err) {
+    return false;
+  }
+}
+function showUnlockedApplication(){
+  const overlay = document.getElementById('loginOverlay');
+  const app = document.querySelector('.app');
+  document.body.classList.remove('auth-locked');
+  overlay?.classList.add('hidden');
+  app?.removeAttribute('aria-hidden');
+  app?.removeAttribute('inert');
+}
+function initializeApplicationLogin(){
+  const overlay = document.getElementById('loginOverlay');
+  const app = document.querySelector('.app');
+  if (hasValidApplicationLogin()) {
+    showUnlockedApplication();
+    return;
+  }
+  document.body.classList.add('auth-locked');
+  overlay?.classList.remove('hidden');
+  app?.setAttribute('aria-hidden', 'true');
+  app?.setAttribute('inert', '');
+  window.requestAnimationFrame(() => document.getElementById('loginPassword')?.focus());
+}
+function unlockApplication(event){
+  event.preventDefault();
+  const input = document.getElementById('loginPassword');
+  const error = document.getElementById('loginError');
+  if ((input?.value || '') !== APP_PASSWORD) {
+    if (error) error.textContent = 'Incorrect password.';
+    input?.focus();
+    input?.select();
+    return;
+  }
+  try {
+    localStorage.setItem(AUTH_STORAGE_KEY, createAuthToken(APP_PASSWORD));
+  } catch (err) {}
+  if (error) error.textContent = '';
+  if (input) input.value = '';
+  showUnlockedApplication();
+}
 
 const batchSelect = document.getElementById('batchSelect');
 const customBatch = document.getElementById('customBatch');
@@ -4359,6 +4506,18 @@ function recipeOpenedAt(recipe){
 }
 function recipePrepTime(recipe){
   return recipePrepTimes[recipe.name] || 'Prep Time';
+}
+function recipePrepDurationMinutes(recipe){
+  const text = recipePrepTime(recipe);
+  const durations = [...text.matchAll(/(\d+(?:[.,]\d+)?)\s*(days?|d|hours?|hrs?|h|minutes?|mins?|min)\b/gi)]
+    .map(match => {
+      const value = Number(String(match[1]).replace(',', '.'));
+      const unit = match[2].toLowerCase();
+      if (unit.startsWith('d')) return value * 24 * 60;
+      if (unit.startsWith('h')) return value * 60;
+      return value;
+    });
+  return durations.length ? Math.max(...durations) : 0;
 }
 function hasSousVideText(value){
   return /sous[\s-]*vide/i.test(String(value || ''));
@@ -4889,6 +5048,8 @@ function clearSousVideSearch(){
 }
 function sortedOpenRecipes(recipes){
   return [...recipes].sort((a, b) => {
+    const prepTimeDiff = recipePrepDurationMinutes(b) - recipePrepDurationMinutes(a);
+    if (prepTimeDiff) return prepTimeDiff;
     const openedDiff = recipeOpenedAt(b) - recipeOpenedAt(a);
     if (openedDiff) return openedDiff;
     return String(a.name || '').localeCompare(String(b.name || ''), undefined, {sensitivity: 'base'});
@@ -5356,6 +5517,7 @@ customBatch.addEventListener('input', () => {
   renderPreps();
   saveCurrentRecipeState();
 });
+initializeApplicationLogin();
 renderHome();
 reconcileSousVideTimers();
 document.addEventListener('visibilitychange', reconcileSousVideTimers);
