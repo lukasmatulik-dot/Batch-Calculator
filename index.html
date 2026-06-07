@@ -4,7 +4,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#151619" />
-<link rel="icon" href="data:," />
+<meta name="application-name" content="Alcron Batch Calculator" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Batch Calculator" />
+<link rel="manifest" href="./manifest.json" />
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png" />
 <title>Batch Calculator</title>
 <style>
 :root{
@@ -74,10 +80,10 @@ h1{margin:0;font-size:28px;line-height:1.02;letter-spacing:0;font-weight:950}
 .sous-vide-table th:last-child{color:var(--text);white-space:nowrap;overflow-wrap:normal;word-break:normal}
 .sous-vide-alarm-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px;padding:7px 9px;border:1px solid rgba(255,216,200,.16);border-radius:var(--radius-control);background:rgba(125,61,45,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
 .sous-vide-alarm-text{min-width:0;color:var(--soft);font-size:10px;font-weight:900;line-height:1.2}
-.sous-vide-stop-alarm{flex:0 0 auto;min-height:28px;padding:0 10px;border:1px solid rgba(255,216,200,.18);border-radius:var(--radius-pill);background:linear-gradient(145deg,rgba(164,91,71,.64),rgba(86,41,36,.68));color:#f4f0e8;font-size:8.5px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 7px 16px rgba(0,0,0,.18)}
 .sous-vide-timer-controls{display:grid;grid-template-columns:minmax(0,1fr);gap:3px;width:100%;max-width:112px;margin:0 auto}
 .sous-vide-timer-button,.sous-vide-timer-reset{width:100%;border-radius:var(--radius-pill);font-weight:950;white-space:nowrap}
 .sous-vide-timer-button{min-height:29px;padding:3px 7px;border:1px solid rgba(111,194,132,.22);background:linear-gradient(145deg,rgba(63,143,86,.24),rgba(25,82,50,.48));color:#f4f0e8;font-size:9.5px;line-height:1;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 6px 14px rgba(0,0,0,.16)}
+.sous-vide-timer-button.is-running,.sous-vide-timer-button.is-paused,.sous-vide-timer-button.is-done{border-color:rgba(255,216,200,.18);background:linear-gradient(145deg,rgba(164,91,71,.64),rgba(86,41,36,.68));color:#f4f0e8;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 9px 22px rgba(0,0,0,.24)}
 .sous-vide-timer-reset{min-height:21px;padding:2px 6px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.055);color:var(--muted);font-size:7.5px;line-height:1;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
 .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 label{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:900;margin-bottom:6px}
@@ -270,7 +276,6 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
       <div class="search-wrap sous-vide-search-wrap"><input id="sousVideSearch" class="home-search" placeholder="Sous Vide Guide" oninput="renderSousVide()" /><button class="search-clear" type="button" onclick="clearSousVideSearch()">Clear</button></div>
       <div id="sousVideAlarmBar" class="sous-vide-alarm-bar hidden" role="status" aria-live="assertive">
         <div id="sousVideAlarmText" class="sous-vide-alarm-text">Timer finished</div>
-        <button class="sous-vide-stop-alarm" type="button" onclick="stopSousVideAlarm()">Stop Alarm</button>
       </div>
       <div id="sousVideList" class="sous-vide-list"></div>
       <div id="sousVideEmpty" class="empty hidden">No Sous Vide Guide records found.</div>
@@ -4150,7 +4155,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
 <script>
 const appData = JSON.parse(document.getElementById('initial-data').textContent);
 const STORAGE_KEY = 'batchCalculatorState:v2';
-const SOUS_VIDE_TIMER_STORAGE_KEY = 'batchCalculatorSousVideTimers:v1';
+const SOUS_VIDE_TIMER_STORAGE_KEY = 'batchCalculatorSousVideTimers:v2';
 let currentRecipe = null;
 let currentTargetMl = 500;
 let prepOverrides = {};
@@ -4340,7 +4345,7 @@ function collectSousVideRecords(){
   const records = [];
   const addSousVideRecord = record => {
     if (record.source === 'ALCRON' && String(record.ingredient || '').toUpperCase() === 'LOVAGE GIN') {
-      record.time = '2 minutes';
+      record.time = '2 hours';
     }
     if (record.time === 'Not specified') return;
     if (record.temperature === 'Not specified') return;
@@ -4557,7 +4562,7 @@ function sousVideTimerLabel(state){
 function sousVideTimerActionLabel(state){
   if (state.status === 'running') return 'Pause';
   if (state.status === 'paused') return 'Resume';
-  if (state.status === 'done') return 'Restart';
+  if (state.status === 'done') return 'Reset';
   return 'Start';
 }
 function renderSousVideTimerControls(record){
@@ -4681,6 +4686,7 @@ function startSousVideAlarm(state){
 }
 function safelyVibrateSousVide(pattern){
   try {
+    if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return;
     if (typeof navigator.vibrate === 'function') navigator.vibrate(pattern);
   } catch (err) {}
 }
@@ -4708,12 +4714,16 @@ function toggleSousVideTimer(key){
   if (!state) return;
   primeSousVideAudio();
   updateSousVideTimerState(state);
+  if (state.status === 'done') {
+    resetSousVideTimer(key);
+    return;
+  }
   if (state.status === 'running') {
     state.remainingMs = Math.max(0, state.endTime - Date.now());
     state.endTime = 0;
     state.status = 'paused';
   } else {
-    if (state.status === 'done' || state.remainingMs <= 0) {
+    if (state.remainingMs <= 0) {
       state.remainingMs = state.totalMs;
       state.finishedAt = 0;
       state.alarmTriggered = false;
@@ -5302,6 +5312,11 @@ renderHome();
 reconcileSousVideTimers();
 document.addEventListener('visibilitychange', reconcileSousVideTimers);
 window.addEventListener('pageshow', reconcileSousVideTimers);
+if ('serviceWorker' in navigator && /^https?:$/.test(window.location.protocol)) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
 </script>
 </body>
 </html>
