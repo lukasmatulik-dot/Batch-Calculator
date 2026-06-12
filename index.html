@@ -37,7 +37,7 @@ body{
 .app{width:100%;max-width:620px;margin:0 auto}
 .header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:8px 2px 12px}
 #homeView .header{align-items:flex-start;gap:8px;padding:4px 2px 5px}
-#recipeView .header,#sousVideView .header{position:sticky;top:env(safe-area-inset-top);z-index:40;margin:-12px -12px 10px;padding:14px 12px 12px;background:rgba(248,251,247,.74);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);border-bottom:1px solid rgba(42,48,43,.10);box-shadow:0 12px 28px rgba(54,65,58,.08)}
+#recipeView .header,#sousVideView .header,#stockPullView .header{position:sticky;top:env(safe-area-inset-top);z-index:40;margin:-12px -12px 10px;padding:14px 12px 12px;background:rgba(248,251,247,.74);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);border-bottom:1px solid rgba(42,48,43,.10);box-shadow:0 12px 28px rgba(54,65,58,.08)}
 h1{margin:0;font-size:28px;line-height:1.02;letter-spacing:0;font-weight:950}
 .home-title-block{flex:1;min-width:0;display:flex;flex-direction:column}
 .home-credit{align-self:flex-start;width:fit-content;max-width:min(100%,430px);margin-top:1px;margin-right:auto;color:var(--muted);font-size:7.29px;line-height:1.10;font-weight:700;letter-spacing:0;opacity:.52;text-align:left;white-space:normal;overflow-wrap:break-word}
@@ -66,7 +66,7 @@ h1{margin:0;font-size:28px;line-height:1.02;letter-spacing:0;font-weight:950}
 .recipe-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap;max-width:100%}
 .recipe-nav-button{height:36px;min-height:36px;padding:0 13px;border-radius:var(--radius-pill);border:1px solid rgba(255,255,255,.48);color:#f8fff8;font-size:10px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 9px 20px rgba(54,65,58,.14);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
 .recipe-home-button{background:linear-gradient(145deg,rgba(78,157,99,.76),rgba(55,116,77,.82));border-color:rgba(255,255,255,.50)}
-.home-tool-row{display:flex;justify-content:flex-start;margin:-3px 0 12px}
+.home-tool-row{display:grid;gap:7px;margin:-3px 0 12px}
 .sous-vide-button{width:100%;height:32px;min-height:32px;border:1px solid rgba(128,80,67,.18);background:rgba(255,255,255,.62);color:rgba(96,57,49,.88);box-shadow:inset 0 1px 0 rgba(255,255,255,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .sous-vide-button.has-active-timer{border:1px solid rgba(63,143,86,.28);background:linear-gradient(135deg,rgba(88,174,113,.24),rgba(224,245,231,.58));color:#285f3a}
 .sous-vide-button.has-finished-timer{border:1px solid rgba(255,255,255,.46);background:linear-gradient(145deg,rgba(188,102,86,.78),rgba(139,67,56,.86));color:#f8fff8;box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 9px 20px rgba(54,65,58,.14)}
@@ -84,6 +84,14 @@ h1{margin:0;font-size:28px;line-height:1.02;letter-spacing:0;font-weight:950}
 .sous-vide-table th:last-child{color:var(--text);white-space:nowrap;overflow-wrap:normal;word-break:normal}
 .sous-vide-alarm-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px;padding:7px 9px;border:1px solid rgba(255,216,200,.16);border-radius:var(--radius-control);background:rgba(125,61,45,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
 .sous-vide-alarm-text{min-width:0;color:var(--soft);font-size:10px;font-weight:900;line-height:1.2}
+.stock-pull-list{overflow:hidden;border:1px solid rgba(128,80,67,.14);border-radius:var(--radius-inner);background:rgba(255,255,255,.36);box-shadow:inset 0 1px 0 rgba(255,255,255,.60)}
+.stock-pull-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;min-height:48px;padding:10px;border-bottom:1px solid rgba(128,80,67,.09);background:rgba(255,255,255,.34)}
+.stock-pull-row[data-prep-component="false"]{background:linear-gradient(145deg,rgba(47,143,82,.125),rgba(18,51,33,.16),rgba(17,19,21,.82))}
+.stock-pull-row:last-child{border-bottom:0}
+.stock-pull-name{min-width:0;font-size:14px;line-height:1.18;font-weight:900;overflow-wrap:anywhere;word-break:break-word}
+.stock-pull-amount{min-width:92px;text-align:right;color:var(--soft);font-size:13px;font-weight:950;white-space:nowrap}
+.stock-pull-group+.stock-pull-group{margin-top:2px;padding-top:2px;border-top:1px solid rgba(128,80,67,.14)}
+.stock-pull-group-title{padding:8px 10px 6px;color:var(--muted);font-size:9px;line-height:1.1;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
 .sous-vide-timer-controls{display:grid;grid-template-columns:minmax(0,1fr);gap:3px;width:100%;max-width:112px;margin:0 auto}
 .sous-vide-timer-button,.sous-vide-timer-reset{width:100%;border-radius:var(--radius-pill);font-weight:950;white-space:nowrap}
 .sous-vide-timer-button{min-height:29px;padding:3px 7px;border:1px solid rgba(111,194,132,.22);background:linear-gradient(145deg,rgba(63,143,86,.24),rgba(25,82,50,.48));color:#f4f0e8;font-size:9.5px;line-height:1;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 6px 14px rgba(0,0,0,.16)}
@@ -147,7 +155,7 @@ body.home-active .clear-all-button{width:108px;height:36px;min-height:36px;font-
       calc(10px + env(safe-area-inset-left));
   }
   #homeView .header{gap:6px;padding:4px 1px 4px}
-  #recipeView .header,#sousVideView .header{margin:-10px -10px 10px;padding:14px 10px 12px}
+  #recipeView .header,#sousVideView .header,#stockPullView .header{margin:-10px -10px 10px;padding:14px 10px 12px}
   .search-wrap{top:calc(env(safe-area-inset-top) + 6px);margin-top:-4px;padding:4px 0}
   .home-search{height:44px;min-height:44px;padding:9px 72px 9px 42px;font-size:16px}
   .search-wrap:before{left:14px}
@@ -158,11 +166,11 @@ body.home-active .clear-all-button{width:108px;height:36px;min-height:36px;font-
   .sous-vide-list{gap:7px}
   .sous-vide-card{padding:8px 9px}
   .sous-vide-source{margin-bottom:4px}
-  #sousVideView .header{grid-template-columns:minmax(0,1fr);gap:8px;padding-bottom:10px}
-  #sousVideView .recipe-actions{width:100%;justify-content:space-between;flex-wrap:nowrap}
-  #sousVideView .recipe-actions>button{flex:1;min-width:0}
-  #sousVideView>.card{padding:9px}
-  #sousVideView .section-head{margin-bottom:8px}
+  #sousVideView .header,#stockPullView .header{grid-template-columns:minmax(0,1fr);gap:8px;padding-bottom:10px}
+  #sousVideView .recipe-actions,#stockPullView .recipe-actions{width:100%;justify-content:space-between;flex-wrap:nowrap}
+  #sousVideView .recipe-actions>button,#stockPullView .recipe-actions>button{flex:1;min-width:0}
+  #sousVideView>.card,#stockPullView>.card{padding:9px}
+  #sousVideView .section-head,#stockPullView .section-head{margin-bottom:8px}
   .sous-vide-search-wrap{margin-bottom:9px}
   .sous-vide-table col:nth-child(1){width:39%!important}
   .sous-vide-table col:nth-child(2){width:29%!important}
@@ -174,6 +182,9 @@ body.home-active .clear-all-button{width:108px;height:36px;min-height:36px;font-
   .sous-vide-timer-button{min-height:32px;padding:4px 5px;font-size:9px}
   .sous-vide-timer-reset{min-height:25px;font-size:7.5px}
   .sous-vide-alarm-bar{padding:6px 8px}
+  .stock-pull-row{min-height:45px;padding:9px}
+  .stock-pull-name{font-size:13.5px}
+  .stock-pull-amount{min-width:82px;font-size:12.5px}
   .clear-all-button,body.home-active .clear-all-button,.sous-vide-reset-all{height:34px;min-height:34px;font-size:9.5px}
   h1{font-size:25px}
   .home-credit{max-width:100%;font-size:5.2px;line-height:1;margin-top:1px;white-space:nowrap}
@@ -201,7 +212,7 @@ body{
     radial-gradient(circle at 22% -12%, rgba(63,64,72,.22), transparent 34%),
     linear-gradient(180deg,#0b0c10 0%,#111217 34%,#17181d 68%,#1d1e23 100%);
 }
-#recipeView .header,#sousVideView .header{background:rgba(21,22,25,.84);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);border-bottom:1px solid rgba(255,255,255,.075);box-shadow:0 12px 30px rgba(0,0,0,.24)}
+#recipeView .header,#sousVideView .header,#stockPullView .header{background:rgba(21,22,25,.84);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);border-bottom:1px solid rgba(255,255,255,.075);box-shadow:0 12px 30px rgba(0,0,0,.24)}
 .card{background:linear-gradient(145deg,rgba(32,33,38,.82),rgba(29,31,36,.64));border:1px solid rgba(255,255,255,.09);box-shadow:var(--shadow);backdrop-filter:blur(24px) saturate(145%);-webkit-backdrop-filter:blur(24px) saturate(145%)}
 .section-pill{border:1px solid rgba(255,216,200,.13);background:rgba(255,255,255,.045);color:rgba(255,216,200,.78);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
 .search-wrap{padding:4px 0;background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.055));border:1px solid rgba(255,255,255,.09);box-shadow:0 18px 42px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.14);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%)}
@@ -221,6 +232,10 @@ body{
 .sous-vide-button{border:0;background:rgba(255,255,255,.10);color:rgba(246,241,232,.70);box-shadow:inset 0 1px 0 rgba(255,255,255,.10);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .sous-vide-button.has-active-timer{border:1px solid rgba(63,191,111,.36);background:linear-gradient(135deg,rgba(63,191,111,.22),rgba(18,59,36,.34));color:#dff8e8;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 7px 18px rgba(0,0,0,.18)}
 .sous-vide-button.has-finished-timer{border:1px solid rgba(255,216,200,.18);background:linear-gradient(145deg,rgba(164,91,71,.64),rgba(86,41,36,.68));color:#f4f0e8;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 9px 22px rgba(0,0,0,.24)}
+.stock-pull-list{border-color:rgba(255,216,200,.13);background:rgba(125,61,45,.10);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.stock-pull-row{border-bottom-color:rgba(255,216,200,.09);background:rgba(125,61,45,.095)}
+.stock-pull-row[data-prep-component="false"]{background:linear-gradient(145deg,rgba(47,143,82,.125),rgba(18,51,33,.16),rgba(17,19,21,.82))}
+.stock-pull-group+.stock-pull-group{border-top-color:rgba(255,216,200,.13)}
 select,input{border:1px solid rgba(255,255,255,.085);background:rgba(255,255,255,.060);color:var(--text);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 7px 16px rgba(0,0,0,.12)}
 select:focus,input:focus{border-color:rgba(255,216,200,.40);box-shadow:0 0 0 3px rgba(125,61,45,.18),inset 0 1px 0 rgba(255,255,255,.05)}
 .batch-chip{border:1px solid rgba(255,255,255,.085);background:rgba(255,255,255,.055);color:var(--soft);box-shadow:inset 0 1px 0 rgba(255,255,255,.055)}
@@ -286,7 +301,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
     position:sticky;
     top:calc(env(safe-area-inset-top) + 6px);
   }
-  #recipeView .header,#sousVideView .header{top:env(safe-area-inset-top)}
+  #recipeView .header,#sousVideView .header,#stockPullView .header{top:env(safe-area-inset-top)}
 }
 
 .auth-locked{overflow:hidden}
@@ -395,7 +410,10 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
     <section class="card">
       <div class="section-head"><div class="section-title">Cocktail Recipes</div></div>
       <div class="search-wrap"><input id="homeSearch" class="home-search" placeholder="Search recipe" oninput="filterHome()" /><button class="search-clear" type="button" onclick="clearRecipeSearch()">Clear</button></div>
-      <div class="home-tool-row"><button id="sousVideGuideButton" class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showSousVide()">Sous Vide Guide</button></div>
+      <div class="home-tool-row">
+        <button id="sousVideGuideButton" class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showSousVide()">Sous Vide Guide</button>
+        <button id="stockPullButton" class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showStockPull()">Required Stock</button>
+      </div>
       <div id="recipeList"></div>
       <div id="homeEmpty" class="empty hidden">No recipes found.</div>
     </section>
@@ -411,13 +429,26 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
     </header>
 
     <section class="card">
-      <div class="section-head"><div class="section-title">Sous Vide Guide</div></div>
       <div class="search-wrap sous-vide-search-wrap"><input id="sousVideSearch" class="home-search" placeholder="Sous Vide Guide" oninput="renderSousVide()" /><button class="search-clear" type="button" onclick="clearSousVideSearch()">Clear</button></div>
       <div id="sousVideAlarmBar" class="sous-vide-alarm-bar hidden" role="status" aria-live="assertive">
         <div id="sousVideAlarmText" class="sous-vide-alarm-text">Timer finished</div>
       </div>
       <div id="sousVideList" class="sous-vide-list"></div>
       <div id="sousVideEmpty" class="empty hidden">No Sous Vide Guide records found.</div>
+    </section>
+  </section>
+
+  <section id="stockPullView" class="hidden">
+    <header class="header recipe-header">
+      <div><h1>Required Stock</h1></div>
+      <div class="recipe-actions">
+        <button class="recipe-nav-button recipe-home-button" type="button" onclick="showHome({clearSearch:true})">Home</button>
+      </div>
+    </header>
+
+    <section class="card">
+      <div id="stockPullList" class="stock-pull-list"></div>
+      <div id="stockPullEmpty" class="empty hidden">No open recipes.</div>
     </section>
   </section>
 
@@ -656,7 +687,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "house": false
         },
         {
-          "name": "Horse Radish Vodka",
+          "name": "Horseradish Vodka",
           "ratio": 0.04,
           "unit": "g",
           "sourceCell": "F21",
@@ -1172,7 +1203,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
       ],
       "ingredients": [
         {
-          "name": "Ghee Butter Havana 7y.o",
+          "name": "Ghee Butter Havana 7 y.o.",
           "ratio": 0.666666666666667,
           "unit": "ml",
           "sourceCell": "F62",
@@ -1180,7 +1211,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "linkedPrep": "ghee-rum"
         },
         {
-          "name": "Oats Falernum",
+          "name": "Oat's Falernum",
           "ratio": 0.3,
           "unit": "ml",
           "sourceCell": "F63",
@@ -1230,7 +1261,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "I64"
             }
           ],
-          "note": "Thermomix / Mixing Temperature 0 °C, Speed 3, Time 10",
+          "note": "Thermomix / Mixing Temperature 0 °C, Speed 3, Time 10 min",
           "displayOrder": 0,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -1244,7 +1275,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "defaultAmount": 1000,
           "items": [
             {
-              "name": "Havana 7y.o",
+              "name": "Havana 7 y.o.",
               "ratio": 1.0,
               "unit": "ml",
               "sourceCell": "L62"
@@ -1600,7 +1631,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "I91"
             }
           ],
-          "note": "Thermomix / Mixing Temperature 0 °C, Speed 3, Time 10",
+          "note": "Thermomix / Mixing Temperature 0 °C, Speed 3, Time 10 min",
           "displayOrder": 0,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -1967,7 +1998,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
       ],
       "ingredients": [
         {
-          "name": "Havana 7yo",
+          "name": "Havana 7 y.o.",
           "ratio": 0.4402515723,
           "unit": "ml",
           "sourceCell": "F125",
@@ -3086,7 +3117,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
         "clarified-strawberry"
       ],
       "mainTarget": "F35",
-      "mainNote": "Excel note: Main batch unit is marked as ML/GRAMS; row-specific units are not fully specified in the table.",
+      "mainNote": "",
       "searchAliases": [
         "STRAWBERRY LEAVES"
       ]
@@ -3176,7 +3207,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "defaultAmount": 1000,
           "items": [
             {
-              "name": "Rum",
+              "name": "Havana 7 y.o.",
               "ratio": 0.2678571429,
               "unit": "ml",
               "sourceCell": "I50"
@@ -3207,7 +3238,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "I54"
             },
             {
-              "name": "Full Fat Milk",
+              "name": "Full-Fat Milk",
               "ratio": 0.158730158730159,
               "unit": "ml",
               "sourceCell": "I55"
@@ -3860,6 +3891,13 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "linkedPrep": "2-lacto-sirup"
         },
         {
+          "name": "Royal Tea",
+          "ratio": 0.2142857142857143,
+          "unit": "ml",
+          "sourceCell": null,
+          "house": false
+        },
+        {
           "name": "Kaffir Chilli",
           "ratio": 0.006926210955183356,
           "unit": "g",
@@ -4254,7 +4292,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
       "preps": {
         "clarified-passionfruit": {
           "id": "clarified-passionfruit",
-          "title": "CLARIFIED PASSIONFRUIT",
+          "title": "CLARIFIED PASSION FRUIT",
           "targetCell": "I43",
           "targetUnit": "g",
           "linkedSourceCell": null,
@@ -4416,6 +4454,14 @@ function escapeHtml(value){
     "'":'&#39;'
   }[ch]));
 }
+function formatProductName(value){
+  const text = String(value ?? '');
+  if (!/[A-ZÀ-Ž]/.test(text) || /[a-zà-ž]/.test(text)) return text;
+  return text.toLocaleLowerCase('en-US').replace(
+    /(^|[\s#/"(-])([a-zà-ž])/g,
+    (match, prefix, letter) => `${prefix}${letter.toLocaleUpperCase('en-US')}`
+  );
+}
 function loadSavedState(){
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {recipes:{}};
@@ -4436,6 +4482,7 @@ function updateRecipeState(recipe, patch){
   const key = recipeKey(recipe);
   savedState.recipes[key] = {...(savedState.recipes[key] || {}), ...patch};
   saveState();
+  renderStockPullList();
 }
 function saveCurrentRecipeState(){
   if (!currentRecipe) return;
@@ -4476,7 +4523,7 @@ function getOverrideAmount(prepId){
   const raw = prepOverrides[prepId];
   if (raw === undefined || raw === '') return null;
   const parsed = parseAmountInput(raw);
-  return Number.isFinite(parsed) ? Math.max(0, parsed) : 0;
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
 }
 function getActiveNeeded(prepId, calculatedNeeded){
   const override = getOverrideAmount(prepId);
@@ -4630,7 +4677,7 @@ function sortSousVideRecords(records, query){
   });
 }
 function formatSousVideIngredientName(name){
-  return String(name || '').toLowerCase().replace(/\b([a-zà-ž])/g, char => char.toUpperCase());
+  return formatProductName(name);
 }
 function loadSousVideTimerStates(){
   try {
@@ -5055,6 +5102,159 @@ function sortedOpenRecipes(recipes){
     return String(a.name || '').localeCompare(String(b.name || ''), undefined, {sensitivity: 'base'});
   });
 }
+function stockPullTarget(recipe){
+  const savedTarget = Number(getRecipeState(recipe).targetMl);
+  return Number.isFinite(savedTarget) && savedTarget > 0
+    ? savedTarget
+    : Math.max(1, Number(recipe.defaultBatchMl) || 500);
+}
+function stockPullOverride(recipe, prepId){
+  const raw = getRecipeState(recipe).prepOverrides?.[prepId];
+  if (raw === undefined || raw === '') return null;
+  const parsed = parseAmountInput(raw);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+}
+function stockPullUnit(unit){
+  return String(unit || 'ml').trim().toLowerCase();
+}
+function stockPullProductKey(name, unit, isPrep){
+  const normalizedName = String(name || '').trim().replace(/\s+/g, ' ').toLowerCase();
+  return isPrep ? `prep::${normalizedName}::${unit}` : `main::${normalizedName}`;
+}
+function isStockPullGarnish(...values){
+  return values.some(value => /\bgarnish\b/i.test(String(value || '')));
+}
+function isStockPullSubPrep(prep, depth=0){
+  return depth > 0 || String(prep?.prepTypeLabel || '').toLowerCase() === 'sub prep';
+}
+function formatStockPullAmount(value){
+  return String(Math.round(Number(value) || 0));
+}
+function collectStockPullProducts(){
+  const openRecipes = sortedOpenRecipes(sortedRecipes().filter(recipe => getRecipeStatus(recipe) === 'open'));
+  const products = new Map();
+  let order = 0;
+
+  function addProduct(name, value, unit, isPrep=false){
+    const amountValue = Number(value);
+    if (!name || !Number.isFinite(amountValue) || amountValue <= 0) return;
+    const displayUnit = isPrep ? stockPullUnit(unit) : 'ml';
+    const key = stockPullProductKey(name, displayUnit, isPrep);
+    if (!products.has(key)) {
+      products.set(key, {
+        name,
+        amount:0,
+        unit:displayUnit,
+        order:order++,
+        hasDirect:false,
+        hasPrep:false
+      });
+    }
+    const product = products.get(key);
+    product.amount += amountValue;
+    if (isPrep) product.hasPrep = true;
+    else product.hasDirect = true;
+  }
+
+  openRecipes.forEach(recipe => {
+    const target = stockPullTarget(recipe);
+    const preps = recipe.preps || {};
+    const expandedPreps = new Set();
+    const nestedPrepIds = new Set();
+    Object.values(preps).forEach(prep => {
+      (prep.items || []).forEach(item => {
+        if (item.linkedPrep) nestedPrepIds.add(item.linkedPrep);
+      });
+    });
+
+    function expandPrep(prepId, needed, sourceName, sourceUnit, trail=[]){
+      const prep = preps[prepId];
+      if (!prep || trail.includes(prepId)) {
+        if (isStockPullGarnish(prepId, sourceName)) return;
+        addProduct(sourceName, needed, sourceUnit, true);
+        return;
+      }
+      if (
+        isStockPullGarnish(prep.id, prep.title, sourceName) ||
+        isStockPullSubPrep(prep, trail.length) ||
+        nestedPrepIds.has(prepId)
+      ) return;
+      expandedPreps.add(prepId);
+      const override = stockPullOverride(recipe, prepId);
+      const defaultNeeded = prep.asNeeded ? (Number(prep.defaultAmount) || needed || 0) : needed;
+      const activeNeeded = override === null ? defaultNeeded : override;
+      addProduct(prep.title || sourceName, activeNeeded, sourceUnit || prep.targetUnit, true);
+    }
+
+    (recipe.ingredients || []).forEach(item => {
+      if (isStockPullGarnish(item.name)) return;
+      const itemAmount = target * Number(item.ratio || 0);
+      if (item.linkedPrep && preps[item.linkedPrep]) {
+        expandPrep(item.linkedPrep, itemAmount, item.name, item.unit);
+      } else {
+        addProduct(item.name, itemAmount, item.unit);
+      }
+    });
+
+    (recipe.additionalPreps || []).forEach(prepId => {
+      if (!preps[prepId] || expandedPreps.has(prepId)) return;
+      const prep = preps[prepId];
+      if (
+        isStockPullGarnish(prep.id, prep.title) ||
+        isStockPullSubPrep(prep) ||
+        nestedPrepIds.has(prepId)
+      ) return;
+      const batchRatio = Number(prep.batchRatio);
+      const needed = Number.isFinite(batchRatio) && batchRatio > 0
+        ? target * batchRatio
+        : (stockPullOverride(recipe, prepId) ?? Number(prep.defaultAmount || 0));
+      expandPrep(prepId, needed, prep.title, prep.targetUnit);
+    });
+  });
+
+  const sortedProducts = [...products.values()]
+    .map(product => ({
+      ...product,
+      isPrep: product.hasPrep && !product.hasDirect
+    }))
+    .sort((a, b) => {
+      if (a.isPrep !== b.isPrep) return a.isPrep ? 1 : -1;
+      const amountDifference = b.amount - a.amount;
+      return amountDifference || a.order - b.order;
+    });
+
+  return {
+    openRecipeCount: openRecipes.length,
+    products: sortedProducts
+  };
+}
+function renderStockPullList(){
+  const root = document.getElementById('stockPullList');
+  const empty = document.getElementById('stockPullEmpty');
+  if (!root || !empty) return;
+  const result = collectStockPullProducts();
+  const renderGroup = (title, products) => {
+    if (!products.length) return '';
+    return `
+      <section class="stock-pull-group">
+        <div class="stock-pull-group-title">${escapeHtml(title)}</div>
+        ${products.map(product => `
+          <div class="stock-pull-row" data-prep-component="${product.isPrep}">
+            <div class="stock-pull-name">${escapeHtml(formatProductName(product.name))}</div>
+            <div class="stock-pull-amount">${escapeHtml(formatStockPullAmount(product.amount))} ${escapeHtml(product.unit)}</div>
+          </div>
+        `).join('')}
+      </section>
+    `;
+  };
+  root.innerHTML = [
+    renderGroup('Main Batch', result.products.filter(product => !product.isPrep)),
+    renderGroup('Prep Components', result.products.filter(product => product.isPrep))
+  ].join('');
+  root.classList.toggle('hidden', result.products.length === 0);
+  empty.textContent = result.openRecipeCount === 0 ? 'No open recipes.' : 'No products required.';
+  empty.classList.toggle('hidden', result.products.length !== 0);
+}
 function createRecipeCard(r){
   const status = getRecipeStatus(r);
   const card = document.createElement('article');
@@ -5130,7 +5330,18 @@ function showSousVide(){
   document.body.classList.remove('home-active');
   document.getElementById('homeView').classList.add('hidden');
   document.getElementById('recipeView').classList.add('hidden');
+  document.getElementById('stockPullView').classList.add('hidden');
   document.getElementById('sousVideView').classList.remove('hidden');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function showStockPull(){
+  renderStockPullList();
+  updateCloseButtonLabel('Close All');
+  document.body.classList.remove('home-active');
+  document.getElementById('homeView').classList.add('hidden');
+  document.getElementById('recipeView').classList.add('hidden');
+  document.getElementById('sousVideView').classList.add('hidden');
+  document.getElementById('stockPullView').classList.remove('hidden');
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function clearCurrentRecipe(){
@@ -5159,6 +5370,7 @@ function showHome(options={}){
   document.getElementById('homeView').classList.remove('hidden');
   document.getElementById('recipeView').classList.add('hidden');
   document.getElementById('sousVideView').classList.add('hidden');
+  document.getElementById('stockPullView').classList.add('hidden');
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function openRecipe(recipe){
@@ -5170,6 +5382,7 @@ function openRecipe(recipe){
   document.body.classList.remove('home-active');
   document.getElementById('homeView').classList.add('hidden');
   document.getElementById('sousVideView').classList.add('hidden');
+  document.getElementById('stockPullView').classList.add('hidden');
   document.getElementById('recipeView').classList.remove('hidden');
   renderRecipe();
   window.scrollTo({top:0, behavior:'smooth'});
@@ -5232,7 +5445,7 @@ function renderIngredients(){
   (currentRecipe.ingredients || []).forEach((item, idx) => {
     const row = document.createElement('div');
     row.className = 'batch-row ' + (item.house ? 'is-prep' : 'is-direct');
-    row.innerHTML = `<div class="batch-left"><div><div class="batch-name">${escapeHtml(item.name)}</div>${item.note ? `<div class="batch-note">${escapeHtml(item.note)}</div>` : ''}</div></div><div class="amount main-amount-control"><input class="main-amount-input" type="text" inputmode="decimal" pattern="[0-9]*[,.]?[0-9]*" autocomplete="off" autocorrect="off" spellcheck="false" dir="ltr" value="${escapeHtml(fmtMainAmountNumber(amount(item)))}" aria-label="${escapeHtml(item.name)} amount" data-index="${idx}" oninput="updateMainBatchAmount(this)" onblur="restoreMainBatchAmount(this)"><span class="main-amount-unit">${escapeHtml(item.unit || '')}</span></div>`;
+    row.innerHTML = `<div class="batch-left"><div><div class="batch-name">${escapeHtml(formatProductName(item.name))}</div>${item.note ? `<div class="batch-note">${escapeHtml(item.note)}</div>` : ''}</div></div><div class="amount main-amount-control"><input class="main-amount-input" type="text" inputmode="decimal" pattern="[0-9]*[,.]?[0-9]*" autocomplete="off" autocorrect="off" spellcheck="false" dir="ltr" value="${escapeHtml(fmtMainAmountNumber(amount(item)))}" aria-label="${escapeHtml(formatProductName(item.name))} amount" data-index="${idx}" oninput="updateMainBatchAmount(this)" onblur="restoreMainBatchAmount(this)"><span class="main-amount-unit">${escapeHtml(item.unit || '')}</span></div>`;
     list.appendChild(row);
   });
   root.appendChild(list);
@@ -5257,7 +5470,7 @@ function updateMainBatchAmount(input){
   const parsed = parseAmountInput(input.value);
   const ratio = Number(item?.ratio || 0);
   if (!item || !Number.isFinite(ratio) || ratio <= 0 || parsed === null || parsed <= 0) return;
-  currentTargetMl = Math.max(1, parsed / ratio);
+  currentTargetMl = Math.max(1, Math.round((parsed / ratio) * 100) / 100);
   prepOverrides = {};
   customBatch.value = fmtBatchInputNumber(currentTargetMl);
   syncBatchControls(false);
@@ -5386,7 +5599,7 @@ function renderPrepCard(item, prep, needed, isAdditional=false, depth=0){
     const itemAmount = amount(r, activeNeeded);
     rows += `
       <tr>
-        <td>${escapeHtml(r.name)}</td>
+        <td>${escapeHtml(formatProductName(r.name))}</td>
         <td 
           id="prepAmount_${domId}_${idx}"
           data-ratio="${Number(r.ratio || 0)}"
@@ -5400,7 +5613,7 @@ function renderPrepCard(item, prep, needed, isAdditional=false, depth=0){
     <div class="prep-card ${useSubPrepStyle ? 'is-child' : ''} ${useServicePrepStyle ? 'is-service' : ''}" id="prepCard_${domId}">
       <div class="prep-top">
         <div>
-          <div class="prep-title">${escapeHtml(prep.title)}</div>
+          <div class="prep-title">${escapeHtml(formatProductName(prep.title))}</div>
           ${prepTypeLabel ? `<div class="prep-depth">${escapeHtml(prepTypeLabel)}</div>` : ''}
         </div>
         <div class="needed-inline">
@@ -5421,12 +5634,12 @@ function renderPrepCard(item, prep, needed, isAdditional=false, depth=0){
             autocorrect="off"
             spellcheck="false"
             dir="ltr"
-            value="${override !== undefined ? escapeHtml(override) : ''}" 
-            placeholder="${fmt(needed, item.unit)}" 
+            value="${override !== undefined && override !== '' ? escapeHtml(override) : '0'}" 
+            placeholder="0" 
             data-prep-id="${prepId}"
             data-dom-id="${domId}"
             data-unit="${item.unit || 'ml'}"
-            onfocus="this.setSelectionRange(this.value.length, this.value.length)"
+            onfocus="if(this.value === '0'){this.select()}else{this.setSelectionRange(this.value.length, this.value.length)}"
             oninput="updatePrepOverride(this)"
           >
         </div>
@@ -5484,6 +5697,7 @@ function clearAllData(){
     currentTargetMl = currentRecipe.defaultBatchMl || 500;
     renderRecipe();
   }
+  renderStockPullList();
   renderHome();
   showHome();
 }
@@ -5519,6 +5733,7 @@ customBatch.addEventListener('input', () => {
 });
 initializeApplicationLogin();
 renderHome();
+renderStockPullList();
 reconcileSousVideTimers();
 document.addEventListener('visibilitychange', reconcileSousVideTimers);
 window.addEventListener('pageshow', reconcileSousVideTimers);
