@@ -84,6 +84,12 @@ h1{margin:0;font-size:28px;line-height:1.02;letter-spacing:0;font-weight:950}
 .sous-vide-table th:last-child{color:var(--text);white-space:nowrap;overflow-wrap:normal;word-break:normal}
 .sous-vide-alarm-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px;padding:7px 9px;border:1px solid rgba(255,216,200,.16);border-radius:var(--radius-control);background:rgba(125,61,45,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
 .sous-vide-alarm-text{min-width:0;color:var(--soft);font-size:10px;font-weight:900;line-height:1.2}
+.push-notification-panel{display:flex;align-items:center;gap:8px;margin:0 0 9px;min-width:0}
+.push-notification-button{flex:0 0 auto;min-height:30px;padding:0 11px;border:1px solid rgba(111,194,132,.22);border-radius:var(--radius-pill);background:linear-gradient(145deg,rgba(63,143,86,.24),rgba(25,82,50,.48));color:#f4f0e8;font-size:8.5px;font-weight:950;line-height:1;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 6px 14px rgba(0,0,0,.16)}
+.push-notification-button:disabled{opacity:.48}
+.push-notification-status{min-width:0;color:var(--muted);font-size:9px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
+.push-notification-status.is-enabled{color:#bfeccb}
+.push-notification-status.is-blocked{color:#ffd8c8}
 .stock-pull-list{overflow:hidden;border:1px solid rgba(128,80,67,.14);border-radius:var(--radius-inner);background:rgba(255,255,255,.36);box-shadow:inset 0 1px 0 rgba(255,255,255,.60)}
 .stock-pull-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;min-height:48px;padding:10px;border-bottom:1px solid rgba(128,80,67,.09);background:rgba(255,255,255,.34)}
 .stock-pull-row[data-prep-component="false"]{background:linear-gradient(145deg,rgba(47,143,82,.125),rgba(18,51,33,.16),rgba(17,19,21,.82))}
@@ -182,6 +188,8 @@ body.home-active .clear-all-button{width:108px;height:36px;min-height:36px;font-
   .sous-vide-timer-button{min-height:32px;padding:4px 5px;font-size:9px}
   .sous-vide-timer-reset{min-height:25px;font-size:7.5px}
   .sous-vide-alarm-bar{padding:6px 8px}
+  .push-notification-panel{align-items:flex-start;flex-direction:column;gap:5px}
+  .push-notification-button{width:100%;min-height:32px}
   .stock-pull-row{min-height:45px;padding:9px}
   .stock-pull-name{font-size:13.5px}
   .stock-pull-amount{min-width:82px;font-size:12.5px}
@@ -429,6 +437,10 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
     </header>
 
     <section class="card">
+      <div class="push-notification-panel">
+        <button id="enablePushNotificationsButton" class="push-notification-button" type="button" onclick="enableSousVideNotifications()">Enable Notifications</button>
+        <div id="pushNotificationStatus" class="push-notification-status" role="status" aria-live="polite">Checking notification support...</div>
+      </div>
       <div class="search-wrap sous-vide-search-wrap"><input id="sousVideSearch" class="home-search" placeholder="Sous Vide Guide" oninput="renderSousVide()" /><button class="search-clear" type="button" onclick="clearSousVideSearch()">Clear</button></div>
       <div id="sousVideAlarmBar" class="sous-vide-alarm-bar hidden" role="status" aria-live="assertive">
         <div id="sousVideAlarmText" class="sous-vide-alarm-text">Timer finished</div>
@@ -4448,6 +4460,8 @@ const APP_PASSWORD = 'heslojeheslo';
 const AUTH_STORAGE_KEY = 'batchCalculatorAuth:v2';
 const STORAGE_KEY = 'batchCalculatorState:v2';
 const SOUS_VIDE_TIMER_STORAGE_KEY = 'batchCalculatorSousVideTimers:v2';
+const PUSH_SUBSCRIPTION_FUNCTION = '/.netlify/functions/save-subscription';
+const PUSH_TIMER_FUNCTION = '/.netlify/functions/schedule-timer';
 let currentRecipe = null;
 let currentTargetMl = 500;
 let prepOverrides = {};
@@ -4459,6 +4473,7 @@ const sousVideAlarmNames = new Set();
 let sousVideTimerTicker = null;
 let sousVideAudioContext = null;
 let sousVideAlarmInterval = null;
+let sousVidePushSubscription = null;
 const recipePrepTimes = {
   'THIRSTY DOG': 'Prep time 2 hours',
   'NIGHT CAP': 'Prep time 8 hours',
@@ -4717,7 +4732,7 @@ function collectSousVideRecords(){
   const records = [];
   const addSousVideRecord = record => {
     if (record.source === 'ALCRON' && String(record.ingredient || '').toUpperCase() === 'LOVAGE GIN') {
-      record.time = '2 hours';
+      record.time = '1 minute 10 seconds';
     }
     if (record.time === 'Not specified') return;
     if (record.temperature === 'Not specified') return;
@@ -4772,14 +4787,17 @@ function parseSousVideTemperature(temperature){
 }
 function parseSousVideTimeMinutes(time){
   const text = String(time || '').toLowerCase().replace(',', '.');
-  const match = text.match(/(\d+(?:\.\d+)?)\s*(minutes?|mins?|min|hours?|hrs?|h|days?|d)\b/);
-  if (!match) return Number.NEGATIVE_INFINITY;
-  const amount = Number(match[1]);
-  const unit = match[2];
-  if (!Number.isFinite(amount)) return Number.NEGATIVE_INFINITY;
-  if (unit.startsWith('day') || unit === 'd') return amount * 1440;
-  if (unit.startsWith('hour') || unit.startsWith('hr') || unit === 'h') return amount * 60;
-  return amount;
+  const matches = [...text.matchAll(/(\d+(?:\.\d+)?)\s*(seconds?|secs?|sec|s|minutes?|mins?|min|hours?|hrs?|h|days?|d)\b/g)];
+  if (!matches.length) return Number.NEGATIVE_INFINITY;
+  return matches.reduce((total, match) => {
+    const amount = Number(match[1]);
+    const unit = match[2];
+    if (!Number.isFinite(amount)) return total;
+    if (unit.startsWith('day') || unit === 'd') return total + amount * 1440;
+    if (unit.startsWith('hour') || unit.startsWith('hr') || unit === 'h') return total + amount * 60;
+    if (unit.startsWith('sec') || unit === 's') return total + amount / 60;
+    return total + amount;
+  }, 0);
 }
 function sortSousVideRecords(records, query){
   const collatorOptions = {sensitivity: 'base', numeric: true};
@@ -4796,6 +4814,156 @@ function sortSousVideRecords(records, query){
 }
 function formatSousVideIngredientName(name){
   return formatProductName(name);
+}
+function isIosDevice(){
+  return /iphone|ipad|ipod/i.test(navigator.userAgent || '') ||
+    (navigator.platform === 'MacIntel' && Number(navigator.maxTouchPoints) > 1);
+}
+function isStandalonePwa(){
+  return window.matchMedia?.('(display-mode: standalone)').matches === true ||
+    window.navigator.standalone === true;
+}
+function supportsPushNotifications(){
+  return Boolean(
+    window.isSecureContext &&
+    'serviceWorker' in navigator &&
+    'PushManager' in window &&
+    'Notification' in window
+  );
+}
+function setPushNotificationStatus(message, state=''){
+  const status = document.getElementById('pushNotificationStatus');
+  const button = document.getElementById('enablePushNotificationsButton');
+  if (status) {
+    status.textContent = message;
+    status.classList.toggle('is-enabled', state === 'enabled');
+    status.classList.toggle('is-blocked', state === 'blocked');
+  }
+  if (button) {
+    button.disabled = state === 'unsupported' || state === 'blocked' || state === 'enabled';
+    button.textContent = state === 'enabled' ? 'Notifications Enabled' : 'Enable Notifications';
+  }
+}
+function urlBase64ToUint8Array(value){
+  const padding = '='.repeat((4 - value.length % 4) % 4);
+  const base64 = (value + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = window.atob(base64);
+  return Uint8Array.from([...raw].map(character => character.charCodeAt(0)));
+}
+async function getPushServiceWorkerRegistration(){
+  if (!supportsPushNotifications()) return null;
+  return navigator.serviceWorker.ready;
+}
+async function getCurrentPushSubscription(){
+  if (!supportsPushNotifications() || Notification.permission !== 'granted') return null;
+  const registration = await getPushServiceWorkerRegistration();
+  return registration ? registration.pushManager.getSubscription() : null;
+}
+async function savePushSubscription(subscription){
+  const response = await fetch(PUSH_SUBSCRIPTION_FUNCTION, {
+    method: 'POST',
+    headers: {'content-type':'application/json'},
+    body: JSON.stringify({subscription: subscription.toJSON(), createdAt: Date.now()})
+  });
+  if (!response.ok) throw new Error('Unable to save push subscription.');
+}
+async function refreshPushNotificationStatus(){
+  if (isIosDevice() && !isStandalonePwa()) {
+    setPushNotificationStatus('Add app to Home Screen to enable notifications', 'unsupported');
+    return;
+  }
+  if (!supportsPushNotifications()) {
+    setPushNotificationStatus('Notifications not supported', 'unsupported');
+    return;
+  }
+  if (Notification.permission === 'denied') {
+    setPushNotificationStatus('Notifications blocked', 'blocked');
+    return;
+  }
+  if (Notification.permission !== 'granted') {
+    setPushNotificationStatus('Notifications not enabled');
+    return;
+  }
+  try {
+    sousVidePushSubscription = await getCurrentPushSubscription();
+    if (!sousVidePushSubscription) {
+      setPushNotificationStatus('Notifications not enabled');
+      return;
+    }
+    await savePushSubscription(sousVidePushSubscription);
+    setPushNotificationStatus('Notifications enabled', 'enabled');
+  } catch (error) {
+    setPushNotificationStatus('Notifications not enabled');
+  }
+}
+async function enableSousVideNotifications(){
+  if (isIosDevice() && !isStandalonePwa()) {
+    setPushNotificationStatus('Add app to Home Screen to enable notifications', 'unsupported');
+    return;
+  }
+  if (!supportsPushNotifications()) {
+    setPushNotificationStatus('Notifications not supported', 'unsupported');
+    return;
+  }
+  if (Notification.permission === 'denied') {
+    setPushNotificationStatus('Notifications blocked', 'blocked');
+    return;
+  }
+
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === 'denied') {
+      setPushNotificationStatus('Notifications blocked', 'blocked');
+      return;
+    }
+    if (permission !== 'granted') {
+      setPushNotificationStatus('Notifications not enabled');
+      return;
+    }
+
+    const configResponse = await fetch(PUSH_SUBSCRIPTION_FUNCTION, {
+      headers: {'accept':'application/json'},
+      cache: 'no-store'
+    });
+    if (!configResponse.ok) throw new Error('Push notifications are not configured.');
+    const config = await configResponse.json();
+    if (!config.publicKey) throw new Error('Missing VAPID public key.');
+
+    const registration = await getPushServiceWorkerRegistration();
+    const existing = await registration.pushManager.getSubscription();
+    sousVidePushSubscription = existing || await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(config.publicKey)
+    });
+    await savePushSubscription(sousVidePushSubscription);
+    setPushNotificationStatus('Notifications enabled', 'enabled');
+  } catch (error) {
+    setPushNotificationStatus('Notifications not enabled');
+  }
+}
+async function sendSousVidePushTimerAction(action, state=null){
+  try {
+    const subscription = sousVidePushSubscription || await getCurrentPushSubscription();
+    if (!subscription) return;
+    sousVidePushSubscription = subscription;
+    const payload = {
+      action,
+      subscription: subscription.toJSON()
+    };
+    if (state) {
+      payload.timerId = state.key;
+      payload.ingredientName = formatSousVideIngredientName(state.ingredient);
+      payload.endTime = Number(state.endTime || 0);
+    }
+    await fetch(PUSH_TIMER_FUNCTION, {
+      method: 'POST',
+      headers: {'content-type':'application/json'},
+      body: JSON.stringify(payload),
+      keepalive: true
+    });
+  } catch (error) {
+    // The local timer remains the fallback when push scheduling is unavailable.
+  }
 }
 function loadSousVideTimerStates(){
   try {
@@ -5094,6 +5262,7 @@ function toggleSousVideTimer(key){
     state.remainingMs = Math.max(0, state.endTime - Date.now());
     state.endTime = 0;
     state.status = 'paused';
+    void sendSousVidePushTimerAction('cancel', state);
   } else {
     if (state.remainingMs <= 0) {
       state.remainingMs = state.totalMs;
@@ -5105,6 +5274,7 @@ function toggleSousVideTimer(key){
     if (!state.startedAt) state.startedAt = Date.now();
     state.endTime = Date.now() + state.remainingMs;
     ensureSousVideTimerTicker();
+    void sendSousVidePushTimerAction('schedule', state);
   }
   saveSousVideTimerStates();
   renderSousVide();
@@ -5112,6 +5282,7 @@ function toggleSousVideTimer(key){
 function resetSousVideTimer(key){
   const state = sousVideTimers.get(key);
   if (!state) return;
+  void sendSousVidePushTimerAction('cancel', state);
   state.remainingMs = state.totalMs;
   state.endTime = 0;
   state.startedAt = 0;
@@ -5123,6 +5294,7 @@ function resetSousVideTimer(key){
   renderSousVide();
 }
 function resetAllSousVideTimers(){
+  void sendSousVidePushTimerAction('cancelAll');
   if (sousVideTimerTicker) {
     window.clearInterval(sousVideTimerTicker);
     sousVideTimerTicker = null;
@@ -5503,6 +5675,7 @@ function clearRecipeSearch(){
 }
 function showSousVide(){
   renderSousVide();
+  void refreshPushNotificationStatus();
   updateCloseButtonLabel('Close All');
   document.body.classList.remove('home-active');
   document.getElementById('homeView').classList.add('hidden');
@@ -5930,8 +6103,12 @@ document.addEventListener('visibilitychange', reconcileSousVideTimers);
 window.addEventListener('pageshow', reconcileSousVideTimers);
 if ('serviceWorker' in navigator && /^https?:$/.test(window.location.protocol)) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => refreshPushNotificationStatus())
+      .catch(() => refreshPushNotificationStatus());
   });
+} else {
+  window.addEventListener('load', () => refreshPushNotificationStatus());
 }
 </script>
 </body>
