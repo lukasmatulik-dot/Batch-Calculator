@@ -1268,7 +1268,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
         },
         "ghee-rum": {
           "id": "ghee-rum",
-          "title": "GHEE RUM",
+          "title": "Ghee Butter Havana 7 y.o.",
           "targetCell": "L61",
           "targetUnit": "ml",
           "linkedSourceCell": null,
@@ -2625,7 +2625,8 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "name": "Parmigiano Vodka",
               "ratio": 1.0,
               "unit": "g",
-              "sourceCell": "I6"
+              "sourceCell": "I6",
+              "linkedPrep": "parmegiano-vodka"
             },
             {
               "name": "Fresh Rosemary",
@@ -2665,10 +2666,27 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "hideCustomAmount": false,
           "asNeeded": false,
           "prepTypeLabel": "Sub Prep"
+        },
+        "smoked-olive-brine": {
+          "id": "smoked-olive-brine",
+          "title": "SMOKED OLIVE BRINE",
+          "targetCell": null,
+          "targetUnit": "",
+          "linkedSourceCell": null,
+          "defaultAmount": 0,
+          "items": [],
+          "note": "Smoke Olives\n\nSeparate the olives from the brine.\n\nPlace the olives in the combi oven set to the lowest temperature and 0% humidity.\n\nUsing a smoking gun and wood chips, fill the combi oven with smoke. Leave it running for 5 minutes, then turn it off. Repeat this smoking process for 30 minutes.\n\nAfter 1 hour, weigh the olives and vacuum-seal them in 120 g packs.\n\nFilter the remaining olive brine through a coffee filter and vacuum-seal it.",
+          "displayOrder": 2,
+          "hideCustomAmount": true,
+          "asNeeded": true,
+          "neededDisplay": "As Needed",
+          "prepTypeLabel": "Sub Prep",
+          "serviceStyle": true
         }
       },
       "additionalPreps": [
-        "parmegiano-vodka"
+        "parmegiano-vodka",
+        "smoked-olive-brine"
       ],
       "mainTarget": "F5",
       "mainNote": ""
@@ -5735,22 +5753,23 @@ function renderPrepCard(item, prep, needed, isAdditional=false, depth=0){
   const forcePrepStyle = prep.forcePrepStyle === true;
   const isChild = depth > 0 && !forcePrepStyle;
   const prepTypeLabel = prep.prepTypeLabel || (isChild ? 'Sub Prep' : '');
-  const useSubPrepStyle = isChild || prepTypeLabel === 'Sub Prep';
-  const useServicePrepStyle = prepTypeLabel === 'Service Prep';
+  const useServicePrepStyle = prepTypeLabel === 'Service Prep' || prep.serviceStyle === true;
+  const useSubPrepStyle = (isChild || prepTypeLabel === 'Sub Prep') && !useServicePrepStyle;
   const hasItems = (prep.items || []).length > 0;
   const showCustomAmount = hasItems && !prep.hideCustomAmount;
-  const activeNeeded = prep.asNeeded ? (Number(prep.defaultAmount) || needed || 0) : getActiveNeeded(prepId, needed);
+  const calculatedActiveNeeded = prep.asNeeded ? (Number(prep.defaultAmount) || needed || 0) : getActiveNeeded(prepId, needed);
+  const zeroUntilManual = ['cantaloupe-pure', '1-lacto-fermentation', 'garnish-matcha-chocolate'].includes(prepId);
+  const activeNeeded = zeroUntilManual && manualOverride === null ? 0 : calculatedActiveNeeded;
   const manualNeededOnly = [
     'cucumber-cordial',
     'lovage-gin',
     'cantaloupe-pure',
     '1-lacto-fermentation',
-    'parmegiano-vodka',
     'garnish-matcha-chocolate'
   ].includes(prepId);
   const neededText = manualNeededOnly && manualOverride === null
     ? ''
-    : (!hasItems || isAdditional || prep.asNeeded ? 'as needed' : fmt(activeNeeded, item.unit));
+    : (prep.neededDisplay || (!hasItems || isAdditional || prep.asNeeded ? 'as needed' : fmt(activeNeeded, item.unit)));
 
   let rows = '';
   (prep.items || []).forEach((r, idx) => {
