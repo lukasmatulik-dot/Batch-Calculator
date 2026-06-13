@@ -1,4 +1,3 @@
-
 import {
   getSubscriptionsStore,
   isValidSubscription,
@@ -43,6 +42,10 @@ export default async function handler(request) {
     subscription,
     createdAt: Number(payload?.createdAt) || Date.now(),
     updatedAt: Date.now()
+  });
+
+  console.log("[push-debug] Subscription saved", {
+    subscriptionId: id
   });
 
   return jsonResponse({ ok: true, subscriptionId: id });
