@@ -1,0 +1,33 @@
+{
+  "id": "./",
+  "name": "Alcron Batch Calculator",
+  "short_name": "Batch Calc",
+  "description": "Internal batch calculator and sous vide guide for the Alcron Bar team.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#151619",
+  "theme_color": "#151619",
+  "orientation": "any",
+  "categories": ["food", "productivity"],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
