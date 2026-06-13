@@ -1,4 +1,3 @@
-
 import webpush from "web-push";
 import {
   getSubscriptionsStore,
@@ -52,6 +51,13 @@ async function processTimer(timers, subscriptions, blob, now) {
   });
   if (!lock.modified) return { skipped: 1 };
 
+  console.log("[push-debug] Timer due", {
+    timerId: lockedTimer.timerId,
+    ingredientName: lockedTimer.ingredientName,
+    endTime: lockedTimer.endTime,
+    endTimeIso: new Date(Number(lockedTimer.endTime)).toISOString()
+  });
+
   try {
     await webpush.sendNotification(
       lockedTimer.subscription,
@@ -76,9 +82,24 @@ async function processTimer(timers, subscriptions, blob, now) {
       updatedAt: now,
       lastError: ""
     }, lock.etag ? { onlyIfMatch: lock.etag } : undefined);
+
+    console.log("[push-debug] Push notification sent", {
+      timerId: lockedTimer.timerId,
+      ingredientName: lockedTimer.ingredientName,
+      subscriptionId: lockedTimer.subscriptionId
+    });
+
     return { sent: 1 };
   } catch (error) {
     const statusCode = Number(error?.statusCode || 0);
+    console.error("[push-debug] web-push error", {
+      timerId: lockedTimer.timerId,
+      ingredientName: lockedTimer.ingredientName,
+      statusCode,
+      body: String(error?.body || "").slice(0, 500),
+      message: String(error?.message || "Push delivery failed.").slice(0, 300)
+    });
+
     if (statusCode === 404 || statusCode === 410) {
       await timers.delete(blob.key);
       if (lockedTimer.subscriptionId) await subscriptions.delete(lockedTimer.subscriptionId);
@@ -97,6 +118,12 @@ async function processTimer(timers, subscriptions, blob, now) {
 }
 
 export default async function handler() {
+  const startedAt = Date.now();
+  console.log("[push-debug] check-timers started", {
+    startedAt,
+    startedAtIso: new Date(startedAt).toISOString()
+  });
+
   configureWebPush();
 
   const timers = getTimersStore();
@@ -105,10 +132,16 @@ export default async function handler() {
   const now = Date.now();
   const totals = { checked: blobs?.length || 0, sent: 0, failed: 0, expired: 0, skipped: 0 };
 
+  console.log("[push-debug] Scheduled timers found", {
+    count: totals.checked
+  });
+
   for (const blob of blobs || []) {
     const result = await processTimer(timers, subscriptions, blob, now);
     for (const [key, value] of Object.entries(result)) totals[key] += value;
   }
+
+  console.log("[push-debug] check-timers finished", totals);
 
   return new Response(JSON.stringify(totals), {
     headers: { "content-type": "application/json; charset=utf-8" }
