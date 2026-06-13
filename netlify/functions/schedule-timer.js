@@ -1,4 +1,3 @@
-
 import {
   getSubscriptionsStore,
   getTimersStore,
@@ -90,6 +89,14 @@ export default async function handler(request) {
     createdAt: Date.now(),
     updatedAt: Date.now(),
     attempts: 0
+  });
+
+  console.log("[push-debug] Timer scheduled", {
+    timerId: timer.timerId,
+    ingredientName: timer.ingredientName,
+    endTime: timer.endTime,
+    endTimeIso: new Date(timer.endTime).toISOString(),
+    subscriptionId: subscriptionHash
   });
 
   return jsonResponse({ ok: true, timerId: timer.timerId, endTime: timer.endTime });
