@@ -4850,6 +4850,23 @@ function urlBase64ToUint8Array(value){
   const raw = window.atob(base64);
   return Uint8Array.from([...raw].map(character => character.charCodeAt(0)));
 }
+function pushApplicationServerKeyMatches(subscription, publicKey){
+  const existingKey = subscription?.options?.applicationServerKey;
+  if (!existingKey || !publicKey) return false;
+  const actual = new Uint8Array(existingKey);
+  const expected = urlBase64ToUint8Array(publicKey);
+  return actual.length === expected.length && actual.every((value, index) => value === expected[index]);
+}
+async function getPushConfiguration(){
+  const response = await fetch(PUSH_SUBSCRIPTION_FUNCTION, {
+    headers: {'accept':'application/json'},
+    cache: 'no-store'
+  });
+  if (!response.ok) throw new Error('Push notifications are not configured.');
+  const config = await response.json();
+  if (!config.publicKey) throw new Error('Missing VAPID public key.');
+  return config;
+}
 async function getPushServiceWorkerRegistration(){
   if (!supportsPushNotifications()) return null;
   return navigator.serviceWorker.ready;
@@ -4890,6 +4907,11 @@ async function refreshPushNotificationStatus(){
       setPushNotificationStatus('Notifications not enabled');
       return;
     }
+    const config = await getPushConfiguration();
+    if (!pushApplicationServerKeyMatches(sousVidePushSubscription, config.publicKey)) {
+      setPushNotificationStatus('Notifications not enabled');
+      return;
+    }
     await savePushSubscription(sousVidePushSubscription);
     setPushNotificationStatus('Notifications enabled', 'enabled');
   } catch (error) {
@@ -4921,16 +4943,13 @@ async function enableSousVideNotifications(){
       return;
     }
 
-    const configResponse = await fetch(PUSH_SUBSCRIPTION_FUNCTION, {
-      headers: {'accept':'application/json'},
-      cache: 'no-store'
-    });
-    if (!configResponse.ok) throw new Error('Push notifications are not configured.');
-    const config = await configResponse.json();
-    if (!config.publicKey) throw new Error('Missing VAPID public key.');
-
+    const config = await getPushConfiguration();
     const registration = await getPushServiceWorkerRegistration();
-    const existing = await registration.pushManager.getSubscription();
+    let existing = await registration.pushManager.getSubscription();
+    if (existing && !pushApplicationServerKeyMatches(existing, config.publicKey)) {
+      await existing.unsubscribe();
+      existing = null;
+    }
     sousVidePushSubscription = existing || await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(config.publicKey)
