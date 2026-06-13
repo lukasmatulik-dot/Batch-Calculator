@@ -423,7 +423,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
     <header class="header recipe-header">
       <div><h1>Sous Vide Guide</h1></div>
       <div class="recipe-actions">
-        <button class="recipe-nav-button recipe-home-button" type="button" onclick="showHome({clearSearch:true})">Home</button>
+        <button class="recipe-nav-button recipe-home-button" type="button" onclick="showHomeFromSousVide()">Home</button>
         <button class="sous-vide-reset-all" type="button" onclick="resetAllSousVideTimers()">Reset Timers</button>
       </div>
     </header>
@@ -631,7 +631,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "I11"
             }
           ],
-          "note": "Sous vide 1 h, 52 °C. Filter through a coffee filter. Cool to 2 °C, then carbonate.",
+          "note": "Sous vide for 1 h at 52 °C. Filter through a coffee filter. Cool to 2 °C, then carbonate.",
           "displayOrder": 0,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -753,7 +753,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "I21"
             }
           ],
-          "note": "Sous Vide 2.5 h 60 °C Filter through a coffee filter, then batch.",
+          "note": "Sous vide for 2.5 h at 60 °C. Filter through a coffee filter, then batch.",
           "displayOrder": 0,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -1287,7 +1287,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "L63"
             }
           ],
-          "note": "Sous vide for 1.5 h / 52 °C.\nPlace in freezer for 2 hours. Strain through a coffee filter.",
+          "note": "Sous vide for 1.5 h at 52 °C.\nPlace in the freezer for 2 hours. Strain through a coffee filter.",
           "displayOrder": 1,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -1325,7 +1325,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "O65"
             }
           ],
-          "note": "#1\nReduce on high heat to about 1/3 volume. After reduction add lemon juice",
+          "note": "#1\nReduce over high heat to about 1/3 of the original volume. After reduction, add lemon juice.",
           "displayOrder": 3.1,
           "hideCustomAmount": true,
           "asNeeded": true,
@@ -1364,7 +1364,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "R65"
             }
           ],
-          "note": "#2\nHeat sugar, water, 130 °C.\nRemove from heat, add white chocolate and beetroot reduction stir until crystallized.",
+          "note": "#2\nHeat the sugar and water to 130 °C.\nRemove from the heat, add the white chocolate and beetroot reduction, and stir until crystallized.",
           "displayOrder": 3,
           "hideCustomAmount": true,
           "asNeeded": true
@@ -1474,7 +1474,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "I76"
             }
           ],
-          "note": "#1\nMelt butter and miso caramel in the Thermomix at 50 °C, speed 2. Then transfer into a sous-vide bag and add whiskey.\n\n#2\nSous vide 1.5 h at 50 °C. Freeze for 5 h. Strain through a coffee filter.",
+          "note": "#1\nMelt the butter and miso caramel in the Thermomix at 50 °C, speed 2. Then transfer them into a sous-vide bag and add whiskey.\n\n#2\nSous vide for 1.5 h at 50 °C. Freeze for 5 h. Strain through a coffee filter.",
           "displayOrder": 0,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -1657,7 +1657,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "L89"
             }
           ],
-          "note": "Sous Vide 2 h / 32 °C Filter through Superbag",
+          "note": "Sous vide for 2 h at 32 °C. Filter through a Superbag.",
           "displayOrder": 1,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -1769,7 +1769,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "I100"
             }
           ],
-          "note": "Sous Vide 2.5 h / 52 °C Filter through Superbag, Store in Fridge",
+          "note": "Sous vide for 2.5 h at 52 °C. Filter through a Superbag and store in the fridge.",
           "displayOrder": 0,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -1906,7 +1906,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "I115"
             }
           ],
-          "note": "Sous Vide 1.5 h / 52 °C, Then Batch 1000 ml Per Vacuum Vide Bag\nMinimum one batch 3000 ml",
+          "note": "Sous vide for 1.5 h at 52 °C. Then batch 1000 ml per sous-vide bag.\nMinimum batch: 3000 ml.",
           "displayOrder": 0,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -2432,7 +2432,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "L154"
             }
           ],
-          "note": "Sous Vide 1 h / 52 °C\nFilter through coffee filter",
+          "note": "Sous vide for 1 h at 52 °C.\nFilter through a coffee filter.",
           "displayOrder": 1,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -2458,6 +2458,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
       "defaultBatchMl": 1000.0,
       "batchUnit": "ml",
       "batchSetupUnit": "ml",
+      "normalizeMainBatch": true,
       "unitLabel": "1000 ml batch",
       "quickOptions": [
         {
@@ -2661,7 +2662,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "L7"
             }
           ],
-          "note": "Sous vide 90 min, 48 °C. Freeze for 5 hours. Filter through a coffee filter, then batch.",
+          "note": "Sous vide for 90 min at 48 °C. Freeze for 5 hours. Filter through a coffee filter, then batch.",
           "displayOrder": 1,
           "hideCustomAmount": false,
           "asNeeded": false,
@@ -2891,7 +2892,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "O20"
             }
           ],
-          "note": "Sous Vide 1 h 52 °C Filter through a coffee filter, then batch.",
+          "note": "Sous vide for 1 h at 52 °C. Filter through a coffee filter, then batch.",
           "displayOrder": 2,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -2952,7 +2953,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "unit": "g"
             }
           ],
-          "note": "Sous Vide 1 h / 52 °C.\nFilter through a coffee filter, then batch.",
+          "note": "Sous vide for 1 h at 52 °C.\nFilter through a coffee filter, then batch.",
           "displayOrder": 4,
           "hideCustomAmount": false,
           "asNeeded": false,
@@ -3132,7 +3133,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "L37"
             }
           ],
-          "note": "Thermomix / Mixing Temperature 40 °C, Speed 3, Time 7 min Filter through a coffee filter until clear.\tTime: 24 h",
+          "note": "Thermomix / Mixing Temperature 40 °C, Speed 3, Time 7 min. Filter through a coffee filter until clear.\nTime: 24 h",
           "displayOrder": 1,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -3158,7 +3159,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "O37"
             }
           ],
-          "note": "Sous Vide 1 h / 52 °C\nFilter through coffee filter",
+          "note": "Sous vide for 1 h at 52 °C.\nFilter through a coffee filter.",
           "displayOrder": 2,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -3187,7 +3188,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "unit": "g"
             }
           ],
-          "note": "Sous Vide 1 h / 52 °C.\nFilter through a coffee filter, then batch.",
+          "note": "Sous vide for 1 h at 52 °C.\nFilter through a coffee filter, then batch.",
           "displayOrder": 3,
           "hideCustomAmount": false,
           "asNeeded": false,
@@ -3518,7 +3519,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "I7"
             }
           ],
-          "note": "Sous vide 90 min, 48 °C. Freeze for 5 hours. Filter through a coffee filter, then batch.",
+          "note": "Sous vide for 90 min at 48 °C. Freeze for 5 hours. Filter through a coffee filter, then batch.",
           "displayOrder": 0,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -3544,7 +3545,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "sourceCell": "L7"
             }
           ],
-          "note": "Sous vide 120 min, 48 °C. Freeze for 1 hour. Filter through a coffee filter, then batch.",
+          "note": "Sous vide for 120 min at 48 °C. Freeze for 1 hour. Filter through a coffee filter, then batch.",
           "displayOrder": 1,
           "hideCustomAmount": false,
           "asNeeded": false
@@ -4065,7 +4066,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
               "unit": "g"
             }
           ],
-          "note": "Sous Vide 1 h / 52 °C.\nFilter through a coffee filter, then batch.",
+          "note": "Sous vide for 1 h at 52 °C.\nFilter through a coffee filter, then batch.",
           "displayOrder": 2,
           "hideCustomAmount": false,
           "asNeeded": false,
@@ -4611,19 +4612,24 @@ function setRecipeStatus(recipe, status){
   renderHome();
 }
 function getTarget(){ return Math.max(1, Number(currentTargetMl) || (currentRecipe?.defaultBatchMl || 500)); }
-function amount(item, baseAmount=null){ const base = baseAmount === null ? getTarget() : baseAmount; return base * Number(item.ratio || 0); }
+function mainIngredientRatio(recipe, item){
+  const ratio = Number(item?.ratio || 0);
+  if (!recipe?.normalizeMainBatch) return ratio;
+  const ratioTotal = (recipe.ingredients || []).reduce((sum, ingredient) => sum + Number(ingredient.ratio || 0), 0);
+  return ratioTotal > 0 ? ratio / ratioTotal : ratio;
+}
+function mainIngredientAmount(recipe, item, target){
+  return Number(target || 0) * mainIngredientRatio(recipe, item);
+}
+function amount(item, baseAmount=null){
+  if (baseAmount === null) return mainIngredientAmount(currentRecipe, item, getTarget());
+  return baseAmount * Number(item.ratio || 0);
+}
 function isPrepOnly(recipe=currentRecipe){
   return !recipe?.mainTarget && !(recipe?.ingredients || []).length;
 }
 function getBatchSetupUnit(recipe=currentRecipe){
   return recipe?.batchSetupUnit || recipe?.batchUnit || 'ml';
-}
-function getRecipeProcess(recipe){
-  if (recipe.process) return recipe.process;
-  const method = String(recipe.method || '').toLowerCase();
-  if (method.includes('sous')) return 'Sous Vide';
-  if (method.includes('carbon')) return 'Carbonated';
-  return 'Prep';
 }
 function parseAmountInput(value){
   const normalized = String(value ?? '').trim().replace(',', '.');
@@ -5125,6 +5131,8 @@ function resetAllSousVideTimers(){
   sousVideTimers.clear();
   savedSousVideTimerStates = {};
   localStorage.removeItem(SOUS_VIDE_TIMER_STORAGE_KEY);
+  const search = document.getElementById('sousVideSearch');
+  if (search) search.value = '';
   syncSousVideGuideButtonState();
   renderSousVide();
   showHome({clearSearch:true});
@@ -5237,6 +5245,9 @@ function stockPullProductKey(name, unit, isPrep){
   const normalizedName = String(name || '').trim().replace(/\s+/g, ' ').toLowerCase();
   return isPrep ? `prep::${normalizedName}::${unit}` : `main::${normalizedName}`;
 }
+function stockPullMainItemName(name){
+  return /^kaffir chil{1,2}i$/i.test(String(name || '').trim()) ? 'Kaffir Chili' : name;
+}
 function isStockPullGarnish(...values){
   return values.some(value => /\bgarnish\b/i.test(String(value || '')));
 }
@@ -5316,10 +5327,7 @@ function collectStockPullProducts(){
       const activeNeeded = override === null ? defaultNeeded : override;
       activePrepNeeds.set(prepId, activeNeeded);
       if (prepId === 'cucumber-cordial' || prepId === 'lovage-gin') {
-        addProduct(prep.title || sourceName, 0, 'ml', false, {
-          allowZero:true,
-          displayText:'Needed 0 ml'
-        });
+        if (override !== null) addProduct(prep.title || sourceName, override, 'ml');
         return;
       }
       addProduct(prep.title || sourceName, activeNeeded, sourceUnit || prep.targetUnit, true);
@@ -5327,7 +5335,11 @@ function collectStockPullProducts(){
 
     (recipe.ingredients || []).forEach(item => {
       if (isStockPullGarnish(item.name)) return;
-      const itemAmount = target * Number(item.ratio || 0);
+      const itemAmount = mainIngredientAmount(recipe, item, target);
+      if (/^(lemon brine|kaffir chili|kaffir chilli)$/i.test(String(item.name || '').trim())) {
+        addProduct(stockPullMainItemName(item.name), itemAmount, item.unit);
+        return;
+      }
       if (item.linkedPrep && preps[item.linkedPrep]) {
         expandPrep(item.linkedPrep, itemAmount, item.name, item.unit);
       } else {
@@ -5499,6 +5511,12 @@ function showSousVide(){
   document.getElementById('sousVideView').classList.remove('hidden');
   window.scrollTo({top:0, behavior:'smooth'});
 }
+function showHomeFromSousVide(){
+  const search = document.getElementById('sousVideSearch');
+  if (search) search.value = '';
+  renderSousVide();
+  showHome({clearSearch:true});
+}
 function showStockPull(){
   renderStockPullList();
   updateCloseButtonLabel('Close All');
@@ -5633,7 +5651,7 @@ function updateMainBatchAmount(input){
   const idx = Number(input.dataset.index);
   const item = (currentRecipe.ingredients || [])[idx];
   const parsed = parseAmountInput(input.value);
-  const ratio = Number(item?.ratio || 0);
+  const ratio = mainIngredientRatio(currentRecipe, item);
   if (!item || !Number.isFinite(ratio) || ratio <= 0 || parsed === null || parsed <= 0) return;
   currentTargetMl = Math.max(1, Math.round((parsed / ratio) * 100) / 100);
   prepOverrides = {};
@@ -5855,10 +5873,6 @@ function updatePrepOverride(input){
   }
 }
 
-function setPrepOverride(prepId, value){
-  prepOverrides[prepId] = value;
-  saveCurrentRecipeState();
-}
 function clearAllData(){
   const recipeViewOpen = currentRecipe && !document.getElementById('recipeView').classList.contains('hidden');
 
