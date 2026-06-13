@@ -412,7 +412,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
       <div class="search-wrap"><input id="homeSearch" class="home-search" placeholder="Search recipe" oninput="filterHome()" /><button class="search-clear" type="button" onclick="clearRecipeSearch()">Clear</button></div>
       <div class="home-tool-row">
         <button id="sousVideGuideButton" class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showSousVide()">Sous Vide Guide</button>
-        <button id="stockPullButton" class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showStockPull()">Required Stock</button>
+        <button id="stockPullButton" class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showStockPull()">Required Stock / Testing feature</button>
       </div>
       <div id="recipeList"></div>
       <div id="homeEmpty" class="empty hidden">No recipes found.</div>
@@ -440,7 +440,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
 
   <section id="stockPullView" class="hidden">
     <header class="header recipe-header">
-      <div><h1>Required Stock</h1></div>
+      <div><h1>Required Stock / Testing feature</h1></div>
       <div class="recipe-actions">
         <button class="recipe-nav-button recipe-home-button" type="button" onclick="showHome({clearSearch:true})">Home</button>
       </div>
@@ -1836,11 +1836,12 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
       ],
       "ingredients": [
         {
-          "name": "Absolut Vodka Lemon",
+          "name": "Grapefruit Pepper Vodka",
           "ratio": 0.2714285714,
           "unit": "ml",
           "sourceCell": "F111",
-          "house": false
+          "house": true,
+          "linkedPrep": "grepefruit-pepper-vodka"
         },
         {
           "name": "Tangerine Cordial",
@@ -2100,7 +2101,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "id": "garnish-matcha-chocolate",
           "title": "GARNISH MATCHA CHOCOLATE",
           "targetCell": "O123",
-          "targetUnit": "ml",
+          "targetUnit": "g",
           "linkedSourceCell": null,
           "defaultAmount": 1000,
           "items": [
@@ -2767,7 +2768,8 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "ratio": 0.003,
           "unit": "g",
           "sourceCell": "F27",
-          "house": false
+          "house": true,
+          "linkedPrep": "kaffir-chilli"
         },
         {
           "name": "Glycerin",
@@ -2907,6 +2909,36 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "displayOrder": 3,
           "hideCustomAmount": false,
           "asNeeded": false
+        },
+        "kaffir-chilli": {
+          "id": "kaffir-chilli",
+          "title": "KAFFIR CHILLI",
+          "targetCell": null,
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 100,
+          "items": [
+            {
+              "name": "Kaffir Leaves",
+              "ratio": 0.04,
+              "unit": "g"
+            },
+            {
+              "name": "Green Chilli",
+              "ratio": 0.1,
+              "unit": "g"
+            },
+            {
+              "name": "Vodka",
+              "ratio": 1.0,
+              "unit": "g"
+            }
+          ],
+          "note": "Sous Vide 1 h / 52 °C.\nFilter through a coffee filter, then batch.",
+          "displayOrder": 4,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Sub Prep"
         }
       },
       "additionalPreps": [
@@ -3011,7 +3043,8 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "ratio": 0.001,
           "unit": "g",
           "sourceCell": "F42",
-          "house": false
+          "house": true,
+          "linkedPrep": "kaffir-chilli"
         }
       ],
       "preps": {
@@ -3111,6 +3144,36 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "displayOrder": 2,
           "hideCustomAmount": false,
           "asNeeded": false
+        },
+        "kaffir-chilli": {
+          "id": "kaffir-chilli",
+          "title": "KAFFIR CHILLI",
+          "targetCell": null,
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 100,
+          "items": [
+            {
+              "name": "Kaffir Leaves",
+              "ratio": 0.04,
+              "unit": "g"
+            },
+            {
+              "name": "Green Chilli",
+              "ratio": 0.1,
+              "unit": "g"
+            },
+            {
+              "name": "Vodka",
+              "ratio": 1.0,
+              "unit": "g"
+            }
+          ],
+          "note": "Sous Vide 1 h / 52 °C.\nFilter through a coffee filter, then batch.",
+          "displayOrder": 3,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Sub Prep"
         }
       },
       "additionalPreps": [
@@ -3902,7 +3965,8 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "ratio": 0.006926210955183356,
           "unit": "g",
           "sourceCell": "F11",
-          "house": false
+          "house": true,
+          "linkedPrep": "kaffir-chilli"
         }
       ],
       "preps": {
@@ -3955,6 +4019,36 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           ],
           "note": "Place all ingredients into a sous-vide bag and seal.\nLeave at room temperature for 72 hours.",
           "displayOrder": 1,
+          "hideCustomAmount": false,
+          "asNeeded": false,
+          "prepTypeLabel": "Sub Prep"
+        },
+        "kaffir-chilli": {
+          "id": "kaffir-chilli",
+          "title": "KAFFIR CHILLI",
+          "targetCell": null,
+          "targetUnit": "g",
+          "linkedSourceCell": null,
+          "defaultAmount": 100,
+          "items": [
+            {
+              "name": "Kaffir Leaves",
+              "ratio": 0.04,
+              "unit": "g"
+            },
+            {
+              "name": "Green Chilli",
+              "ratio": 0.1,
+              "unit": "g"
+            },
+            {
+              "name": "Vodka",
+              "ratio": 1.0,
+              "unit": "g"
+            }
+          ],
+          "note": "Sous Vide 1 h / 52 °C.\nFilter through a coffee filter, then batch.",
+          "displayOrder": 2,
           "hideCustomAmount": false,
           "asNeeded": false,
           "prepTypeLabel": "Sub Prep"
@@ -5117,6 +5211,10 @@ function stockPullOverride(recipe, prepId){
 function stockPullUnit(unit){
   return String(unit || 'ml').trim().toLowerCase();
 }
+function stockPullMainUnit(name){
+  const normalizedName = String(name || '').trim().toLowerCase();
+  return /^(saline solution|kaffir chili|kaffir chilli|glycerin)$/.test(normalizedName) ? 'g' : 'ml';
+}
 function stockPullProductKey(name, unit, isPrep){
   const normalizedName = String(name || '').trim().replace(/\s+/g, ' ').toLowerCase();
   return isPrep ? `prep::${normalizedName}::${unit}` : `main::${normalizedName}`;
@@ -5127,6 +5225,17 @@ function isStockPullGarnish(...values){
 function isStockPullSubPrep(prep, depth=0){
   return depth > 0 || String(prep?.prepTypeLabel || '').toLowerCase() === 'sub prep';
 }
+function isStockPullServicePrep(prep){
+  return String(prep?.prepTypeLabel || '').toLowerCase() === 'service prep';
+}
+function isStockPullChampagneAcid(prepId, prep){
+  return String(prepId || '').toLowerCase() === 'champagne-acid' ||
+    String(prep?.title || '').trim().toLowerCase() === 'champagne acid';
+}
+function isStockPullMatchaChocolate(prepId, prep){
+  return String(prepId || '').toLowerCase() === 'garnish-matcha-chocolate' ||
+    /matcha chocolate/i.test(String(prep?.title || ''));
+}
 function formatStockPullAmount(value){
   return String(Math.round(Number(value) || 0));
 }
@@ -5135,16 +5244,17 @@ function collectStockPullProducts(){
   const products = new Map();
   let order = 0;
 
-  function addProduct(name, value, unit, isPrep=false){
+  function addProduct(name, value, unit, isPrep=false, options={}){
     const amountValue = Number(value);
-    if (!name || !Number.isFinite(amountValue) || amountValue <= 0) return;
-    const displayUnit = isPrep ? stockPullUnit(unit) : 'ml';
+    if (!name || !Number.isFinite(amountValue) || amountValue < 0 || (!options.allowZero && amountValue === 0)) return;
+    const displayUnit = isPrep ? stockPullUnit(unit) : stockPullMainUnit(name);
     const key = stockPullProductKey(name, displayUnit, isPrep);
     if (!products.has(key)) {
       products.set(key, {
         name,
         amount:0,
         unit:displayUnit,
+        displayText:options.displayText || '',
         order:order++,
         hasDirect:false,
         hasPrep:false
@@ -5152,6 +5262,7 @@ function collectStockPullProducts(){
     }
     const product = products.get(key);
     product.amount += amountValue;
+    if (options.displayText) product.displayText = options.displayText;
     if (isPrep) product.hasPrep = true;
     else product.hasDirect = true;
   }
@@ -5161,6 +5272,7 @@ function collectStockPullProducts(){
     const preps = recipe.preps || {};
     const expandedPreps = new Set();
     const nestedPrepIds = new Set();
+    const activePrepNeeds = new Map();
     Object.values(preps).forEach(prep => {
       (prep.items || []).forEach(item => {
         if (item.linkedPrep) nestedPrepIds.add(item.linkedPrep);
@@ -5176,6 +5288,7 @@ function collectStockPullProducts(){
       }
       if (
         isStockPullGarnish(prep.id, prep.title, sourceName) ||
+        isStockPullServicePrep(prep) ||
         isStockPullSubPrep(prep, trail.length) ||
         nestedPrepIds.has(prepId)
       ) return;
@@ -5183,6 +5296,14 @@ function collectStockPullProducts(){
       const override = stockPullOverride(recipe, prepId);
       const defaultNeeded = prep.asNeeded ? (Number(prep.defaultAmount) || needed || 0) : needed;
       const activeNeeded = override === null ? defaultNeeded : override;
+      activePrepNeeds.set(prepId, activeNeeded);
+      if (prepId === 'cucumber-cordial' || prepId === 'lovage-gin') {
+        addProduct(prep.title || sourceName, 0, 'ml', false, {
+          allowZero:true,
+          displayText:'Needed 0 ml'
+        });
+        return;
+      }
       addProduct(prep.title || sourceName, activeNeeded, sourceUnit || prep.targetUnit, true);
     }
 
@@ -5199,8 +5320,34 @@ function collectStockPullProducts(){
     (recipe.additionalPreps || []).forEach(prepId => {
       if (!preps[prepId] || expandedPreps.has(prepId)) return;
       const prep = preps[prepId];
+      if (isStockPullMatchaChocolate(prepId, prep)) {
+        addProduct('Matcha Chocolate', 0, prep.targetUnit || 'ml', true, {
+          allowZero:true,
+          displayText:'As needed'
+        });
+        return;
+      }
+      if (isStockPullChampagneAcid(prepId, prep)) {
+        let champagneNeeded = stockPullOverride(recipe, prepId);
+        let champagneUnit = prep.targetUnit || 'ml';
+        if (champagneNeeded === null) {
+          champagneNeeded = 0;
+          Object.entries(preps).forEach(([parentId, parentPrep]) => {
+            const parentNeeded = activePrepNeeds.get(parentId);
+            if (!Number.isFinite(parentNeeded)) return;
+            (parentPrep.items || []).forEach(item => {
+              if (item.linkedPrep !== prepId) return;
+              champagneNeeded += parentNeeded * Number(item.ratio || 0);
+              champagneUnit = item.unit || champagneUnit;
+            });
+          });
+        }
+        addProduct(prep.title, champagneNeeded, champagneUnit, true);
+        return;
+      }
       if (
         isStockPullGarnish(prep.id, prep.title) ||
+        isStockPullServicePrep(prep) ||
         isStockPullSubPrep(prep) ||
         nestedPrepIds.has(prepId)
       ) return;
@@ -5241,7 +5388,7 @@ function renderStockPullList(){
         ${products.map(product => `
           <div class="stock-pull-row" data-prep-component="${product.isPrep}">
             <div class="stock-pull-name">${escapeHtml(formatProductName(product.name))}</div>
-            <div class="stock-pull-amount">${escapeHtml(formatStockPullAmount(product.amount))} ${escapeHtml(product.unit)}</div>
+            <div class="stock-pull-amount">${escapeHtml(product.displayText || `${formatStockPullAmount(product.amount)} ${product.unit}`)}</div>
           </div>
         `).join('')}
       </section>
@@ -5584,6 +5731,7 @@ function renderPrepCard(item, prep, needed, isAdditional=false, depth=0){
   const prepId = item.linkedPrep || prep.title;
   const domId = safeId(prepId);
   const override = prepOverrides[prepId];
+  const manualOverride = getOverrideAmount(prepId);
   const forcePrepStyle = prep.forcePrepStyle === true;
   const isChild = depth > 0 && !forcePrepStyle;
   const prepTypeLabel = prep.prepTypeLabel || (isChild ? 'Sub Prep' : '');
@@ -5592,7 +5740,17 @@ function renderPrepCard(item, prep, needed, isAdditional=false, depth=0){
   const hasItems = (prep.items || []).length > 0;
   const showCustomAmount = hasItems && !prep.hideCustomAmount;
   const activeNeeded = prep.asNeeded ? (Number(prep.defaultAmount) || needed || 0) : getActiveNeeded(prepId, needed);
-  const neededText = !hasItems || isAdditional || prep.asNeeded ? 'as needed' : fmt(activeNeeded, item.unit);
+  const manualNeededOnly = [
+    'cucumber-cordial',
+    'lovage-gin',
+    'cantaloupe-pure',
+    '1-lacto-fermentation',
+    'parmegiano-vodka',
+    'garnish-matcha-chocolate'
+  ].includes(prepId);
+  const neededText = manualNeededOnly && manualOverride === null
+    ? ''
+    : (!hasItems || isAdditional || prep.asNeeded ? 'as needed' : fmt(activeNeeded, item.unit));
 
   let rows = '';
   (prep.items || []).forEach((r, idx) => {
@@ -5634,12 +5792,12 @@ function renderPrepCard(item, prep, needed, isAdditional=false, depth=0){
             autocorrect="off"
             spellcheck="false"
             dir="ltr"
-            value="${override !== undefined && override !== '' ? escapeHtml(override) : '0'}" 
-            placeholder="0" 
+            value="${manualOverride !== null ? escapeHtml(override) : ''}" 
+            placeholder="" 
             data-prep-id="${prepId}"
             data-dom-id="${domId}"
             data-unit="${item.unit || 'ml'}"
-            onfocus="if(this.value === '0'){this.select()}else{this.setSelectionRange(this.value.length, this.value.length)}"
+            onfocus="this.setSelectionRange(this.value.length, this.value.length)"
             oninput="updatePrepOverride(this)"
           >
         </div>
