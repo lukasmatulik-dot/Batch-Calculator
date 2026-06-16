@@ -131,6 +131,9 @@ select:focus,input:focus{border-color:rgba(128,80,67,.34);box-shadow:0 0 0 3px r
 .custom-prep label{margin-bottom:5px;font-size:9px}
 .custom-prep input:not([readonly]),.prep-amount-input{caret-color:#8f594c;direction:ltr!important;text-align:left!important;unicode-bidi:isolate}
 .custom-prep input::placeholder{color:rgba(30,37,33,.40)}
+.prep-item-amount-control{display:flex;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
+.prep-item-amount-input{width:58px;min-width:0;min-height:30px;padding:4px 5px;border-radius:10px;font-size:12.5px;font-weight:950;text-align:right}
+.prep-item-amount-unit{flex:0 0 auto;font-size:12px;font-weight:950}
 .main-note{margin-top:10px;background:rgba(255,255,255,.44);border:1px solid rgba(128,80,67,.14);border-radius:var(--radius-inner);padding:9px 10px;color:#364039;font-size:12px;line-height:1.35;white-space:pre-wrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.62)}
 h1,.recipe-title,.recipe-prep-time,.recipe-meta,.section-title,.section-pill,.batch-name,.batch-note,.info-text,.main-note,.prep-title,.prep-note,td:first-child,th:first-child,.empty{max-width:100%;overflow-wrap:anywhere;word-break:break-word}
 .card,.prep-card,.batch-list,.batch-row,.prep-top,.custom-prep,table{max-width:100%;box-sizing:border-box}
@@ -254,6 +257,7 @@ select:focus,input:focus{border-color:rgba(255,216,200,.40);box-shadow:0 0 0 3px
 .prep-note{color:#cfc3b6}
 .custom-prep input:not([readonly]),.prep-amount-input{caret-color:#ffd8c8}
 .custom-prep input::placeholder{color:rgba(244,240,232,.42)}
+.custom-prep .prep-amount-input.is-needed-style{background:linear-gradient(135deg,rgba(125,61,45,.34),rgba(125,61,45,.16));color:#fff8f2;border:1px solid rgba(255,216,200,.20);box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 7px 18px rgba(0,0,0,.18)}
 .main-note{background:rgba(125,61,45,.10);border:1px solid rgba(255,216,200,.13);color:#f0e3cf;box-shadow:inset 0 1px 0 rgba(255,255,255,.045)}
 th{border-bottom:1px solid rgba(255,255,255,.085)}
 td{border-bottom:1px solid rgba(255,255,255,.055)}
@@ -412,7 +416,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
       <div class="search-wrap"><input id="homeSearch" class="home-search" placeholder="Search recipe" oninput="filterHome()" /><button class="search-clear" type="button" onclick="clearRecipeSearch()">Clear</button></div>
       <div class="home-tool-row">
         <button id="sousVideGuideButton" class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showSousVide()">Sous Vide Guide</button>
-        <button id="stockPullButton" class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showStockPull()">Required Stock / Testing feature</button>
+        <button id="stockPullButton" class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showStockPull()">Required Stock</button>
       </div>
       <div id="recipeList"></div>
       <div id="homeEmpty" class="empty hidden">No recipes found.</div>
@@ -440,7 +444,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
 
   <section id="stockPullView" class="hidden">
     <header class="header recipe-header">
-      <div><h1>Required Stock / Testing feature</h1></div>
+      <div><h1>Required Stock</h1></div>
       <div class="recipe-actions">
         <button class="recipe-nav-button recipe-home-button" type="button" onclick="showHome({clearSearch:true})">Home</button>
       </div>
@@ -1634,6 +1638,8 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "note": "Thermomix / Mixing Temperature 0 °C, Speed 3, Time 10 min",
           "displayOrder": 0,
           "hideCustomAmount": false,
+          "hideNeeded": true,
+          "customAmountNeededStyle": true,
           "asNeeded": false
         },
         "lovage-gin": {
@@ -1660,6 +1666,8 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "note": "Sous vide for 2 h at 32 °C. Filter through a Superbag.",
           "displayOrder": 1,
           "hideCustomAmount": false,
+          "hideNeeded": true,
+          "customAmountNeededStyle": true,
           "asNeeded": false
         },
         "garnish-cucumber-dust": {
@@ -2676,7 +2684,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "linkedSourceCell": null,
           "defaultAmount": 0,
           "items": [],
-          "note": "Smoke Olives\n\nSeparate the olives from the brine.\n\nPlace the olives in the combi oven set to the lowest temperature and 0% humidity.\n\nUsing a smoking gun and wood chips, fill the combi oven with smoke. Leave it running for 5 minutes, then turn it off. Repeat this smoking process for 30 minutes.\n\nAfter 1 hour, weigh the olives and vacuum-seal them in 120 g packs.\n\nFilter the remaining olive brine through a coffee filter and vacuum-seal it.",
+          "note": "Separate the olives from the brine.\n\nPlace the olives in the combi oven set to the lowest temperature and 0% humidity.\n\nUsing a smoking gun and wood chips, fill the combi oven with smoke. Leave it running for 5 minutes, then turn it off. Repeat this smoking process for 30 minutes.\n\nAfter 1 hour, weigh the olives and vacuum-seal them in 120 g packs.\n\nFilter the remaining olive brine through a coffee filter and vacuum-seal it.",
           "displayOrder": 2,
           "hideCustomAmount": true,
           "asNeeded": true,
@@ -3329,6 +3337,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
           "note": "Combine all ingredients. Add Milk. Rest 10 min. Filter through Superbag until clear.",
           "displayOrder": 0,
           "hideCustomAmount": false,
+          "editableItems": true,
           "asNeeded": false
         },
         "spice-pineapple": {
@@ -4854,6 +4863,12 @@ function syncSousVideGuideButtonState(){
     hasFinishedTimer ? 'Sous Vide Guide, timer finished' : hasRunningTimer ? 'Sous Vide Guide, timer active' : 'Sous Vide Guide'
   );
 }
+function clearSousVideGuideButtonState(){
+  const button = document.getElementById('sousVideGuideButton');
+  if (!button) return;
+  button.classList.remove('has-active-timer', 'has-finished-timer');
+  button.setAttribute('aria-label', 'Sous Vide Guide');
+}
 function sousVideTimerKey(record){
   return [record.source, record.ingredient, record.time, record.temperature].join(' | ');
 }
@@ -5112,13 +5127,20 @@ function toggleSousVideTimer(key){
 function resetSousVideTimer(key){
   const state = sousVideTimers.get(key);
   if (!state) return;
+  const wasDone = state.status === 'done';
+  const alarmName = formatSousVideIngredientName(state.ingredient);
   state.remainingMs = state.totalMs;
   state.endTime = 0;
   state.startedAt = 0;
   state.finishedAt = 0;
   state.status = 'idle';
   state.alarmTriggered = false;
-  stopSousVideAlarm();
+  if (wasDone) {
+    sousVideAlarmNames.delete(alarmName);
+    const hasOtherDoneTimer = [...sousVideTimers.values()].some(timer => timer?.status === 'done');
+    if (!hasOtherDoneTimer) stopSousVideAlarm();
+    else updateSousVideAlarmBar();
+  }
   saveSousVideTimerStates();
   renderSousVide();
 }
@@ -5133,9 +5155,10 @@ function resetAllSousVideTimers(){
   localStorage.removeItem(SOUS_VIDE_TIMER_STORAGE_KEY);
   const search = document.getElementById('sousVideSearch');
   if (search) search.value = '';
-  syncSousVideGuideButtonState();
+  clearSousVideGuideButtonState();
   renderSousVide();
   showHome({clearSearch:true});
+  clearSousVideGuideButtonState();
 }
 function reconcileSousVideTimers(){
   if (!isSousVidePageActive()) {
@@ -5792,14 +5815,32 @@ function renderPrepCard(item, prep, needed, isAdditional=false, depth=0){
   let rows = '';
   (prep.items || []).forEach((r, idx) => {
     const itemAmount = amount(r, activeNeeded);
+    const editableAmount = prep.editableItems === true;
     rows += `
       <tr>
         <td>${escapeHtml(formatProductName(r.name))}</td>
-        <td 
-          id="prepAmount_${domId}_${idx}"
-          data-ratio="${Number(r.ratio || 0)}"
-          data-unit="${r.unit || ''}"
-        >${fmt(itemAmount, r.unit)}</td>
+        <td id="prepAmount_${domId}_${idx}" data-ratio="${Number(r.ratio || 0)}" data-unit="${r.unit || ''}">
+          ${editableAmount ? `<div class="prep-item-amount-control">
+            <input
+              id="prepItemInput_${domId}_${idx}"
+              class="prep-item-amount-input"
+              type="text"
+              inputmode="decimal"
+              pattern="[0-9]*[,.]?[0-9]*"
+              autocomplete="off"
+              autocorrect="off"
+              spellcheck="false"
+              dir="ltr"
+              value="${escapeHtml(fmtBatchInputNumber(itemAmount))}"
+              aria-label="${escapeHtml(`${formatProductName(r.name)} custom amount`)}"
+              data-prep-id="${prepId}"
+              data-item-index="${idx}"
+              oninput="updatePrepIngredientAmount(this)"
+              onblur="restorePrepIngredientAmount(this)"
+            >
+            <span class="prep-item-amount-unit">${escapeHtml(r.unit || '')}</span>
+          </div>` : fmt(itemAmount, r.unit)}
+        </td>
       </tr>
     `;
   });
@@ -5811,17 +5852,17 @@ function renderPrepCard(item, prep, needed, isAdditional=false, depth=0){
           <div class="prep-title">${escapeHtml(formatProductName(prep.title))}</div>
           ${prepTypeLabel ? `<div class="prep-depth">${escapeHtml(prepTypeLabel)}</div>` : ''}
         </div>
-        <div class="needed-inline">
+        ${prep.hideNeeded !== true ? `<div class="needed-inline">
           <span class="needed-label">Needed</span>
           <span class="needed-value" id="neededValue_${domId}">${neededText}</span>
-        </div>
+        </div>` : ''}
       </div>
 
       ${showCustomAmount ? `<div class="custom-prep">
         <div>
           <label>Custom Amount</label>
           <input 
-            class="prep-amount-input"
+            class="prep-amount-input ${prep.customAmountNeededStyle === true ? 'is-needed-style' : ''}"
             type="text"
             inputmode="decimal"
             pattern="[0-9]*[,.]?[0-9]*"
@@ -5850,6 +5891,82 @@ function renderPrepCard(item, prep, needed, isAdditional=false, depth=0){
         <tbody>${rows}</tbody>
       </table>` : ''}
     </div>`;
+}
+function getPrepRecordDisplayState(record){
+  const {prepId, prep, sourceItem, calculatedNeeded} = record;
+  const manualOverride = getOverrideAmount(prepId);
+  const hasItems = (prep.items || []).length > 0;
+  const isAdditional = (currentRecipe.additionalPreps || []).includes(prepId) && calculatedNeeded === 0;
+  const calculatedActiveNeeded = prep.asNeeded
+    ? (Number(prep.defaultAmount) || calculatedNeeded || 0)
+    : getActiveNeeded(prepId, calculatedNeeded);
+  const zeroUntilManual = ['cantaloupe-pure', '1-lacto-fermentation', 'garnish-matcha-chocolate'].includes(prepId);
+  const activeNeeded = zeroUntilManual && manualOverride === null ? 0 : calculatedActiveNeeded;
+  const manualNeededOnly = [
+    'cucumber-cordial',
+    'lovage-gin',
+    'cantaloupe-pure',
+    '1-lacto-fermentation',
+    'garnish-matcha-chocolate'
+  ].includes(prepId);
+  const neededText = manualNeededOnly && manualOverride === null
+    ? ''
+    : (prep.neededDisplay || (!hasItems || isAdditional || prep.asNeeded
+      ? 'as needed'
+      : fmt(activeNeeded, sourceItem.unit)));
+  return {activeNeeded, neededText};
+}
+function syncPrepIngredientAmounts(activeInput=null){
+  collectPrepRecords().forEach(record => {
+    const {prepId, prep} = record;
+    const domId = safeId(prepId);
+    const {activeNeeded, neededText} = getPrepRecordDisplayState(record);
+    const neededValue = document.getElementById(`neededValue_${domId}`);
+    if (neededValue) neededValue.textContent = neededText;
+    const customInput = document.querySelector(`.prep-amount-input[data-prep-id="${prepId}"]`);
+    if (customInput && customInput !== activeInput) {
+      const override = getOverrideAmount(prepId);
+      customInput.value = override === null ? '' : fmtBatchInputNumber(override);
+    }
+    (prep.items || []).forEach((item, index) => {
+      const itemAmount = amount(item, activeNeeded);
+      const editableInput = document.getElementById(`prepItemInput_${domId}_${index}`);
+      if (editableInput) {
+        if (editableInput !== activeInput) editableInput.value = fmtBatchInputNumber(itemAmount);
+        return;
+      }
+      const amountCell = document.getElementById(`prepAmount_${domId}_${index}`);
+      if (amountCell) amountCell.textContent = fmt(itemAmount, item.unit);
+    });
+  });
+}
+function updatePrepIngredientAmount(input){
+  if (!currentRecipe || currentRecipe.id !== 'oaxaca-colada') return;
+  const prepId = input.dataset.prepId;
+  const itemIndex = Number(input.dataset.itemIndex);
+  const prep = currentRecipe.preps?.[prepId];
+  const prepItem = prep?.items?.[itemIndex];
+  const parsed = parseAmountInput(input.value);
+  const ratio = Number(prepItem?.ratio || 0);
+  if (prepId !== 'milk-clarification' || !prep?.editableItems || parsed === null || parsed <= 0 || ratio <= 0) return;
+  prepOverrides[prepId] = String(parsed / ratio);
+  saveCurrentRecipeState();
+  syncPrepIngredientAmounts(input);
+}
+function restorePrepIngredientAmount(input){
+  if (!currentRecipe) return;
+  const prepId = input.dataset.prepId;
+  const itemIndex = Number(input.dataset.itemIndex);
+  const record = collectPrepRecords().find(entry => entry.prepId === prepId);
+  const prepItem = record?.prep?.items?.[itemIndex];
+  if (!record || !prepItem) return;
+  const parsed = parseAmountInput(input.value);
+  if (parsed === null || parsed <= 0) {
+    const {activeNeeded} = getPrepRecordDisplayState(record);
+    input.value = fmtBatchInputNumber(amount(prepItem, activeNeeded));
+  } else {
+    input.value = fmtBatchInputNumber(parsed);
+  }
 }
 function updatePrepOverride(input){
   const prepId = input.dataset.prepId;
