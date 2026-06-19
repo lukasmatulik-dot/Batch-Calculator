@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#151619" />
 <meta name="application-name" content="Alcron Batch Calculator" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -99,8 +99,8 @@ h1{margin:0;font-size:28px;line-height:1.02;letter-spacing:0;font-weight:950}
 .sous-vide-timer-reset{min-height:21px;padding:2px 6px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.055);color:var(--muted);font-size:7.5px;line-height:1;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
 .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 label{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:900;margin-bottom:6px}
-select,input{width:100%;min-height:50px;border:1px solid rgba(42,48,43,.12);background:rgba(255,255,255,.68);color:var(--text);border-radius:var(--radius-control);padding:12px;font-size:16px;font-weight:900;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.82),0 6px 14px rgba(54,65,58,.06);direction:ltr;text-align:left;unicode-bidi:plaintext}
-select:focus,input:focus{border-color:rgba(128,80,67,.34);box-shadow:0 0 0 3px rgba(167,102,86,.14),inset 0 1px 0 rgba(255,255,255,.88)}
+select,input,textarea{width:100%;min-height:50px;border:1px solid rgba(42,48,43,.12);background:rgba(255,255,255,.68);color:var(--text);border-radius:var(--radius-control);padding:12px;font-size:16px;font-weight:900;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.82),0 6px 14px rgba(54,65,58,.06);direction:ltr;text-align:left;unicode-bidi:plaintext}
+select:focus,input:focus,textarea:focus{border-color:rgba(128,80,67,.34);box-shadow:0 0 0 3px rgba(167,102,86,.14),inset 0 1px 0 rgba(255,255,255,.88)}
 .quick-batches{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
 .batch-chip{min-height:46px;border:1px solid rgba(255,255,255,.62);border-radius:var(--radius-control);background:rgba(255,255,255,.50);color:var(--soft);font-size:13px;font-weight:950;padding:8px 6px;box-shadow:inset 0 1px 0 rgba(255,255,255,.68)}
 .batch-chip.is-active{border-color:rgba(128,80,67,.26);background:linear-gradient(135deg,rgba(191,129,113,.44),rgba(255,255,255,.48));color:#4f2f27}
@@ -127,12 +127,12 @@ select:focus,input:focus{border-color:rgba(128,80,67,.34);box-shadow:0 0 0 3px r
 .needed-label{display:flex;align-items:center;justify-content:center;min-width:54px;min-height:32px;padding:7px 8px;margin:0;font-size:9px;line-height:1;border-radius:var(--radius-control);background:rgba(255,255,255,.52);border:1px solid rgba(42,48,43,.10);color:var(--muted);font-weight:900;text-transform:uppercase;box-shadow:inset 0 1px 0 rgba(255,255,255,.68)}
 .prep-note{font-size:12px;line-height:1.4;color:#4b554d;white-space:pre-wrap;margin:9px 0 10px}
 .custom-prep{display:grid;grid-template-columns:1fr 78px;gap:8px;align-items:end;margin:8px 0 10px}
-.custom-prep input{min-height:44px;padding:9px 10px;font-size:15px;border-radius:var(--radius-control)}
+.custom-prep input{min-height:44px;padding:9px 10px;font-size:16px;border-radius:var(--radius-control)}
 .custom-prep label{margin-bottom:5px;font-size:9px}
 .custom-prep input:not([readonly]),.prep-amount-input{caret-color:#8f594c;direction:ltr!important;text-align:left!important;unicode-bidi:isolate}
 .custom-prep input::placeholder{color:rgba(30,37,33,.40)}
 .prep-item-amount-control{display:flex;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
-.prep-item-amount-input{width:58px;min-width:0;min-height:30px;padding:4px 5px;border-radius:10px;font-size:12.5px;font-weight:950;text-align:right}
+.prep-item-amount-input{width:58px;min-width:0;min-height:30px;padding:4px 5px;border-radius:10px;font-size:16px;font-weight:950;text-align:right}
 .prep-item-amount-unit{flex:0 0 auto;font-size:12px;font-weight:950}
 .main-note{margin-top:10px;background:rgba(255,255,255,.44);border:1px solid rgba(128,80,67,.14);border-radius:var(--radius-inner);padding:9px 10px;color:#364039;font-size:12px;line-height:1.35;white-space:pre-wrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.62)}
 h1,.recipe-title,.recipe-prep-time,.recipe-meta,.section-title,.section-pill,.batch-name,.batch-note,.info-text,.main-note,.prep-title,.prep-note,td:first-child,th:first-child,.empty{max-width:100%;overflow-wrap:anywhere;word-break:break-word}
@@ -239,8 +239,8 @@ body{
 .stock-pull-row{border-bottom-color:rgba(255,216,200,.09);background:rgba(125,61,45,.095)}
 .stock-pull-row[data-prep-component="false"]{background:linear-gradient(145deg,rgba(47,143,82,.125),rgba(18,51,33,.16),rgba(17,19,21,.82))}
 .stock-pull-group+.stock-pull-group{border-top-color:rgba(255,216,200,.13)}
-select,input{border:1px solid rgba(255,255,255,.085);background:rgba(255,255,255,.060);color:var(--text);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 7px 16px rgba(0,0,0,.12)}
-select:focus,input:focus{border-color:rgba(255,216,200,.40);box-shadow:0 0 0 3px rgba(125,61,45,.18),inset 0 1px 0 rgba(255,255,255,.05)}
+select,input,textarea{border:1px solid rgba(255,255,255,.085);background:rgba(255,255,255,.060);color:var(--text);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 7px 16px rgba(0,0,0,.12)}
+select:focus,input:focus,textarea:focus{border-color:rgba(255,216,200,.40);box-shadow:0 0 0 3px rgba(125,61,45,.18),inset 0 1px 0 rgba(255,255,255,.05)}
 .batch-chip{border:1px solid rgba(255,255,255,.085);background:rgba(255,255,255,.055);color:var(--soft);box-shadow:inset 0 1px 0 rgba(255,255,255,.055)}
 .batch-chip.is-active{border-color:rgba(255,216,200,.34);background:linear-gradient(135deg,rgba(125,61,45,.32),rgba(82,37,31,.44));color:#fff8f2}
 .info{background:rgba(125,61,45,.105);border:1px solid rgba(255,216,200,.13);box-shadow:inset 0 1px 0 rgba(255,255,255,.045)}
@@ -265,7 +265,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
 .recipe-close-button{background:linear-gradient(145deg,rgba(164,91,71,.64),rgba(86,41,36,.68));border-color:rgba(255,216,200,.18)}
 .clear-all-button,.sous-vide-reset-all{border:1px solid rgba(255,216,200,.18);background:linear-gradient(145deg,rgba(164,91,71,.64),rgba(86,41,36,.68));color:#f4f0e8;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 9px 22px rgba(0,0,0,.24);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
 .main-amount-control{gap:4px;padding:5px 8px}
-.main-amount-input{width:58px;min-width:0;min-height:24px!important;height:24px!important;padding:0!important;border:0!important;background:transparent!important;color:inherit!important;border-radius:0!important;box-shadow:none!important;font:inherit!important;font-size:13px!important;font-weight:950!important;text-align:right!important;outline:none!important;caret-color:#ffd8c8}
+.main-amount-input{width:58px;min-width:0;min-height:24px!important;height:24px!important;padding:0!important;border:0!important;background:transparent!important;color:inherit!important;border-radius:0!important;box-shadow:none!important;font:inherit!important;font-size:16px!important;font-weight:950!important;text-align:right!important;outline:none!important;caret-color:#ffd8c8}
 .main-amount-input:focus{box-shadow:none!important;border:0!important}
 .main-amount-unit{flex:0 0 auto;font-size:12px;font-weight:950;color:inherit;opacity:.96}
 @media(max-width:430px){
@@ -293,7 +293,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
   .search-wrap:before{left:14px}
   .search-clear{right:7px;min-width:52px;min-height:30px;padding:0 9px}
   .main-amount-control{min-width:78px;padding:5px 7px}
-  .main-amount-input{width:50px;font-size:12.5px!important}
+  .main-amount-input{width:50px;font-size:16px!important}
   .main-amount-unit{font-size:11.5px}
 }
 
@@ -413,7 +413,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
     </header>
     <section class="card">
       <div class="section-head"><div class="section-title">Cocktail Recipes</div></div>
-      <div class="search-wrap"><input id="homeSearch" class="home-search" placeholder="Search recipe" oninput="filterHome()" /><button class="search-clear" type="button" onclick="clearRecipeSearch()">Clear</button></div>
+      <div class="search-wrap"><input id="homeSearch" class="home-search" placeholder="Search recipe" oninput="scheduleHomeFilter()" /><button class="search-clear" type="button" onclick="clearRecipeSearch()">Clear</button></div>
       <div class="home-tool-row">
         <button id="sousVideGuideButton" class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showSousVide()">Sous Vide Guide</button>
         <button id="stockPullButton" class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showStockPull()">Required Stock</button>
@@ -433,7 +433,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
     </header>
 
     <section class="card">
-      <div class="search-wrap sous-vide-search-wrap"><input id="sousVideSearch" class="home-search" placeholder="Sous Vide Guide" oninput="renderSousVide()" /><button class="search-clear" type="button" onclick="clearSousVideSearch()">Clear</button></div>
+      <div class="search-wrap sous-vide-search-wrap"><input id="sousVideSearch" class="home-search" placeholder="Sous Vide Guide" oninput="scheduleSousVideRender()" /><button class="search-clear" type="button" onclick="clearSousVideSearch()">Clear</button></div>
       <div id="sousVideAlarmBar" class="sous-vide-alarm-bar hidden" role="status" aria-live="assertive">
         <div id="sousVideAlarmText" class="sous-vide-alarm-text">Timer finished</div>
       </div>
@@ -4457,11 +4457,17 @@ const APP_PASSWORD = 'heslojeheslo';
 const AUTH_STORAGE_KEY = 'batchCalculatorAuth:v2';
 const STORAGE_KEY = 'batchCalculatorState:v2';
 const SOUS_VIDE_TIMER_STORAGE_KEY = 'batchCalculatorSousVideTimers:v2';
+const SEARCH_DEBOUNCE_MS = 80;
 let currentRecipe = null;
 let currentTargetMl = 500;
 let prepOverrides = {};
 let savedState = loadSavedState();
 const sortedRecipeList = [...appData.recipes].sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), undefined, {sensitivity: 'base'}));
+let homeSearchTimer = null;
+let sousVideSearchTimer = null;
+let homeRecipeCardCache = [];
+let homeRecipeSectionCache = [];
+let sousVideRecordsCache = null;
 const sousVideTimers = new Map();
 let savedSousVideTimerStates = loadSousVideTimerStates();
 const sousVideAlarmNames = new Set();
@@ -4723,6 +4729,7 @@ function extractSousVideTemperature(text){
   return match ? `${cleanSousVideNumber(match[1])} °C` : 'Not specified';
 }
 function collectSousVideRecords(){
+  if (sousVideRecordsCache) return sousVideRecordsCache;
   const records = [];
   const addSousVideRecord = record => {
     if (record.source === 'ALCRON' && String(record.ingredient || '').toUpperCase() === 'LOVAGE GIN') {
@@ -4773,7 +4780,8 @@ function collectSousVideRecords(){
       });
     });
   });
-  return records;
+  sousVideRecordsCache = records;
+  return sousVideRecordsCache;
 }
 function parseSousVideTemperature(temperature){
   const match = String(temperature || '').replace(',', '.').match(/-?\d+(?:\.\d+)?/);
@@ -5173,15 +5181,18 @@ function reconcileSousVideTimers(){
   syncSousVideGuideButtonState();
 }
 function bindSousVideTimerControls(root){
-  root.querySelectorAll('[data-timer-action]').forEach(button => {
-    button.addEventListener('click', () => {
-      const key = button.dataset.timerKey;
-      if (button.dataset.timerAction === 'reset') {
-        resetSousVideTimer(key);
-      } else {
-        toggleSousVideTimer(key);
-      }
-    });
+  if (!root || root.dataset.timerControlsBound === 'true') return;
+  root.dataset.timerControlsBound = 'true';
+  root.addEventListener('click', event => {
+    const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+    const button = target?.closest('[data-timer-action]');
+    if (!button || !root.contains(button)) return;
+    const key = button.dataset.timerKey;
+    if (button.dataset.timerAction === 'reset') {
+      resetSousVideTimer(key);
+    } else {
+      toggleSousVideTimer(key);
+    }
   });
 }
 function sortSousVideRecordsByTimerState(records){
@@ -5203,6 +5214,10 @@ function sortSousVideRecordsByTimerState(records){
   });
 }
 function renderSousVide(){
+  if (sousVideSearchTimer) {
+    window.clearTimeout(sousVideSearchTimer);
+    sousVideSearchTimer = null;
+  }
   const search = document.getElementById('sousVideSearch');
   const query = (search?.value || '').toLowerCase().trim();
   const activeQuery = query.length >= 3 ? query : '';
@@ -5230,9 +5245,20 @@ function renderSousVide(){
   refreshSousVideTimerDisplay();
   if ([...sousVideTimers.values()].some(state => state.status === 'running' || state.status === 'done')) ensureSousVideTimerTicker();
 }
+function scheduleSousVideRender(){
+  if (sousVideSearchTimer) window.clearTimeout(sousVideSearchTimer);
+  sousVideSearchTimer = window.setTimeout(() => {
+    sousVideSearchTimer = null;
+    renderSousVide();
+  }, SEARCH_DEBOUNCE_MS);
+}
 function clearSousVideSearch(){
   const search = document.getElementById('sousVideSearch');
   if (!search) return;
+  if (sousVideSearchTimer) {
+    window.clearTimeout(sousVideSearchTimer);
+    sousVideSearchTimer = null;
+  }
   search.value = '';
   renderSousVide();
 }
@@ -5478,6 +5504,8 @@ function renderHome(){
   const root = document.getElementById('recipeList');
   root.innerHTML = '';
   root.className = 'recipe-sections';
+  homeRecipeCardCache = [];
+  homeRecipeSectionCache = [];
   const recipes = sortedRecipes();
   const openRecipes = sortedOpenRecipes(recipes.filter(r => getRecipeStatus(r) === 'open'));
   const signatureRecipes = recipes.filter(r => getRecipeStatus(r) !== 'open' && recipeCategoryGroup(r) === 'signature');
@@ -5499,27 +5527,46 @@ function renderHome(){
     const list = sectionEl.querySelector('.recipe-section-list');
     section.recipes.forEach(r => list.appendChild(createRecipeCard(r)));
     root.appendChild(sectionEl);
+    homeRecipeSectionCache.push(sectionEl);
   });
+  homeRecipeCardCache = [...root.querySelectorAll('.recipe-card')];
   filterHome();
 }
 function filterHome(){
+  if (homeSearchTimer) {
+    window.clearTimeout(homeSearchTimer);
+    homeSearchTimer = null;
+  }
   const q = (document.getElementById('homeSearch').value || '').toLowerCase().trim();
   let shown = 0;
   const visibleGroups = new Set();
-  document.querySelectorAll('.recipe-card').forEach(card => {
+  const cards = homeRecipeCardCache.length ? homeRecipeCardCache : [...document.querySelectorAll('.recipe-card')];
+  cards.forEach(card => {
     const visible = !q || card.dataset.search.includes(q);
     card.style.display = visible ? 'grid' : 'none';
     if (visible) shown += 1;
     if (visible) visibleGroups.add(card.dataset.group);
   });
-  document.querySelectorAll('.recipe-section').forEach(section => {
+  const sections = homeRecipeSectionCache.length ? homeRecipeSectionCache : [...document.querySelectorAll('.recipe-section')];
+  sections.forEach(section => {
     section.classList.toggle('hidden', !visibleGroups.has(section.dataset.group));
   });
   document.getElementById('homeEmpty').classList.toggle('hidden', shown !== 0);
 }
+function scheduleHomeFilter(){
+  if (homeSearchTimer) window.clearTimeout(homeSearchTimer);
+  homeSearchTimer = window.setTimeout(() => {
+    homeSearchTimer = null;
+    filterHome();
+  }, SEARCH_DEBOUNCE_MS);
+}
 function clearRecipeSearch(){
   const search = document.getElementById('homeSearch');
   if (!search) return;
+  if (homeSearchTimer) {
+    window.clearTimeout(homeSearchTimer);
+    homeSearchTimer = null;
+  }
   search.value = '';
   filterHome();
   window.scrollTo({top:0, behavior:'smooth'});
