@@ -132,7 +132,7 @@ select:focus,input:focus,textarea:focus{border-color:rgba(128,80,67,.34);box-sha
 .custom-prep input:not([readonly]),.prep-amount-input{caret-color:#8f594c;direction:ltr!important;text-align:left!important;unicode-bidi:isolate}
 .custom-prep input::placeholder{color:rgba(30,37,33,.40)}
 .prep-item-amount-control{display:flex;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
-.prep-item-amount-input{width:58px;min-width:0;min-height:30px;padding:4px 5px;border-radius:10px;font-size:16px;font-weight:950;text-align:right}
+.prep-item-amount-input{width:58px;min-width:0;min-height:30px;padding:4px 5px;border-radius:10px;font-size:16px;font-weight:950;text-align:right;transform:scale(.78125);transform-origin:right center}
 .prep-item-amount-unit{flex:0 0 auto;font-size:12px;font-weight:950}
 .main-note{margin-top:10px;background:rgba(255,255,255,.44);border:1px solid rgba(128,80,67,.14);border-radius:var(--radius-inner);padding:9px 10px;color:#364039;font-size:12px;line-height:1.35;white-space:pre-wrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.62)}
 h1,.recipe-title,.recipe-prep-time,.recipe-meta,.section-title,.section-pill,.batch-name,.batch-note,.info-text,.main-note,.prep-title,.prep-note,td:first-child,th:first-child,.empty{max-width:100%;overflow-wrap:anywhere;word-break:break-word}
@@ -265,7 +265,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
 .recipe-close-button{background:linear-gradient(145deg,rgba(164,91,71,.64),rgba(86,41,36,.68));border-color:rgba(255,216,200,.18)}
 .clear-all-button,.sous-vide-reset-all{border:1px solid rgba(255,216,200,.18);background:linear-gradient(145deg,rgba(164,91,71,.64),rgba(86,41,36,.68));color:#f4f0e8;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 9px 22px rgba(0,0,0,.24);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
 .main-amount-control{gap:4px;padding:5px 8px}
-.main-amount-input{width:58px;min-width:0;min-height:24px!important;height:24px!important;padding:0!important;border:0!important;background:transparent!important;color:inherit!important;border-radius:0!important;box-shadow:none!important;font:inherit!important;font-size:16px!important;font-weight:950!important;text-align:right!important;outline:none!important;caret-color:#ffd8c8}
+.main-amount-input{width:58px;min-width:0;min-height:24px!important;height:24px!important;padding:0!important;border:0!important;background:transparent!important;color:inherit!important;border-radius:0!important;box-shadow:none!important;font:inherit!important;font-size:16px!important;font-weight:950!important;text-align:right!important;outline:none!important;caret-color:#ffd8c8;transform:scale(.8125);transform-origin:right center}
 .main-amount-input:focus{box-shadow:none!important;border:0!important}
 .main-amount-unit{flex:0 0 auto;font-size:12px;font-weight:950;color:inherit;opacity:.96}
 @media(max-width:430px){
@@ -293,7 +293,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
   .search-wrap:before{left:14px}
   .search-clear{right:7px;min-width:52px;min-height:30px;padding:0 9px}
   .main-amount-control{min-width:78px;padding:5px 7px}
-  .main-amount-input{width:50px;font-size:16px!important}
+  .main-amount-input{width:50px;font-size:16px!important;transform:scale(.78125)}
   .main-amount-unit{font-size:11.5px}
 }
 
@@ -413,7 +413,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
     </header>
     <section class="card">
       <div class="section-head"><div class="section-title">Cocktail Recipes</div></div>
-      <div class="search-wrap"><input id="homeSearch" class="home-search" placeholder="Search recipe" oninput="scheduleHomeFilter()" /><button class="search-clear" type="button" onclick="clearRecipeSearch()">Clear</button></div>
+      <div class="search-wrap"><input id="homeSearch" class="home-search" placeholder="Search recipe" /><button class="search-clear" type="button" onclick="clearRecipeSearch()">Clear</button></div>
       <div class="home-tool-row">
         <button id="sousVideGuideButton" class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showSousVide()">Sous Vide Guide</button>
         <button id="stockPullButton" class="recipe-nav-button recipe-home-button sous-vide-button" type="button" onclick="showStockPull()">Required Stock</button>
@@ -433,7 +433,7 @@ td{border-bottom:1px solid rgba(255,255,255,.055)}
     </header>
 
     <section class="card">
-      <div class="search-wrap sous-vide-search-wrap"><input id="sousVideSearch" class="home-search" placeholder="Sous Vide Guide" oninput="scheduleSousVideRender()" /><button class="search-clear" type="button" onclick="clearSousVideSearch()">Clear</button></div>
+      <div class="search-wrap sous-vide-search-wrap"><input id="sousVideSearch" class="home-search" placeholder="Sous Vide Guide" /><button class="search-clear" type="button" onclick="clearSousVideSearch()">Clear</button></div>
       <div id="sousVideAlarmBar" class="sous-vide-alarm-bar hidden" role="status" aria-live="assertive">
         <div id="sousVideAlarmText" class="sous-vide-alarm-text">Timer finished</div>
       </div>
@@ -4468,6 +4468,7 @@ let sousVideSearchTimer = null;
 let homeRecipeCardCache = [];
 let homeRecipeSectionCache = [];
 let sousVideRecordsCache = null;
+let sousVideTimerControlsBound = false;
 const sousVideTimers = new Map();
 let savedSousVideTimerStates = loadSousVideTimerStates();
 const sousVideAlarmNames = new Set();
@@ -5181,8 +5182,8 @@ function reconcileSousVideTimers(){
   syncSousVideGuideButtonState();
 }
 function bindSousVideTimerControls(root){
-  if (!root || root.dataset.timerControlsBound === 'true') return;
-  root.dataset.timerControlsBound = 'true';
+  if (!root || sousVideTimerControlsBound) return;
+  sousVideTimerControlsBound = true;
   root.addEventListener('click', event => {
     const target = event.target instanceof Element ? event.target : event.target?.parentElement;
     const button = target?.closest('[data-timer-action]');
@@ -6086,6 +6087,8 @@ customBatch.addEventListener('input', () => {
   renderPreps();
   saveCurrentRecipeState();
 });
+document.getElementById('homeSearch')?.addEventListener('input', scheduleHomeFilter);
+document.getElementById('sousVideSearch')?.addEventListener('input', scheduleSousVideRender);
 initializeApplicationLogin();
 renderHome();
 renderStockPullList();
