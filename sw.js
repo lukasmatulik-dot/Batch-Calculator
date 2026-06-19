@@ -1,4 +1,3 @@
-
 const CACHE_NAME = 'alcron-batch-calculator-v17';
 const APP_SHELL = [
   './',
